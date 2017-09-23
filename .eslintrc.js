@@ -23,6 +23,10 @@ module.exports = {
     // don't require a dumb space before paren
     'space-before-function-paren': 0,
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    // yeah I actually like semicolons
+    'semi': 0,
+    // camel is ok for some imports
+    'camelcase': 0,
   }
 }

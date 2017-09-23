@@ -23,7 +23,7 @@
   }
 
   .titlebar {
-    background: #666;
+    background: #010101;
     border-bottom: 1px solid #ccc;
     grid-area: top;
     -webkit-app-region: drag;

@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import db from './datastore'
+import Docker from './utils/docker'
 
 import 'bulma/css/bulma.css'
 
@@ -12,12 +13,9 @@ import 'bulma/css/bulma.css'
 // import path from 'path'
 // import { remote } from 'electron'
 
-import Docker from 'dockerode'
-const docker = new Docker({ socketPath: '/var/run/docker.sock' })
-
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
-Vue.docker = Vue.prototype.$docker = docker
+Vue.docker = Vue.prototype.$docker = new Docker()
 Vue.config.productionTip = false
 Vue.prototype.$db = db
 
