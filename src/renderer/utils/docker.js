@@ -29,7 +29,7 @@ export default class Docker {
    * List containers in Docker
    */
   listContainers() {
-    return client.listContainers();
+    return client.listContainers({ all: true });
   }
 
   /**

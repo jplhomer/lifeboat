@@ -18,8 +18,8 @@
 
     <div class="services">
       <div class="columns is-mobile is-multiline">
-        <div v-for="container in containers" :key="container.id" class="column is-one-third">
-          <container :container="container"></container>
+        <div v-for="service in services" :key="service" class="column is-one-third">
+          <service :service="service"></service>
         </div>
       </div>
     </div>
@@ -41,11 +41,13 @@
 
 <script>
 import DockerConfig from "@/utils/docker-config";
-import Container from "@/components/Dashboard/Container";
+import Service from "@/components/Dashboard/Service";
+
+let config;
 
 export default {
   props: ["name", "dir", "containers"],
-  components: { Container },
+  components: { Service },
   methods: {
     start() {
       this.$docker.startProject(this.dir).catch(e => console.error(e));
@@ -55,9 +57,16 @@ export default {
     }
   },
   computed: {
+    services() {
+      return config.serviceNames();
+    },
+    projectContainers() {
+      return this.containers
+        .filter(c => c.project === this.name)
+        .filter(c => config.serviceNames().includes(c.serviceName));
+    },
     running() {
-      const config = new DockerConfig({ dir: this.dir, name: this.name });
-      const validServiceNames = this.containers
+      const validServiceNames = this.projectContainers
         .filter(c => c.project === this.name)
         .map(c => c.serviceName)
         .sort();
@@ -65,6 +74,9 @@ export default {
       /* prettier-ignore */
       return config.serviceNames().sort().join(',') === validServiceNames.join(',');
     }
+  },
+  created() {
+    config = new DockerConfig({ dir: this.dir, name: this.name });
   }
 };
 </script>
