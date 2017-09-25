@@ -44,9 +44,13 @@ export default class Docker {
 
       stream.setEncoding("utf8");
       stream.on("data", json => {
-        let data = JSON.parse(json);
+        try {
+          let data = JSON.parse(json);
 
-        cb(data);
+          cb(data);
+        } catch (e) {
+          console.log(e);
+        }
       });
     });
   }
