@@ -6,8 +6,8 @@
 
 <script>
   export default {
-    name: 'lifeboat'
-  }
+    name: "lifeboat"
+  };
 </script>
 
 <style>

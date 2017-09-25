@@ -8,25 +8,15 @@ module.exports = {
     browser: true,
     node: true
   },
-  extends: 'standard',
+  extends: 'prettier',
   globals: {
-    __static: true
+    __static: true,
   },
   plugins: [
-    'html'
+    'html',
+    'prettier'
   ],
   'rules': {
-    // allow paren-less arrow functions
-    'arrow-parens': 0,
-    // allow async-await
-    'generator-star-spacing': 0,
-    // don't require a dumb space before paren
-    'space-before-function-paren': 0,
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    // yeah I actually like semicolons
-    'semi': 0,
-    // camel is ok for some imports
-    'camelcase': 0,
+    'prettier/prettier': 'error'
   }
 }

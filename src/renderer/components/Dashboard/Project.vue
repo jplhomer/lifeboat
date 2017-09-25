@@ -29,24 +29,31 @@
 </template>
 
 <script>
-import DockerConfig from '@/utils/docker-config';
+import DockerConfig from "@/utils/docker-config";
 
 export default {
-  props: ['name', 'dir', 'containers'],
+  props: ["name", "dir", "containers"],
   methods: {
     startProject(e) {
-      e.preventDefault()
-      console.log('starting project...')
-      this.$docker.startProject(this.dir).then((res) => {
-        // TODO: Reload containers?
-      }).catch(e => console.error(e));
+      e.preventDefault();
+      console.log("starting project...");
+      this.$docker
+        .startProject(this.dir)
+        .then(res => {
+          // TODO: Reload containers?
+        })
+        .catch(e => console.error(e));
     }
   },
   computed: {
     running() {
       const config = new DockerConfig({ dir: this.dir, name: this.name });
-      return config.serviceNames().every(name => this.containers.includes(c => c.name.indexOf(name) > -1));
+      return config
+        .serviceNames()
+        .every(name =>
+          this.containers.includes(c => c.name.indexOf(name) > -1)
+        );
     }
   }
-}
+};
 </script>
