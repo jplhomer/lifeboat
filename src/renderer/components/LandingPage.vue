@@ -9,17 +9,18 @@
       </ul>
     </aside>
 
-    <h1 class="title">zonemeals</h1>
+    <h1 class="title">{{ name }}</h1>
 
     <h2 class="title is-5">Containers</h2>
     <ul>
       <li v-for="container in containers">
-        {{ container.Image }}
+        {{ container.Names[0] }}<br>
+        <small>{{ container.Image }}</small>
       </li>
     </ul>
 
     <p>
-      Status: ????
+      Status: {{ running ? 'Running' : 'Stopped' }}
     </p>
 
     <p>
@@ -45,6 +46,8 @@
     components: { Grid, SystemInformation },
     data() {
       return {
+        name: 'zonemeals',
+        dir: '/Users/jplhomer/Documents/Apps/zonemeals',
         containers: []
       }
     },
@@ -55,22 +58,27 @@
 
       fetchContainers() {
         this.$docker.listContainers().then((containers) => {
-          this.containers = containers;
+          this.containers = containers.filter(c => c.Names.some(name => name.indexOf(this.name) > -1));
         })
       },
 
       startProject(e) {
         e.preventDefault()
         console.log('starting project...')
-        this.$docker.startProject('/Users/jplhomer/Documents/Apps/zonemeals').then((res) => {
+        this.$docker.startProject(this.dir).then((res) => {
           this.fetchContainers();
-        })
+        }).catch(e => console.error(e));
       }
     },
     created() {
       this.fetchContainers();
 
       setInterval(this.fetchContainers, 10000);
+    },
+    computed: {
+      running() {
+        return this.containers.length;
+      }
     }
   }
 </script>
