@@ -7,8 +7,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'landing-page',
-      component: require('@/components/LandingPage')
+      name: 'dashboard',
+      component: require('@/components/Dashboard')
     },
     {
       path: '*',
