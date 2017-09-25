@@ -25,4 +25,8 @@ export default class DockerContainer {
   get id() {
     return this.container.Id;
   }
+
+  get state() {
+    return this.container.State;
+  }
 }
