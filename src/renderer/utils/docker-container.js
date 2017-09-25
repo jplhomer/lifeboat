@@ -9,4 +9,8 @@ export default class DockerContainer {
   get name() {
     return this.container.Names[0].slice(1);
   }
+
+  get image() {
+    return this.container.Image;
+  }
 }

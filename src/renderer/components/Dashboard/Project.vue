@@ -6,7 +6,7 @@
     <ul>
       <li v-for="container in containers">
         {{ container.name }}<br>
-        <small>{{ container.Image }}</small>
+        <small>{{ container.image }}</small>
       </li>
     </ul>
 
@@ -15,8 +15,8 @@
     </p>
 
     <p>
-      <button @click="startProject" class="button is-primary">Start</button>
-      <button class="button">Stop</button>
+      <button @click.prevent="start" class="button is-primary">Start</button>
+      <button @click.prevent="stop" class="button">Stop</button>
     </p>
     <p>
       Services + statuses
@@ -34,13 +34,17 @@ import DockerConfig from "@/utils/docker-config";
 export default {
   props: ["name", "dir", "containers"],
   methods: {
-    startProject(e) {
-      e.preventDefault();
-      console.log("starting project...");
+    start() {
       this.$docker
         .startProject(this.dir)
         .then(res => {
-          // TODO: Reload containers?
+        })
+        .catch(e => console.error(e));
+    },
+    stop() {
+      this.$docker
+        .stopProject(this.dir)
+        .then(res => {
         })
         .catch(e => console.error(e));
     }
@@ -50,9 +54,7 @@ export default {
       const config = new DockerConfig({ dir: this.dir, name: this.name });
       return config
         .serviceNames()
-        .every(name =>
-          this.containers.includes(c => c.name.indexOf(name) > -1)
-        );
+        .every(name => this.containers.some(c => c.name.indexOf(name) > -1));
     }
   }
 };

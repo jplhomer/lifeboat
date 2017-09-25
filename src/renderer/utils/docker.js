@@ -9,27 +9,33 @@ export default class Docker {
     console.log("starting Docker...");
   }
 
+  /**
+   * Start a Docker Compose project
+   * @param {string} dir
+   */
   startProject(dir) {
-    return new Promise((resolve, reject) => {
-      child_process.execFile(
-        which.sync("docker-compose"),
-        ["up", "-d"],
-        { cwd: dir },
-        (error, stdout) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(stdout);
-          }
-        }
-      );
-    });
+    return compose.call(this, dir, ["up", "-d"]);
   }
 
+  /**
+   * Stop a Docker Compose project
+   * @param {string} dir
+   */
+  stopProject(dir) {
+    return compose.call(this, dir, ["down"]);
+  }
+
+  /**
+   * List containers in Docker
+   */
   listContainers() {
     return client.listContainers();
   }
 
+  /**
+   * Listen to Docker events on the system
+   * @param {closure} cb
+   */
   listen(cb) {
     client.getEvents((error, stream) => {
       if (error || !stream) {
@@ -44,4 +50,26 @@ export default class Docker {
       });
     });
   }
+}
+
+/**
+ * Run docker-compose in a given directory
+ * @param {string} dir
+ * @param {array} args
+ */
+function compose(dir, args = []) {
+  return new Promise((resolve, reject) => {
+    child_process.execFile(
+      which.sync("docker-compose"),
+      args,
+      { cwd: dir },
+      (error, stdout) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(stdout);
+        }
+      }
+    );
+  });
 }
