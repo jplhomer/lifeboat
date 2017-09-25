@@ -35,26 +35,22 @@ export default {
   props: ["name", "dir", "containers"],
   methods: {
     start() {
-      this.$docker
-        .startProject(this.dir)
-        .then(res => {
-        })
-        .catch(e => console.error(e));
+      this.$docker.startProject(this.dir).catch(e => console.error(e));
     },
     stop() {
-      this.$docker
-        .stopProject(this.dir)
-        .then(res => {
-        })
-        .catch(e => console.error(e));
+      this.$docker.stopProject(this.dir).catch(e => console.error(e));
     }
   },
   computed: {
     running() {
       const config = new DockerConfig({ dir: this.dir, name: this.name });
-      return config
-        .serviceNames()
-        .every(name => this.containers.some(c => c.name.indexOf(name) > -1));
+      const validServiceNames = this.containers
+        .filter(c => c.project === this.name)
+        .map(c => c.serviceName)
+        .sort();
+
+      /* prettier-ignore */
+      return config.serviceNames().sort().join(',') === validServiceNames.join(',');
     }
   }
 };

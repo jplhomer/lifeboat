@@ -13,4 +13,16 @@ export default class DockerContainer {
   get image() {
     return this.container.Image;
   }
+
+  get project() {
+    return this.container.Labels["com.docker.compose.project"];
+  }
+
+  get serviceName() {
+    return this.container.Labels["com.docker.compose.service"];
+  }
+
+  get id() {
+    return this.container.Id;
+  }
 }
