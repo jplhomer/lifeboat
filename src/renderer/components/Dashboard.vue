@@ -9,45 +9,20 @@
       </ul>
     </aside>
 
-    <h1 class="title">{{ name }}</h1>
-
-    <h2 class="title is-5">Containers</h2>
-    <ul>
-      <li v-for="container in containers">
-        {{ container.Names[0] }}<br>
-        <small>{{ container.Image }}</small>
-      </li>
-    </ul>
-
-    <p>
-      Status: {{ running ? 'Running' : 'Stopped' }}
-    </p>
-
-    <p>
-      <button @click="startProject" class="button is-primary">Start</button>
-      <button class="button">Stop</button>
-    </p>
-    <p>
-      Services + statuses
-    </p>
-    <p>
-      README preview, if available
-    </p>
-    <p>Run a command</p>
+    <project name="zonemeals" dir="/Users/jplhomer/Documents/Apps/zonemeals" :containers="containers"></project>
   </grid>
 </template>
 
 <script>
   import Grid from './Grid'
-  import SystemInformation from './LandingPage/SystemInformation'
+  import Project from './Dashboard/Project';
+  import Container from '../utils/docker-container';
 
   export default {
     name: 'landing-page',
-    components: { Grid, SystemInformation },
+    components: { Grid, Project },
     data() {
       return {
-        name: 'zonemeals',
-        dir: '/Users/jplhomer/Documents/Apps/zonemeals',
         containers: []
       }
     },
@@ -58,27 +33,19 @@
 
       fetchContainers() {
         this.$docker.listContainers().then((containers) => {
-          this.containers = containers.filter(c => c.Names.some(name => name.indexOf(this.name) > -1));
+          this.containers = containers.map(c => new Container(c));
         })
-      },
-
-      startProject(e) {
-        e.preventDefault()
-        console.log('starting project...')
-        this.$docker.startProject(this.dir).then((res) => {
-          this.fetchContainers();
-        }).catch(e => console.error(e));
       }
     },
     created() {
       this.fetchContainers();
 
-      setInterval(this.fetchContainers, 10000);
-    },
-    computed: {
-      running() {
-        return this.containers.length;
-      }
+      // Listen to any status updates from Docker
+      this.$docker.listen((data) => {
+        console.log(data);
+
+        this.fetchContainers();
+      });
     }
   }
 </script>
