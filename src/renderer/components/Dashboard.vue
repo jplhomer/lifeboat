@@ -1,8 +1,7 @@
 <template>
   <grid>
-    <aside class="menu" slot="sidebar">
-      <p class="menu-label">Projects</p>
-      <ul class="menu-list">
+    <aside class="sidebar__menu" slot="sidebar">
+      <ul>
         <li>
           <a class="is-active" href="#">zonemeals</a>
         </li>

@@ -33,8 +33,9 @@ export default {
 <style>
 .service {
   background-color: white;
-  border-radius: 5px;
+  border-radius: 3px;
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, .25);
+  font-size: .9em;
   padding: .5em;
 }
 </style>

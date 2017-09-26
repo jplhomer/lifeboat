@@ -12,7 +12,7 @@
           <div class="level-item">
             <div class="field is-grouped">
               <p class="control">
-                <button @click.prevent="start" class="button is-small">
+                <button @click.prevent="start" class="button">
                   <span class="icon">
                     <i class="fa fa-play-circle"></i>
                   </span>
@@ -20,7 +20,7 @@
                 </button>
               </p>
               <p class="control">
-                <button @click.prevent="stop" class="button is-small">
+                <button @click.prevent="stop" class="button">
                   <span class="icon">
                     <i class="fa fa-stop-circle"></i>
                   </span>

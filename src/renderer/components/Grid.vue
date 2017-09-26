@@ -21,15 +21,34 @@
 
 .titlebar {
   background: #010101;
-  border-bottom: 1px solid #ccc;
   grid-area: top;
   -webkit-app-region: drag;
 }
 
 .sidebar {
   grid-area: side;
-  padding: .5rem;
-  background-color: #fafafa;
+  background-image: linear-gradient(130deg, #335fff 15%, #05b5ff 70%);
+
+  &__menu {
+    a {
+      color: #b6c9fb;
+      display: block;
+      padding: .5rem .5rem;
+      border-left-width: 5px;
+      border-left-style: solid;
+      border-left-color: transparent;
+    }
+
+    a:hover,
+    a:focus {
+      background-color: rgba(255, 255, 255, .1);
+    }
+
+    a.is-active {
+      background-color: #558bff;
+      color: #fff;
+    }
+  }
 }
 
 .body {
