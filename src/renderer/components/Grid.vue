@@ -37,6 +37,8 @@
       border-left-width: 5px;
       border-left-style: solid;
       border-left-color: transparent;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     a:hover,
@@ -47,6 +49,10 @@
     a.is-active {
       background-color: #558bff;
       color: #fff;
+    }
+
+    small {
+      font-size: .8em;
     }
   }
 }

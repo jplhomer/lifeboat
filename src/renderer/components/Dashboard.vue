@@ -3,7 +3,10 @@
     <aside class="sidebar__menu" slot="sidebar">
       <ul>
         <li>
-          <a class="is-active" href="#">zonemeals</a>
+          <a class="is-active" href="#">
+            <p>zonemeals</p>
+            <small>/Users/jplhomer/Documents/Apps/zonemeals</small>
+          </a>
         </li>
         <li>
           <a href="#">intranet</a>
