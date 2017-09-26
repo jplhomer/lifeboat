@@ -5,7 +5,9 @@
         <div class="level-left">
           <div class="title is-4">
             {{ name }}
-            <span :class="running ? 'tag is-primary' : 'tag'">{{ running ? 'Running' : 'Stopped' }}</span>
+            <span class="tag" v-show="!running && !starting">Stopped</span>
+            <span class="tag is-primary" v-show="running">Running</span>
+            <span class="tag is-warning" v-show="starting">Starting</span>
           </div>
         </div>
         <div class="level-right">
@@ -91,14 +93,21 @@ export default {
         .filter(c => c.project === this.name)
         .filter(c => config.serviceNames().includes(c.serviceName));
     },
+    starting() {
+      return this.projectContainers.some(c => c.state === "created");
+    },
     running() {
       const validServiceNames = this.projectContainers
-        .filter(c => c.project === this.name)
+        .filter(c => c.state === "running")
         .map(c => c.serviceName)
         .sort();
 
-      /* prettier-ignore */
-      return config.serviceNames().sort().join(',') === validServiceNames.join(',');
+      return (
+        config
+          .serviceNames()
+          .sort()
+          .join(",") === validServiceNames.join(",")
+      );
     }
   },
   created() {
