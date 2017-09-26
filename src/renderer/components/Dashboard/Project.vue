@@ -9,12 +9,26 @@
           </div>
         </div>
         <div class="level-right">
-          <button @click.prevent="start" class="button is-primary is-small">
-            Start
-          </button>
-          <button @click.prevent="stop" class="button is-small">
-            Stop
-          </button>
+          <div class="level-item">
+            <div class="field is-grouped">
+              <p class="control">
+                <button @click.prevent="start" class="button is-small">
+                  <span class="icon">
+                    <i class="fa fa-play-circle"></i>
+                  </span>
+                  <span>Start</span>
+                </button>
+              </p>
+              <p class="control">
+                <button @click.prevent="stop" class="button is-small">
+                  <span class="icon">
+                    <i class="fa fa-stop-circle"></i>
+                  </span>
+                  <span>Stop</span>
+                </button>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </header>

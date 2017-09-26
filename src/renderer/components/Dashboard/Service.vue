@@ -1,14 +1,32 @@
 <template>
   <div class="service">
-    <span class="tag" v-show="!container || container.state != 'running'">Stopped</span>
-    <span class="tag is-success" v-show="container && container.state === 'running'">Running</span>
+    <span class="icon has-text-success" v-show="running">
+      <i class="fa fa-check-square"></i>
+    </span>
+    <span class="icon" v-show="starting">
+      <i class="fa fa-refresh fa-spin"></i>
+    </span>
+    <span class="icon" v-show="stopped">
+      <i class="fa fa-times-circle"></i>
+    </span>
     {{ service }}
   </div>
 </template>
 
 <script>
 export default {
-  props: ["container", "service"]
+  props: ["container", "service"],
+  computed: {
+    running() {
+      return this.container && this.container.state === "running";
+    },
+    starting() {
+      return this.container && this.container.state === "created";
+    },
+    stopped() {
+      return !this.container || (!this.running && !this.starting);
+    }
+  }
 };
 </script>
 
