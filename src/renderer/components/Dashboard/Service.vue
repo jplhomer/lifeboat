@@ -1,12 +1,14 @@
 <template>
   <div class="service">
+    <span class="tag" v-show="!container || container.state != 'running'">Stopped</span>
+    <span class="tag is-success" v-show="container && container.state === 'running'">Running</span>
     {{ service }}
   </div>
 </template>
 
 <script>
 export default {
-  props: ["service"]
+  props: ["container", "service"]
 };
 </script>
 

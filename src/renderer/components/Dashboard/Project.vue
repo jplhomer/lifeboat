@@ -3,7 +3,10 @@
     <header>
       <div class="level is-mobile">
         <div class="level-left">
-          <div class="title is-4">{{ name }}</div>
+          <div class="title is-4">
+            {{ name }}
+            <span :class="running ? 'tag is-primary' : 'tag'">{{ running ? 'Running' : 'Stopped' }}</span>
+          </div>
         </div>
         <div class="level-right">
           <button @click.prevent="start" class="button is-primary is-small">
@@ -19,18 +22,24 @@
     <div class="services">
       <div class="columns is-mobile is-multiline">
         <div v-for="service in services" :key="service" class="column is-one-third">
-          <service :service="service"></service>
+          <service :service="service" :container="containerForService(service)"></service>
         </div>
       </div>
     </div>
 
-    <p>
-      Status: {{ running ? 'Running' : 'Stopped' }}
-    </p>
-
-    <p>
-
-    </p>
+    <div class="tabs">
+      <ul>
+        <li class="is-active">
+          <a>About</a>
+        </li>
+        <li>
+          <a>Commands</a>
+        </li>
+        <li>
+          <a>Settings</a>
+        </li>
+      </ul>
+    </div>
 
     <p>
       README preview, if available
@@ -49,6 +58,9 @@ export default {
   props: ["name", "dir", "containers"],
   components: { Service },
   methods: {
+    containerForService(service) {
+      return this.projectContainers.find(c => c.serviceName === service);
+    },
     start() {
       this.$docker.startProject(this.dir).catch(e => console.error(e));
     },
