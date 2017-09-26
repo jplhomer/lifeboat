@@ -116,7 +116,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 header {
   padding: 1em;
 }
@@ -124,5 +124,9 @@ header {
 .services {
   background-color: #efefef;
   padding: 1rem;
+
+  .column {
+    padding: .35rem;
+  }
 }
 </style>

@@ -6,8 +6,8 @@
     <span class="icon" v-show="starting">
       <i class="fa fa-refresh fa-spin"></i>
     </span>
-    <span class="icon" v-show="stopped">
-      <i class="fa fa-times-circle"></i>
+    <span class="icon service-stopped" v-show="stopped">
+      <i class="fa fa-check-square"></i>
     </span>
     {{ service }}
   </div>
@@ -37,5 +37,9 @@ export default {
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, .25);
   font-size: .9em;
   padding: .5em;
+}
+
+.service-stopped {
+  color: #efefef;
 }
 </style>
