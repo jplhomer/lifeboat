@@ -67,9 +67,9 @@ function compose(dir, args = []) {
       which.sync("docker-compose"),
       args,
       { cwd: dir },
-      (error, stdout) => {
-        if (error) {
-          reject(error);
+      (error, stdout, stderr) => {
+        if (error || stderr) {
+          reject(error || stderr);
         } else {
           resolve(stdout);
         }
