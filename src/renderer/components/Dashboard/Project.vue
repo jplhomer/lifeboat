@@ -57,9 +57,7 @@
       </ul>
     </div>
 
-    <div class="tab-area" ref="tabArea">
-      <div class="content" v-html="readme"></div>
-    </div>
+    <readme :dir="dir"></readme>
 
   </div>
 </template>
@@ -67,14 +65,13 @@
 <script>
 import DockerConfig from "@/utils/docker-config";
 import Service from "@/components/Dashboard/Service";
-import markdown from "markdown";
-import fs from "fs";
+import Readme from "@/components/Dashboard/Readme";
 
 let config;
 
 export default {
   props: ["name", "dir", "containers"],
-  components: { Service },
+  components: { Service, Readme },
   methods: {
     containerForService(service) {
       return this.projectContainers.find(c => c.serviceName === service);
@@ -84,11 +81,6 @@ export default {
     },
     stop() {
       this.$docker.stopProject(this.dir).catch(e => console.error(e));
-    },
-    setTabAreaHeight() {
-      const height =
-        window.innerHeight - this.$refs.tabArea.getBoundingClientRect().top;
-      this.$refs.tabArea.style.height = `${height}px`;
     }
   },
   computed: {
@@ -115,22 +107,10 @@ export default {
           .sort()
           .join(",") === validServiceNames.join(",")
       );
-    },
-    readme() {
-      return markdown.markdown.toHTML(
-        fs.readFileSync(`${this.dir}/README.md`, "utf8")
-      );
     }
   },
   created() {
     config = new DockerConfig({ dir: this.dir, name: this.name });
-  },
-  mounted() {
-    this.setTabAreaHeight();
-    window.addEventListener("resize", this.setTabAreaHeight);
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.setTabAreaHeight);
   }
 };
 </script>
