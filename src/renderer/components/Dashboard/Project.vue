@@ -138,7 +138,11 @@ header {
 }
 
 .tab-area {
-  padding: .25rem 1rem;
+  padding: 1rem;
   overflow-y: scroll;
+}
+
+.tabs {
+  margin-bottom: 0 !important;
 }
 </style>
