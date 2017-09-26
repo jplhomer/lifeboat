@@ -57,12 +57,18 @@
       </ul>
     </div>
 
+    <div class="tab-area">
+      <div class="content" v-html="readme"></div>
+    </div>
+
   </div>
 </template>
 
 <script>
 import DockerConfig from "@/utils/docker-config";
 import Service from "@/components/Dashboard/Service";
+import markdown from "markdown";
+import fs from "fs";
 
 let config;
 
@@ -104,6 +110,11 @@ export default {
           .sort()
           .join(",") === validServiceNames.join(",")
       );
+    },
+    readme() {
+      return markdown.markdown.toHTML(
+        fs.readFileSync(`${this.dir}/README.md`, "utf8")
+      );
     }
   },
   created() {
@@ -124,5 +135,10 @@ header {
   .column {
     padding: .35rem;
   }
+}
+
+.tab-area {
+  padding: .25rem 1rem;
+  overflow-y: scroll;
 }
 </style>

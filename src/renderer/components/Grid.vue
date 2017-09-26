@@ -17,6 +17,7 @@
   grid-template-rows: 1.5rem 1fr 1fr;
   grid-template-columns: 200px 1fr 1fr;
   height: 100vh;
+  overflow: hidden;
 }
 
 .titlebar {
