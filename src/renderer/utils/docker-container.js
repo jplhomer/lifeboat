@@ -29,4 +29,8 @@ export default class DockerContainer {
   get state() {
     return this.container.State;
   }
+
+  get temp() {
+    return this.container.Labels["com.docker.compose.oneoff"] === "True";
+  }
 }
