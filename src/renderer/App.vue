@@ -5,8 +5,12 @@
 </template>
 
 <script>
+import settings from "./utils/settings";
+
 export default {
-  name: "lifeboat"
+  created() {
+    this.$store.commit("LOAD_INITIAL_PROJECTS", settings.load().projects || []);
+  }
 };
 </script>
 

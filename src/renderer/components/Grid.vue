@@ -1,5 +1,5 @@
 <template>
-  <div class="grid">
+  <div :class="`grid${disableSidebar ? ' no-sidebar' : ''}`">
     <div class="titlebar"></div>
     <div class="sidebar">
       <slot name="sidebar"></slot>
@@ -10,6 +10,13 @@
   </div>
 </template>
 
+<script>
+export default {
+  props: ["disableSidebar"]
+};
+</script>
+
+
 <style lang="scss">
 .grid {
   display: grid;
@@ -18,6 +25,12 @@
   grid-template-columns: 200px 1fr 1fr;
   height: 100vh;
   overflow: hidden;
+
+  &.no-sidebar {
+    grid-template-areas: "top" "body";
+    grid-template-rows: 1.5rem 1fr;
+    grid-template-columns: 1fr;
+  }
 }
 
 .titlebar {
