@@ -89,7 +89,7 @@ export default {
     },
     projectContainers() {
       return this.containers
-        .filter(c => c.project === this.name)
+        .filter(c => c.project === this.project.name)
         .filter(c => config.serviceNames().includes(c.serviceName));
     },
     starting() {
