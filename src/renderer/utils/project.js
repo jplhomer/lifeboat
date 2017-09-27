@@ -1,4 +1,4 @@
-import router from "@/router";
+import store from "@/store";
 
 export default class Project {
   constructor(dir, id) {
@@ -10,12 +10,7 @@ export default class Project {
     return this.dir.split("/").pop();
   }
 
-  get active() {
-    const { currentRoute } = router;
-    return (
-      (currentRoute.params.project_id &&
-        currentRoute.params.project_id === this.id) ||
-      this.id === 0
-    );
+  active() {
+    return store.state.App.activeProject == this.id;
   }
 }

@@ -67,11 +67,14 @@ import DockerConfig from "@/utils/docker-config";
 import Service from "@/components/Dashboard/Service";
 import Readme from "@/components/Dashboard/Readme";
 
-let config;
-
 export default {
   props: ["project", "containers"],
   components: { Service, Readme },
+  data() {
+    return {
+      config: null
+    };
+  },
   methods: {
     containerForService(service) {
       return this.projectContainers.find(c => c.serviceName === service);
@@ -85,12 +88,14 @@ export default {
   },
   computed: {
     services() {
-      return config.serviceNames();
+      if (this.config) {
+        return this.config.serviceNames();
+      }
     },
     projectContainers() {
       return this.containers
         .filter(c => c.project === this.project.name)
-        .filter(c => config.serviceNames().includes(c.serviceName));
+        .filter(c => this.config.serviceNames().includes(c.serviceName));
     },
     starting() {
       return this.projectContainers.some(c => c.state === "created");
@@ -102,7 +107,7 @@ export default {
         .sort();
 
       return (
-        config
+        this.config
           .serviceNames()
           .sort()
           .join(",") === validServiceNames.join(",")
@@ -110,7 +115,12 @@ export default {
     }
   },
   created() {
-    config = new DockerConfig(this.project);
+    this.config = new DockerConfig(this.project);
+  },
+  watch: {
+    $route(to, from) {
+      this.config = new DockerConfig(this.project);
+    }
   }
 };
 </script>

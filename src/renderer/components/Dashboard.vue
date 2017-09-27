@@ -3,7 +3,7 @@
     <aside class="sidebar__menu" slot="sidebar">
       <ul>
         <li v-for="project in projects" :key="project.id">
-          <router-link :to="{ path: `/${project.id}` }" :class="`${project.active ? 'is-active': ''}`">{{ project.name }}</router-link>
+          <router-link :to="{ path: `/${project.id}` }" :class="`${project.active() ? 'is-active': ''}`">{{ project.name }}</router-link>
         </li>
       </ul>
     </aside>
@@ -53,6 +53,15 @@ export default {
   },
   computed: {
     ...mapGetters(["projects", "activeProject"])
+  },
+  watch: {
+    /**
+     * We have to watch Router changes manually, since we're using dynamic
+     * route binding.
+     */
+    $route(to, from) {
+      this.$store.commit("UPDATE_ACTIVE_PROJECT", to.params.project_id);
+    }
   }
 };
 </script>

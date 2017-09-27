@@ -14,7 +14,14 @@ export default {
     // Send to Settings page if no projects
     if (!this.$store.state.Settings.projects.length) {
       this.$router.push("/settings");
+      return;
     }
+
+    // Set the active project that might exist in the URL
+    this.$store.commit(
+      "UPDATE_ACTIVE_PROJECT",
+      this.$router.currentRoute.params.project_id
+    );
   }
 };
 </script>
