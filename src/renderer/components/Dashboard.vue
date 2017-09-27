@@ -2,17 +2,8 @@
   <grid>
     <aside class="sidebar__menu" slot="sidebar">
       <ul>
-        <li>
-          <a class="is-active" href="#">
-            <p>zonemeals</p>
-            <small>/Users/jplhomer/Documents/Apps/zonemeals</small>
-          </a>
-        </li>
-        <li>
-          <a href="#">intranet</a>
-        </li>
-        <li>
-          <a href="#">intranet</a>
+        <li v-for="project in projects">
+          <a href="#">{{ projectName(project) }}</a>
         </li>
       </ul>
     </aside>
@@ -22,6 +13,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import Grid from "./Grid";
 import Project from "./Dashboard/Project";
 import Container from "../utils/docker-container";
@@ -43,6 +35,10 @@ export default {
       this.$docker.listContainers().then(containers => {
         this.containers = containers.map(c => new Container(c));
       });
+    },
+
+    projectName(project) {
+      return project.split("/").pop();
     }
   },
   created() {
@@ -52,7 +48,10 @@ export default {
     this.$docker.listen(data => {
       this.fetchContainers();
     });
-  }
+  },
+  computed: mapState({
+    projects: state => state.Settings.projects
+  })
 };
 </script>
 
