@@ -13,8 +13,8 @@ const mutations = {
     state.projects.push(project);
     settings.save({ projects: state.projects });
   },
-  REMOVE_PROJECT(state, project) {
-    state.projects = state.projects.filter(p => p !== project);
+  REMOVE_PROJECT(state, projectId) {
+    state.projects.splice(projectId, 1);
     settings.save({ projects: state.projects });
   }
 };

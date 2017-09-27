@@ -17,9 +17,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="project in settings.projects" :key="project">
+          <tr v-for="project in projects" :key="project.id">
             <td>
-              {{ project }}
+              {{ project.name }}
             </td>
             <td>
               <button class="delete" @click="deleteProject(project)"></button>
@@ -42,7 +42,7 @@
 <script>
 import fs from "fs";
 import Grid from "@/components/Grid";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   components: { Grid },
@@ -59,13 +59,14 @@ export default {
       this.$store.commit("ADD_PROJECT", path);
     },
     deleteProject(project) {
-      this.$store.commit("REMOVE_PROJECT", project);
+      this.$store.commit("REMOVE_PROJECT", project.id);
     }
   },
   computed: {
     ...mapState({
       settings: state => state.Settings
-    })
+    }),
+    ...mapGetters(["projects"])
   },
   mounted() {
     this.$refs.dropzone.addEventListener("drop", e => {
