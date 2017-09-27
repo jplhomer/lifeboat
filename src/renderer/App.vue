@@ -18,10 +18,12 @@ export default {
     }
 
     // Set the active project that might exist in the URL
-    this.$store.commit(
-      "UPDATE_ACTIVE_PROJECT",
-      this.$router.currentRoute.params.project_id
-    );
+    if (this.$router.currentRoute.params.project_id) {
+      this.$store.commit(
+        "UPDATE_ACTIVE_PROJECT",
+        this.$router.currentRoute.params.project_id
+      );
+    }
   }
 };
 </script>
