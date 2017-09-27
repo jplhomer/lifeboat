@@ -2,18 +2,18 @@
   <grid>
     <aside class="sidebar__menu" slot="sidebar">
       <ul>
-        <li v-for="project in projects">
-          <a href="#">{{ projectName(project) }}</a>
+        <li v-for="project in projects" :key="project.id">
+          <router-link :to="{ path: `/${project.id}` }" :class="`${project.active ? 'is-active': ''}`">{{ project.name }}</router-link>
         </li>
       </ul>
     </aside>
 
-    <project name="zonemeals" dir="/Users/jplhomer/Documents/Apps/zonemeals" :containers="containers"></project>
+    <project :project="activeProject" :containers="containers"></project>
   </grid>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 import Grid from "./Grid";
 import Project from "./Dashboard/Project";
 import Container from "../utils/docker-container";
@@ -35,10 +35,6 @@ export default {
       this.$docker.listContainers().then(containers => {
         this.containers = containers.map(c => new Container(c));
       });
-    },
-
-    projectName(project) {
-      return project.split("/").pop();
     }
   },
   created() {
@@ -49,9 +45,9 @@ export default {
       this.fetchContainers();
     });
   },
-  computed: mapState({
-    projects: state => state.Settings.projects
-  })
+  computed: {
+    ...mapGetters(["projects", "activeProject"])
+  }
 };
 </script>
 

@@ -11,6 +11,10 @@ export default new Router({
       component: require("@/components/Settings")
     },
     {
+      path: "/:project_id",
+      component: require("@/components/Dashboard")
+    },
+    {
       path: "/",
       name: "dashboard",
       component: require("@/components/Dashboard")

@@ -4,7 +4,7 @@
       <div class="level is-mobile">
         <div class="level-left">
           <div class="title is-4">
-            {{ name }}
+            {{ project.name }}
             <span class="tag" v-show="!running && !starting">Stopped</span>
             <span class="tag is-primary" v-show="running">Running</span>
             <span class="tag is-warning" v-show="starting">Starting</span>
@@ -57,7 +57,7 @@
       </ul>
     </div>
 
-    <readme :dir="dir"></readme>
+    <readme></readme>
 
   </div>
 </template>
@@ -70,17 +70,17 @@ import Readme from "@/components/Dashboard/Readme";
 let config;
 
 export default {
-  props: ["name", "dir", "containers"],
+  props: ["project", "containers"],
   components: { Service, Readme },
   methods: {
     containerForService(service) {
       return this.projectContainers.find(c => c.serviceName === service);
     },
     start() {
-      this.$docker.startProject(this.dir).catch(e => console.error(e));
+      this.$docker.startProject(this.project.dir).catch(e => console.error(e));
     },
     stop() {
-      this.$docker.stopProject(this.dir).catch(e => console.error(e));
+      this.$docker.stopProject(this.project.dir).catch(e => console.error(e));
     }
   },
   computed: {
@@ -110,7 +110,7 @@ export default {
     }
   },
   created() {
-    config = new DockerConfig({ dir: this.dir, name: this.name });
+    config = new DockerConfig(this.project);
   }
 };
 </script>

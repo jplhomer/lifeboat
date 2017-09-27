@@ -2,8 +2,8 @@ const yaml = require("js-yaml");
 const fs = require("fs");
 
 export default class DockerConfig {
-  constructor(opts) {
-    const { dir, name } = opts;
+  constructor(project) {
+    const { dir, name } = project;
     this.dir = dir;
     this.name = name;
     this.data = loadData.call(this);

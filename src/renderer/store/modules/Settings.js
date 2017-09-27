@@ -1,3 +1,4 @@
+import Project from "@/utils/project";
 import settings from "@/utils/settings";
 
 const state = {
@@ -20,8 +21,18 @@ const mutations = {
 
 const actions = {};
 
+const getters = {
+  activeProject(state, getters) {
+    return getters.projects.filter(p => p.active)[0];
+  },
+  projects(state) {
+    return state.projects.map((p, i) => new Project(p, i));
+  }
+};
+
 export default {
   state,
   mutations,
-  actions
+  actions,
+  getters
 };
