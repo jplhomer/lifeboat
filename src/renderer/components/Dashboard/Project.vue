@@ -14,7 +14,7 @@
           <div class="level-item">
             <div class="field is-grouped">
               <p class="control">
-                <button @click.prevent="start" :class="`button is-info ${starting ? 'is-loading' : ''}`" :disabled="running">
+                <button @click.prevent="start" :class="`button is-info ${starting ? 'is-loading' : ''}`" v-show="!running">
                   <span class="icon">
                     <i class="fa fa-play-circle"></i>
                   </span>
@@ -22,7 +22,7 @@
                 </button>
               </p>
               <p class="control">
-                <button @click.prevent="stop" class="button is-danger" :disabled="!running">
+                <button @click.prevent="stop" class="button is-danger" v-show="running">
                   <span class="icon">
                     <i class="fa fa-stop-circle"></i>
                   </span>
