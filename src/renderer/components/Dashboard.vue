@@ -8,6 +8,12 @@
       </ul>
     </aside>
 
+    <div class="sidebar__actions" slot="sidebar">
+      <router-link to="settings" class="icon is-medium" title="Settings">
+        <i class="fa fa-lg fa-cog"></i>
+      </router-link>
+    </div>
+
     <project :project="activeProject" :containers="containers"></project>
   </grid>
 </template>

@@ -13,7 +13,8 @@
       <table class="table" style="width: 100%">
         <thead>
           <tr>
-            <th colspan="2">Project Name</th>
+            <th>Project Name</th>
+            <th colspan="2">Path</th>
           </tr>
         </thead>
         <tbody>
@@ -22,6 +23,9 @@
               {{ project.name }}
             </td>
             <td>
+              {{ project.dir }}
+            </td>
+            <td class="has-text-right">
               <button class="delete" @click="deleteProject(project)"></button>
             </td>
           </tr>

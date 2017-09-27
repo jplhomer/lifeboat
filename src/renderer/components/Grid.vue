@@ -42,6 +42,7 @@ export default {
 .sidebar {
   grid-area: side;
   background-image: linear-gradient(130deg, #335fff 15%, #05b5ff 70%);
+  position: relative;
 
   &__menu {
     a {
@@ -67,6 +68,17 @@ export default {
 
     small {
       font-size: .8em;
+    }
+  }
+
+  &__actions {
+    bottom: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    a {
+      color: #fff;
     }
   }
 }
