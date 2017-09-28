@@ -6,6 +6,7 @@
 import { mapGetters } from "vuex";
 import ansiHTML from "ansi-html";
 import Vue from "vue";
+import events from "@/utils/events";
 
 let logger;
 
@@ -28,13 +29,15 @@ export default {
       this.scrollToBottom();
     },
     startLogger() {
+      this.logs = "";
+
       logger = this.$docker.logs(this.activeProject.dir);
       logger.stdout.on("data", data => {
         this.addLogs(data.toString());
       });
     },
     killLogger() {
-      logger.kill();
+      if (logger) logger.kill();
     },
     scrollToBottom() {
       if (this.isScrolledUp) {
@@ -48,6 +51,10 @@ export default {
   },
   created() {
     this.startLogger();
+
+    events.$on("PROJECT_STARTED", () => {
+      setTimeout(this.startLogger, 1000);
+    });
   },
   mounted() {
     this.$refs.log.addEventListener("scroll", () => {

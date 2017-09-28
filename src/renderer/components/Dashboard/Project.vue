@@ -70,6 +70,7 @@
 import DockerConfig from "@/utils/docker-config";
 import Service from "@/components/Dashboard/Service";
 import Vue from "vue";
+import events from "@/utils/events";
 
 export default {
   props: ["project", "containers"],
@@ -85,6 +86,7 @@ export default {
     },
     start() {
       this.$docker.startProject(this.project.dir).catch(e => console.error(e));
+      events.$emit("PROJECT_STARTED");
     },
     stop() {
       this.$docker.stopProject(this.project.dir).catch(e => console.error(e));
