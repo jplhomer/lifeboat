@@ -45,17 +45,15 @@
 
     <div class="tabs">
       <ul>
-        <li class="is-active">
-          <router-link :to="`/${project.id}/log`">Logs</router-link>
+        <li>
+          <router-link tag="li" :to="`/${project.id}/log`">
+            <a href="#">Logs</a>
+          </router-link>
         </li>
         <li>
-          <router-link :to="`/${project.id}/about`">About</router-link>
-        </li>
-        <li>
-          <a>Commands</a>
-        </li>
-        <li>
-          <a>Settings</a>
+          <router-link tag="li" :to="`/${project.id}/about`">
+            <a href="#">About</a>
+          </router-link>
         </li>
       </ul>
     </div>
