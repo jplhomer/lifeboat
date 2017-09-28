@@ -56,6 +56,7 @@
     }
   },
   "dependencies": {
+    "ansi-html": "^0.0.7",
     "axios": "^0.16.1",
     "bulma": "^0.5.3",
     "dockerode": "^2.5.1",

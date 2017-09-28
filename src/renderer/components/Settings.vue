@@ -6,7 +6,7 @@
           <h1 class="title">Settings</h1>
         </div>
         <div class="level-right">
-          <router-link to="/" v-show="settings.projects.length">Back</router-link>
+          <router-link to="/0" v-show="settings.projects.length">Back</router-link>
         </div>
       </div>
 

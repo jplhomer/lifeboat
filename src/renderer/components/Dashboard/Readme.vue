@@ -1,6 +1,6 @@
 <template>
   <div class="tab-area" ref="tabArea">
-    <div class="content" v-html="readme"></div>
+    <div class="readme content" v-html="readme"></div>
   </div>
 </template>
 
@@ -13,13 +13,7 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    setTabAreaHeight() {
-      const height =
-        window.innerHeight - this.$refs.tabArea.getBoundingClientRect().top;
-      this.$refs.tabArea.style.height = `${height}px`;
-    }
-  },
+  methods: {},
   computed: {
     readme() {
       try {
@@ -32,14 +26,13 @@ export default {
       }
     },
     ...mapGetters(["activeProject"])
-  },
-  mounted() {
-    this.setTabAreaHeight();
-    window.addEventListener("resize", this.setTabAreaHeight);
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.setTabAreaHeight);
   }
 };
 </script>
+
+<style>
+.readme {
+  padding: 1rem;
+}
+</style>
 

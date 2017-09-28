@@ -12,12 +12,21 @@ export default new Router({
     },
     {
       path: "/:project_id",
-      component: require("@/components/Dashboard")
-    },
-    {
-      path: "/",
-      name: "dashboard",
-      component: require("@/components/Dashboard")
+      component: require("@/components/Dashboard"),
+      children: [
+        {
+          path: "",
+          component: require("@/components/Dashboard/Log")
+        },
+        {
+          path: "log",
+          component: require("@/components/Dashboard/Log")
+        },
+        {
+          path: "about",
+          component: require("@/components/Dashboard/Readme")
+        }
+      ]
     },
     {
       path: "*",

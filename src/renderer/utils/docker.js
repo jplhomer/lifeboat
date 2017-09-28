@@ -32,6 +32,10 @@ export default class Docker {
     return client.listContainers({ all: true });
   }
 
+  logs(dir) {
+    return child_process.spawn("docker-compose", ["logs", "-f"], { cwd: dir });
+  }
+
   /**
    * Listen to Docker events on the system
    * @param {closure} cb

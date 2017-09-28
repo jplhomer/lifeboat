@@ -46,7 +46,10 @@
     <div class="tabs">
       <ul>
         <li class="is-active">
-          <a>About</a>
+          <router-link :to="`/${project.id}/log`">Logs</router-link>
+        </li>
+        <li>
+          <router-link :to="`/${project.id}/about`">About</router-link>
         </li>
         <li>
           <a>Commands</a>
@@ -57,7 +60,10 @@
       </ul>
     </div>
 
-    <readme></readme>
+    <!-- <readme></readme> -->
+    <div class="tab-area" ref="tabArea">
+      <router-view></router-view>
+    </div>
 
   </div>
 </template>
@@ -65,11 +71,11 @@
 <script>
 import DockerConfig from "@/utils/docker-config";
 import Service from "@/components/Dashboard/Service";
-import Readme from "@/components/Dashboard/Readme";
+import Vue from "vue";
 
 export default {
   props: ["project", "containers"],
-  components: { Service, Readme },
+  components: { Service },
   data() {
     return {
       config: null
@@ -84,6 +90,11 @@ export default {
     },
     stop() {
       this.$docker.stopProject(this.project.dir).catch(e => console.error(e));
+    },
+    setTabAreaHeight() {
+      const height =
+        window.innerHeight - this.$refs.tabArea.getBoundingClientRect().top;
+      this.$refs.tabArea.style.height = `${height}px`;
     }
   },
   computed: {
@@ -120,7 +131,15 @@ export default {
   watch: {
     $route(to, from) {
       this.config = new DockerConfig(this.project);
+      Vue.nextTick(() => this.setTabAreaHeight());
     }
+  },
+  mounted() {
+    this.setTabAreaHeight();
+    window.addEventListener("resize", this.setTabAreaHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.setTabAreaHeight);
   }
 };
 </script>
@@ -137,11 +156,6 @@ header {
   .column {
     padding: .35rem;
   }
-}
-
-.tab-area {
-  padding: 1rem;
-  overflow-y: scroll;
 }
 
 .tabs {
