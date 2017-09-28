@@ -1,7 +1,5 @@
 <template>
-  <div class="tab-area" ref="tabArea">
-    <div class="readme content" v-html="readme"></div>
-  </div>
+  <div class="readme content" v-html="readme"></div>
 </template>
 
 <script>
@@ -33,6 +31,8 @@ export default {
 <style>
 .readme {
   padding: 1rem;
+  height: 100%;
+  overflow: scroll;
 }
 </style>
 
