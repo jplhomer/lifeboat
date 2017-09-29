@@ -6,7 +6,7 @@
           <div class="title is-4">
             {{ project.name }}
             <span class="tag" v-show="!running && !starting">Stopped</span>
-            <span class="tag is-primary" v-show="running">Running</span>
+            <span class="tag is-success" v-show="running">Running</span>
             <span class="tag is-warning" v-show="starting">Starting</span>
           </div>
         </div>
