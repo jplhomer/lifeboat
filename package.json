@@ -23,7 +23,7 @@
   },
   "build": {
     "productName": "lifeboat",
-    "appId": "org.simulatedgreg.electron-vue",
+    "appId": "org.jplhomer.lifeboat",
     "directories": {
       "output": "build"
     },
@@ -56,7 +56,7 @@
     }
   },
   "dependencies": {
-    "ansi-html": "^0.0.7",
+    "ansi_up": "^2.0.2",
     "axios": "^0.16.1",
     "bulma": "^0.5.3",
     "dockerode": "^2.5.1",

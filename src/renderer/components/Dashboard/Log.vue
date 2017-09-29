@@ -4,10 +4,11 @@
 
 <script>
 import { mapGetters } from "vuex";
-import ansiHTML from "ansi-html";
+import AU from "ansi_up";
 import Vue from "vue";
 import events from "@/utils/events";
 
+const ansi_up = new AU();
 let logger;
 
 export default {
@@ -19,7 +20,7 @@ export default {
   },
   computed: {
     logOutput() {
-      return ansiHTML(this.logs);
+      return ansi_up.ansi_to_html(this.logs);
     },
     ...mapGetters(["activeProject"])
   },
@@ -53,7 +54,7 @@ export default {
     this.startLogger();
 
     events.$on("PROJECT_STARTED", () => {
-      setTimeout(this.startLogger, 1000);
+      setTimeout(this.startLogger, 2000);
     });
   },
   mounted() {
@@ -70,6 +71,7 @@ export default {
     $route(to, from) {
       this.killLogger();
       this.logs = "";
+
       this.startLogger();
     }
   }
