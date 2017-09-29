@@ -1,5 +1,5 @@
 <template>
-  <pre class="log" v-html="logOutput" ref="log"></pre>
+  <div class="log" v-html="logOutput" ref="log"></div>
 </template>
 
 <script>
@@ -77,9 +77,16 @@ export default {
 </script>
 
 <style scoped>
-pre {
+.log {
   background: #050505;
+  color: #fff;
   font-size: .8em;
   height: 100%;
+  overflow-x: auto;
+  padding: 1.25rem 1.5rem;
+  white-space: pre;
+  word-wrap: normal;
+  -webkit-font-smoothing: auto;
+  font-family: monospace;
 }
 </style>
