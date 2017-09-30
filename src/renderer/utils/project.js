@@ -6,8 +6,15 @@ export default class Project {
     this.dir = dir;
   }
 
-  get name() {
+  get dirName() {
     return this.dir.split("/").pop();
+  }
+
+  get name() {
+    return this.dir
+      .split("/")
+      .pop()
+      .replace(/-/g, "");
   }
 
   active() {

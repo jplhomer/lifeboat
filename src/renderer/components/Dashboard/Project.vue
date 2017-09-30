@@ -4,7 +4,7 @@
       <div class="level is-mobile">
         <div class="level-left">
           <div class="title is-4">
-            {{ project.name }}
+            {{ project.dirName }}
             <span class="tag" v-show="!running && !starting">Stopped</span>
             <span class="tag is-success" v-show="running">Running</span>
             <span class="tag is-warning" v-show="starting">Starting</span>
