@@ -17,15 +17,19 @@ export default new Router({
       children: [
         {
           path: "",
-          component: require("@/components/Dashboard/Log")
+          component: require("@/components/Dashboard/LogTab")
         },
         {
           path: "log",
-          component: require("@/components/Dashboard/Log")
+          component: require("@/components/Dashboard/LogTab")
         },
         {
           path: "about",
-          component: require("@/components/Dashboard/Readme")
+          component: require("@/components/Dashboard/ReadmeTab")
+        },
+        {
+          path: "command",
+          component: require("@/components/Dashboard/CommandTab")
         }
       ]
     },

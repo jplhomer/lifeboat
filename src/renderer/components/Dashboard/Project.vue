@@ -38,23 +38,22 @@
     <div class="services">
       <div class="columns is-mobile is-multiline">
         <div v-for="service in services" :key="service" class="column is-one-third">
-          <service :service="service" :container="containerForService(service)"></service>
+          <project-service :service="service" :container="containerForService(service)"></project-service>
         </div>
       </div>
     </div>
 
     <div class="tabs">
       <ul>
-        <li>
-          <router-link tag="li" :to="`/${project.id}/log`">
-            <a href="#">Logs</a>
-          </router-link>
-        </li>
-        <li>
-          <router-link tag="li" :to="`/${project.id}/about`">
-            <a href="#">About</a>
-          </router-link>
-        </li>
+        <router-link tag="li" :to="`/${project.id}/log`">
+          <a href="#">Logs</a>
+        </router-link>
+        <router-link tag="li" :to="`/${project.id}/about`">
+          <a href="#">About</a>
+        </router-link>
+        <router-link tag="li" :to="`/${project.id}/command`">
+          <a href="#">Commands</a>
+        </router-link>
       </ul>
     </div>
 
@@ -68,13 +67,13 @@
 
 <script>
 import DockerConfig from "@/utils/docker-config";
-import Service from "@/components/Dashboard/Service";
+import ProjectService from "@/components/Dashboard/ProjectService";
 import Vue from "vue";
 import events from "@/utils/events";
 
 export default {
   props: ["project", "containers"],
-  components: { Service },
+  components: { ProjectService },
   data() {
     return {
       config: null
