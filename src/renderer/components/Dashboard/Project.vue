@@ -160,4 +160,8 @@ header {
 .tabs {
   margin-bottom: 0 !important;
 }
+
+.tab-area {
+  position: relative;
+}
 </style>

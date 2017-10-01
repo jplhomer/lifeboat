@@ -36,6 +36,14 @@ export default class Docker {
     return child_process.spawn("docker-compose", ["logs", "-f"], { cwd: dir });
   }
 
+  run(dir, service, commands) {
+    return child_process.spawn(
+      "docker-compose",
+      ["run", "--rm", service, ...commands],
+      { cwd: dir }
+    );
+  }
+
   /**
    * Listen to Docker events on the system
    * @param {closure} cb
