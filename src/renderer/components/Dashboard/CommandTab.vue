@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="control is-expanded">
-          <input v-model="command" class="command-text input" type="text" @keyup.enter="run" :placeholder="`Type a command to run in ${service}...`">
+          <input v-model="command" class="command-text input" type="text" @keyup.enter="run" @keyup.up="loadPreviousCommand" @keyup.down="loadNextCommand" :placeholder="`Type a command to run in ${service}...`">
         </div>
         <div class="control">
           <button @click.prevent="run" class="button">Run</button>
@@ -37,7 +37,9 @@ export default {
       service: 0,
       command: "",
       log: "",
-      cmd: null
+      cmd: null,
+      commandHistory: [],
+      commandPointer: 0
     };
   },
   methods: {
@@ -46,6 +48,9 @@ export default {
       this.scrollToBottom();
     },
     run() {
+      this.commandHistory.push(this.command);
+      this.commandPointer = this.commandHistory.length;
+
       if (this.running) {
         this.runMounted();
         return;
@@ -86,6 +91,16 @@ export default {
     },
     cancel() {
       this.cmd.kill();
+    },
+    loadPreviousCommand() {
+      if (this.commandPointer) {
+        this.command = this.commandHistory[--this.commandPointer];
+      }
+    },
+    loadNextCommand() {
+      if (this.commandPointer < this.commandHistory.length) {
+        this.command = this.commandHistory[++this.commandPointer];
+      }
     }
   },
   computed: {
