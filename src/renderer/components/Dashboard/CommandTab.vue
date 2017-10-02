@@ -75,6 +75,11 @@ export default {
       });
     },
     runMounted() {
+      if (this.command === "clear") {
+        this.log = this.command = "";
+        return;
+      }
+
       this.addLog(`$ ${this.command}\r\n`);
       this.cmd.stdin.write(this.command + "\n");
       this.command = "";
