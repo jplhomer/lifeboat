@@ -37,7 +37,7 @@
 
     <div class="services">
       <div class="columns is-mobile is-multiline">
-        <div v-for="service in services" :key="service" class="column is-one-third">
+        <div v-for="service in project.services()" :key="service" class="column is-one-third">
           <project-service :service="service" :container="containerForService(service)"></project-service>
         </div>
       </div>
@@ -67,7 +67,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import DockerConfig from "@/utils/docker-config";
 import ProjectService from "@/components/Dashboard/ProjectService";
 import Vue from "vue";
 import events from "@/utils/events";
@@ -75,14 +74,9 @@ import events from "@/utils/events";
 export default {
   props: ["project"],
   components: { ProjectService },
-  data() {
-    return {
-      config: null
-    };
-  },
   methods: {
     containerForService(service) {
-      return this.projectContainers.find(c => c.serviceName === service);
+      return this.project.containers().find(c => c.service === service);
     },
     start() {
       this.$docker.startProject(this.project.dir).catch(e => console.error(e));
@@ -98,43 +92,19 @@ export default {
     }
   },
   computed: {
-    services() {
-      if (this.config) {
-        return this.config.serviceNames();
-      }
-    },
-    projectContainers() {
-      return this.containers
-        .filter(c => c.project === this.project.name)
-        .filter(c => this.config.serviceNames().includes(c.serviceName));
-    },
     starting() {
-      return this.projectContainers.some(c => c.state === "created");
+      return this.project.containers().some(c => c.state === "created");
     },
     running() {
-      const validServiceNames = this.projectContainers
-        .filter(c => c.state === "running")
-        .map(c => c.serviceName)
-        .sort();
-
-      return (
-        this.config
-          .serviceNames()
-          .sort()
-          .join(",") === validServiceNames.join(",")
-      );
+      return this.project.running();
     },
     partiallyRunning() {
-      return this.projectContainers.some(c => c.state === "running");
+      return this.project.containers().some(c => c.state === "running");
     },
     ...mapGetters(["containers"])
   },
-  created() {
-    this.config = new DockerConfig(this.project);
-  },
   watch: {
     $route(to, from) {
-      this.config = new DockerConfig(this.project);
       Vue.nextTick(() => this.setTabAreaHeight());
     }
   },

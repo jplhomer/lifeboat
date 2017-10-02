@@ -18,7 +18,7 @@ export default class DockerContainer {
     return this.container.Labels["com.docker.compose.project"];
   }
 
-  get serviceName() {
+  get service() {
     return this.container.Labels["com.docker.compose.service"];
   }
 

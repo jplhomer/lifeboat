@@ -12,7 +12,7 @@ export default class DockerConfig {
   /**
    * Get prefixed versions of service names
    */
-  serviceNames() {
+  services() {
     return Object.keys(this.data.services).sort();
   }
 }

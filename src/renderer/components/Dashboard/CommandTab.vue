@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     services() {
-      return this.activeProject.config.serviceNames();
+      return this.activeProject.services();
     },
     running() {
       return !!this.cmd;
