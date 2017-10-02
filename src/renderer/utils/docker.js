@@ -5,10 +5,6 @@ import child_process from "child_process";
 const client = new Client({ socketPath: "/var/run/docker.sock" });
 
 export default class Docker {
-  constructor() {
-    console.log("starting Docker...");
-  }
-
   /**
    * Start a Docker Compose project
    * @param {string} dir
@@ -28,7 +24,7 @@ export default class Docker {
   /**
    * List containers in Docker
    */
-  listContainers() {
+  static listContainers() {
     return client.listContainers({ all: true });
   }
 
@@ -48,7 +44,7 @@ export default class Docker {
    * Listen to Docker events on the system
    * @param {closure} cb
    */
-  listen(cb) {
+  static listen(cb) {
     client.getEvents((error, stream) => {
       if (error || !stream) {
         return;
