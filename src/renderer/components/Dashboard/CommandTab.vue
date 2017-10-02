@@ -1,5 +1,5 @@
 <template>
-  <div class="commands">
+  <div class="commands" ref="scrollToBottom">
     <div class="commands__bar">
       <div class="field has-addons">
         <div class="control">
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <pre class="commands__log" v-html="logOutput" ref="scrollToBottom"></pre>
+    <pre class="commands__log" v-html="logOutput"></pre>
   </div>
 </template>
 
@@ -129,6 +129,7 @@ select {
     color: inherit;
     font-family: monospace;
     padding: 1rem;
+    white-space: pre-wrap;
   }
 }
 
