@@ -22,7 +22,7 @@
                 </button>
               </p>
               <p class="control">
-                <button @click.prevent="stop" class="button is-danger" v-show="running">
+                <button @click.prevent="stop" class="button is-danger" v-show="partiallyRunning">
                   <span class="icon">
                     <i class="fa fa-stop-circle"></i>
                   </span>
@@ -122,6 +122,9 @@ export default {
           .sort()
           .join(",") === validServiceNames.join(",")
       );
+    },
+    partiallyRunning() {
+      return this.projectContainers.some(c => c.state === "running");
     }
   },
   created() {
