@@ -6,7 +6,7 @@ const state = {
 };
 
 const mutations = {
-  LOAD_INITIAL_PROJECTS(state, projects) {
+  SET_INITIAL_PROJECTS(state, projects) {
     state.projects = projects;
   },
   ADD_PROJECT(state, project) {
@@ -19,7 +19,11 @@ const mutations = {
   }
 };
 
-const actions = {};
+const actions = {
+  loadInitialProjects({ commit }) {
+    commit("SET_INITIAL_PROJECTS", settings.load().projects || []);
+  }
+};
 
 const getters = {
   activeProject(state, getters) {
