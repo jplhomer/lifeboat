@@ -1,17 +1,19 @@
 <template>
-  <div class="log" v-html="logOutput" ref="log"></div>
+  <div class="log" v-html="logOutput" ref="scrollToBottom">
+  </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import AU from "ansi_up";
-import Vue from "vue";
 import events from "@/utils/events";
+import scrollToBottom from "@/mixins/scroll-to-bottom";
 
 const ansi_up = new AU();
 let logger;
 
 export default {
+  mixins: [scrollToBottom],
   data() {
     return {
       logs: "",
@@ -39,15 +41,6 @@ export default {
     },
     killLogger() {
       if (logger) logger.kill();
-    },
-    scrollToBottom() {
-      if (this.isScrolledUp) {
-        return;
-      }
-      Vue.nextTick(() => {
-        this.$refs.log.scrollTop =
-          this.$refs.log.scrollHeight - this.$refs.log.offsetHeight;
-      });
     }
   },
   created() {
@@ -55,13 +48,6 @@ export default {
 
     events.$on("PROJECT_STARTED", () => {
       setTimeout(this.startLogger, 2000);
-    });
-  },
-  mounted() {
-    this.$refs.log.addEventListener("scroll", () => {
-      this.isScrolledUp =
-        this.$refs.log.scrollTop !=
-        this.$refs.log.scrollHeight - this.$refs.log.offsetHeight;
     });
   },
   beforeDestroy() {

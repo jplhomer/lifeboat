@@ -20,14 +20,18 @@
         </div>
       </div>
     </div>
-    <pre class="commands__log" v-html="log"></pre>
+    <pre class="commands__log" v-html="logOutput" ref="scrollToBottom"></pre>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import AU from "ansi_up";
+import scrollToBottom from "@/mixins/scroll-to-bottom";
+const ansi_up = new AU();
 
 export default {
+  mixins: [scrollToBottom],
   data() {
     return {
       service: 0,
@@ -37,8 +41,18 @@ export default {
     };
   },
   methods: {
+    addLog(data) {
+      this.log += data;
+      this.scrollToBottom();
+    },
     run() {
-      this.log = `docker run --rm ${this.service} ${this.command}\r\n`;
+      if (this.running) {
+        this.runMounted();
+        return;
+      }
+
+      this.log = `$ docker-compose run --rm ${this.service} ${this
+        .command}\r\n`;
 
       this.cmd = this.$docker.run(
         this.activeProject.dir,
@@ -49,25 +63,35 @@ export default {
       this.command = "";
 
       this.cmd.stdout.on("data", data => {
-        this.log += data.toString();
+        this.addLog(data.toString());
       });
 
-      // TODO: Doesn't work
-      this.cmd.stdout.on("exit", data => {
+      this.cmd.stderr.on("data", data => {
+        this.addLog(data.toString());
+      });
+
+      this.cmd.on("exit", data => {
         this.cmd = null;
       });
     },
+    runMounted() {
+      this.log = `$ ${this.command}\r\n`;
+      this.cmd.stdin.write(this.command + "\n");
+      this.command = "";
+    },
     cancel() {
-      this.cmd.exit();
+      this.cmd.kill();
     }
   },
   computed: {
     services() {
       return this.activeProject.config.serviceNames();
     },
-    // NOT ACCURATE
     running() {
       return !!this.cmd;
+    },
+    logOutput() {
+      return ansi_up.ansi_to_html(this.log);
     },
     ...mapGetters(["activeProject"])
   },
