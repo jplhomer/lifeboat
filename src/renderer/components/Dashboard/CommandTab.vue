@@ -75,7 +75,7 @@ export default {
       });
     },
     runMounted() {
-      this.log = `$ ${this.command}\r\n`;
+      this.addLog(`$ ${this.command}\r\n`);
       this.cmd.stdin.write(this.command + "\n");
       this.command = "";
     },
