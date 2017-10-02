@@ -66,13 +66,14 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import DockerConfig from "@/utils/docker-config";
 import ProjectService from "@/components/Dashboard/ProjectService";
 import Vue from "vue";
 import events from "@/utils/events";
 
 export default {
-  props: ["project", "containers"],
+  props: ["project"],
   components: { ProjectService },
   data() {
     return {
@@ -125,7 +126,8 @@ export default {
     },
     partiallyRunning() {
       return this.projectContainers.some(c => c.state === "running");
-    }
+    },
+    ...mapGetters(["containers"])
   },
   created() {
     this.config = new DockerConfig(this.project);

@@ -14,7 +14,7 @@
       </router-link>
     </div>
 
-    <project :project="activeProject" :containers="containers"></project>
+    <project :project="activeProject"></project>
   </grid>
 </template>
 
@@ -35,7 +35,7 @@ export default {
     this.listenForContainerUpdates();
   },
   computed: {
-    ...mapGetters(["projects", "activeProject", "containers"])
+    ...mapGetters(["projects", "activeProject"])
   },
   watch: {
     /**
