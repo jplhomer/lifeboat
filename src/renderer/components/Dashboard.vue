@@ -3,7 +3,7 @@
     <aside class="sidebar__menu" slot="sidebar">
       <ul>
         <li v-for="project in projects" :key="project.id">
-          <router-link :to="{ path: `/${project.id}/log` }">{{ project.dirName }}</router-link>
+          <router-link :to="{ path: `/${project.id}` }">{{ project.dirName }}</router-link>
         </li>
       </ul>
     </aside>

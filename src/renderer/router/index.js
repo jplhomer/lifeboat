@@ -16,6 +16,10 @@ export default new Router({
       component: require("@/components/Dashboard"),
       children: [
         {
+          path: "",
+          component: require("@/components/Dashboard/LogTab")
+        },
+        {
           path: "log",
           component: require("@/components/Dashboard/LogTab")
         },
