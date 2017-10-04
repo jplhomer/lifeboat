@@ -25,12 +25,12 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import AU from "ansi_up";
 import scrollToBottom from "@/mixins/scroll-to-bottom";
 const ansi_up = new AU();
 
 export default {
+  props: ["project"],
   mixins: [scrollToBottom],
   data() {
     return {
@@ -60,7 +60,7 @@ export default {
         .command}\r\n`;
 
       this.cmd = this.$docker.run(
-        this.activeProject.dir,
+        this.project.dir,
         this.service,
         this.command.split(" ")
       );
@@ -105,15 +105,14 @@ export default {
   },
   computed: {
     services() {
-      return this.activeProject.services();
+      return this.project.services();
     },
     running() {
       return !!this.cmd;
     },
     logOutput() {
       return ansi_up.ansi_to_html(this.log);
-    },
-    ...mapGetters(["activeProject"])
+    }
   },
   created() {
     this.service = this.services[0];

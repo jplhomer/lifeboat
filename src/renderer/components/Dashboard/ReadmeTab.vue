@@ -1,13 +1,14 @@
 <template>
-  <div class="readme content" v-html="readme"></div>
+  <div class="readme content" v-html="readme">
+  </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import markdown from "markdown";
 import fs from "fs";
 
 export default {
+  props: ["project"],
   data() {
     return {};
   },
@@ -16,14 +17,13 @@ export default {
     readme() {
       try {
         return markdown.markdown.toHTML(
-          fs.readFileSync(`${this.activeProject.dir}/README.md`, "utf8")
+          fs.readFileSync(`${this.project.dir}/README.md`, "utf8")
         );
       } catch (e) {
         console.log(e);
         return "No README.md file found.";
       }
-    },
-    ...mapGetters(["activeProject"])
+    }
   }
 };
 </script>

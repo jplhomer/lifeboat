@@ -45,21 +45,23 @@
 
     <div class="tabs">
       <ul>
-        <router-link tag="li" :to="`/${project.id}/log`">
-          <a href="#">Logs</a>
-        </router-link>
-        <router-link tag="li" :to="`/${project.id}/about`">
-          <a href="#">About</a>
-        </router-link>
-        <router-link tag="li" :to="`/${project.id}/command`">
-          <a href="#">Commands</a>
-        </router-link>
+        <li :class="`${activeTab === 'logs' ? 'is-active' : ''}`">
+          <a href="#" @click.prevent="activeTab = 'logs'">Logs</a>
+        </li>
+        <li :class="`${activeTab === 'about' ? 'is-active' : ''}`">
+          <a href="#" @click.prevent="activeTab = 'about'">About</a>
+        </li>
+        <li :class="`${activeTab === 'commands' ? 'is-active' : ''}`">
+          <a href="#" @click.prevent="activeTab = 'commands'">Commands</a>
+        </li>
       </ul>
     </div>
 
     <!-- <readme></readme> -->
     <div class="tab-area" ref="tabArea">
-      <router-view></router-view>
+      <log-tab :project="project" v-show="activeTab === 'logs'"></log-tab>
+      <readme-tab :project="project" v-show="activeTab === 'about'"></readme-tab>
+      <command-tab :project="project" v-show="activeTab === 'commands'"></command-tab>
     </div>
 
   </div>
@@ -68,12 +70,20 @@
 <script>
 import { mapGetters } from "vuex";
 import ProjectService from "@/components/Dashboard/ProjectService";
+import LogTab from "@/components/Dashboard/LogTab";
+import ReadmeTab from "@/components/Dashboard/ReadmeTab";
+import CommandTab from "@/components/Dashboard/CommandTab";
 import Vue from "vue";
 import events from "@/utils/events";
 
 export default {
   props: ["project"],
-  components: { ProjectService },
+  components: { ProjectService, LogTab, ReadmeTab, CommandTab },
+  data() {
+    return {
+      activeTab: "logs"
+    };
+  },
   methods: {
     containerForService(service) {
       return this.project.containers().find(c => c.service === service);

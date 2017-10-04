@@ -26,9 +26,6 @@ const actions = {
 };
 
 const getters = {
-  activeProject(state, getters) {
-    return getters.projects.filter(p => p.active())[0];
-  },
   projects(state) {
     return state.projects.map((p, i) => new Project(p, i));
   }

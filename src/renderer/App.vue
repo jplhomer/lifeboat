@@ -16,14 +16,6 @@ export default {
       this.$router.push("/settings");
       return;
     }
-
-    // Set the active project that might exist in the URL
-    if (this.$router.currentRoute.params.project_id) {
-      this.$store.commit(
-        "UPDATE_ACTIVE_PROJECT",
-        this.$router.currentRoute.params.project_id
-      );
-    }
   }
 };
 </script>

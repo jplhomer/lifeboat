@@ -3,7 +3,7 @@
     <aside class="sidebar__menu" slot="sidebar">
       <ul>
         <li v-for="project in projects" :key="project.id">
-          <router-link :to="{ path: `/${project.id}` }">{{ project.dirName }}</router-link>
+          <a href="#" @click.prevent="activeProject = project" :class="`${activeProject == project ? 'is-active' : ''}`">{{ project.dirName }}</a>
         </li>
       </ul>
     </aside>
@@ -14,7 +14,8 @@
       </router-link>
     </div>
 
-    <project :project="activeProject"></project>
+    <project v-for="project in projects" :key="project.id" :project="project" v-show="activeProject == project"></project>
+
   </grid>
 </template>
 
@@ -27,24 +28,21 @@ import Container from "../utils/docker-container";
 export default {
   name: "landing-page",
   components: { Grid, Project },
+  data() {
+    return {
+      activeProject: null
+    };
+  },
   methods: {
     ...mapActions(["fetchContainers", "listenForContainerUpdates"])
   },
   created() {
     this.fetchContainers();
     this.listenForContainerUpdates();
+    this.activeProject = this.projects[0];
   },
   computed: {
-    ...mapGetters(["projects", "activeProject"])
-  },
-  watch: {
-    /**
-     * We have to watch Router changes manually, since we're using dynamic
-     * route binding.
-     */
-    $route(to, from) {
-      this.$store.commit("UPDATE_ACTIVE_PROJECT", to.params.project_id);
-    }
+    ...mapGetters(["projects"])
   }
 };
 </script>

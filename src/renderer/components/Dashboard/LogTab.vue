@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import AU from "ansi_up";
 import events from "@/utils/events";
 import scrollToBottom from "@/mixins/scroll-to-bottom";
@@ -13,6 +12,7 @@ const ansi_up = new AU();
 let logger;
 
 export default {
+  props: ["project"],
   mixins: [scrollToBottom],
   data() {
     return {
@@ -23,8 +23,7 @@ export default {
   computed: {
     logOutput() {
       return ansi_up.ansi_to_html(this.logs);
-    },
-    ...mapGetters(["activeProject"])
+    }
   },
   methods: {
     addLogs(logs) {
@@ -34,7 +33,7 @@ export default {
     startLogger() {
       this.logs = "";
 
-      logger = this.$docker.logs(this.activeProject.dir);
+      logger = this.$docker.logs(this.project.dir);
       logger.stdout.on("data", data => {
         this.addLogs(data.toString());
       });

@@ -12,30 +12,12 @@ export default new Router({
       component: require("@/components/Settings")
     },
     {
-      path: "/:project_id",
-      component: require("@/components/Dashboard"),
-      children: [
-        {
-          path: "",
-          component: require("@/components/Dashboard/LogTab")
-        },
-        {
-          path: "log",
-          component: require("@/components/Dashboard/LogTab")
-        },
-        {
-          path: "about",
-          component: require("@/components/Dashboard/ReadmeTab")
-        },
-        {
-          path: "command",
-          component: require("@/components/Dashboard/CommandTab")
-        }
-      ]
+      path: "/dashboard",
+      component: require("@/components/Dashboard")
     },
     {
       path: "*",
-      redirect: "/settings"
+      redirect: "/dashboard"
     }
   ]
 });
