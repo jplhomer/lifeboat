@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="control is-expanded">
-          <input v-model="command" class="command-text input" type="text" @keyup.enter="run" @keyup.up="loadPreviousCommand" @keyup.down="loadNextCommand" :placeholder="`Type a command to run in ${service}...`">
+          <input v-model="command" class="command-text input" type="text" @keyup.enter="run" @keydown.up="loadPreviousCommand" @keydown.down="loadNextCommand" :placeholder="`Type a command to run in ${service}...`">
         </div>
         <div class="control">
           <button @click.prevent="run" class="button">Run</button>
