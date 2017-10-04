@@ -6,7 +6,7 @@ import router from "./router";
 import store from "./store";
 import Docker from "./utils/docker";
 
-import "bulma/css/bulma.css";
+import "./assets/vars.scss";
 
 if (!process.env.IS_WEB) Vue.use(require("vue-electron"));
 Vue.http = Vue.prototype.$http = axios;
