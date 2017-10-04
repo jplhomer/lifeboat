@@ -26,13 +26,6 @@ export default class Project {
   }
 
   /**
-   * Determine whether this project is actively being viewed in the app
-   */
-  active() {
-    return store.state.App.activeProject == this.id;
-  }
-
-  /**
    * Get the names of services associated with this project
    */
   services() {
