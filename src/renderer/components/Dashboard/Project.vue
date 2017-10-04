@@ -46,13 +46,13 @@
     <div class="tabs">
       <ul>
         <li :class="`${activeTab === 'logs' ? 'is-active' : ''}`">
-          <a href="#" @click.prevent="activeTab = 'logs'">Logs</a>
+          <a href="#" @click.prevent="setActiveTab('logs')">Logs</a>
         </li>
         <li :class="`${activeTab === 'about' ? 'is-active' : ''}`">
-          <a href="#" @click.prevent="activeTab = 'about'">About</a>
+          <a href="#" @click.prevent="setActiveTab('about')">About</a>
         </li>
         <li :class="`${activeTab === 'commands' ? 'is-active' : ''}`">
-          <a href="#" @click.prevent="activeTab = 'commands'">Commands</a>
+          <a href="#" @click.prevent="setActiveTab('commands')">Commands</a>
         </li>
       </ul>
     </div>
@@ -94,6 +94,10 @@ export default {
     },
     stop() {
       this.$docker.stopProject(this.project.dir).catch(e => console.error(e));
+    },
+    setActiveTab(tab) {
+      this.setTabAreaHeight();
+      this.activeTab = tab;
     },
     setTabAreaHeight() {
       const height =
