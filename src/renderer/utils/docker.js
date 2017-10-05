@@ -76,10 +76,10 @@ function compose(dir, args = []) {
       args,
       { cwd: dir },
       (error, stdout, stderr) => {
-        if (error || stderr) {
-          reject(error || stderr);
+        if (error) {
+          reject(error);
         } else {
-          resolve(stdout);
+          resolve(stdout || stderr);
         }
       }
     );
