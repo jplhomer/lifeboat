@@ -18,7 +18,7 @@ export default class Docker {
    * @param {string} dir
    */
   stopProject(dir) {
-    return compose.call(this, dir, ["stop"]);
+    return compose.call(this, dir, ["down"]);
   }
 
   /**
