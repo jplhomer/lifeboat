@@ -22,7 +22,7 @@
                 </button>
               </p>
               <p class="control">
-                <button @click.prevent="stop" class="button is-danger" v-show="partiallyRunning">
+                <button @click.prevent="stop" :class="`button is-danger  ${stopping ? 'is-loading' : ''}`" v-show="partiallyRunning">
                   <span class="icon">
                     <i class="fa fa-stop-circle"></i>
                   </span>
@@ -76,12 +76,20 @@ import CommandTab from "@/components/Dashboard/CommandTab";
 import Vue from "vue";
 import events from "@/utils/events";
 
+const status = {
+  STOPPING: "stopping",
+  STOPPED: "stopped",
+  STARTING: "starting",
+  RUNNING: "running"
+};
+
 export default {
   props: ["project"],
   components: { ProjectService, LogTab, ReadmeTab, CommandTab },
   data() {
     return {
-      activeTab: "logs"
+      activeTab: "logs",
+      projectStatus: status.STOPPED
     };
   },
   methods: {
@@ -93,7 +101,14 @@ export default {
       events.$emit("PROJECT_STARTED");
     },
     stop() {
-      this.$docker.stopProject(this.project.dir).catch(e => console.error(e));
+      this.projectStatus = status.STOPPING;
+      this.$docker
+        .stopProject(this.project.dir)
+        .then(() => (this.projectStatus = status.STOPPED))
+        .catch(e => {
+          // TODO: Fetch status?
+          console.error(e);
+        });
     },
     setActiveTab(tab) {
       this.setTabAreaHeight();
@@ -114,6 +129,9 @@ export default {
     },
     partiallyRunning() {
       return this.project.containers().some(c => c.state === "running");
+    },
+    stopping() {
+      return this.projectStatus === status.STOPPING;
     },
     ...mapGetters(["containers"])
   },
