@@ -97,8 +97,12 @@ export default {
       return this.project.containers().find(c => c.service === service);
     },
     start() {
-      this.$docker.startProject(this.project.dir).catch(e => console.error(e));
+      this.projectStatus = status.STARTING;
       events.$emit("PROJECT_STARTED");
+      this.$docker
+        .startProject(this.project.dir)
+        .then(() => (this.projectStatus = status.STARTED))
+        .catch(e => console.error(e));
     },
     stop() {
       this.projectStatus = status.STOPPING;
@@ -122,7 +126,7 @@ export default {
   },
   computed: {
     starting() {
-      return this.project.containers().some(c => c.state === "created");
+      return this.projectStatus === status.STARTING;
     },
     running() {
       return this.project.running();
