@@ -9,8 +9,6 @@ import settings from "./utils/settings";
 
 export default {
   created() {
-    this.$store.dispatch("loadInitialProjects");
-
     // Send to Settings page if no projects
     if (!this.$store.state.Settings.projects.length) {
       this.$router.push("/settings");

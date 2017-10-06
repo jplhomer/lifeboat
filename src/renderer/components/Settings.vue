@@ -53,6 +53,9 @@
         </div>
       </div>
 
+      <div class="notification first-time-message has-text-centered is-success" v-show="showFirstTimeMessage">
+        Great work! <b><router-link to="/dashboard">Visit the dashboard</router-link></b> to interact with your project!
+      </div>
     </div>
   </grid>
 </template>
@@ -65,13 +68,23 @@ import { mapState, mapGetters } from "vuex";
 export default {
   components: { Grid },
   data() {
-    return {};
+    return {
+      showFirstTimeMessage: false
+    };
   },
   methods: {
     addProject(path) {
       if (!fs.statSync(path).isDirectory()) {
         console.error(`${path} is not a directory!`);
         return;
+      }
+
+      if (!this.settings.hasAddedFirstProject) {
+        this.$store.commit("UPDATE_SETTING", {
+          key: "hasAddedFirstProject",
+          value: true
+        });
+        this.showFirstTimeMessage = true;
       }
 
       this.$store.commit("ADD_PROJECT", path);
@@ -114,6 +127,9 @@ export default {
         this.addProject(f.path);
       }
     });
+  },
+  beforeDestroy() {
+    this.showFirstTimeMessage = false;
   }
 };
 </script>
@@ -135,6 +151,10 @@ export default {
 
 .file {
   justify-content: center;
+  margin-top: 1rem;
+}
+
+.first-time-message {
   margin-top: 1rem;
 }
 </style>

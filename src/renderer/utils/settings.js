@@ -16,8 +16,7 @@ export default {
     }
   },
 
-  save(args) {
-    const data = Object.assign({}, this.load(), args);
+  save(data) {
     fs.writeFileSync(settingsPath, JSON.stringify(data));
   }
 };

@@ -1,39 +1,31 @@
 import Project from "@/utils/project";
 import settings from "@/utils/settings";
 
-const state = {
-  projects: []
-};
+const state = settings.load() || {};
 
 const mutations = {
-  SET_INITIAL_PROJECTS(state, projects) {
-    state.projects = projects;
-  },
   ADD_PROJECT(state, project) {
-    state.projects.push(project);
-    settings.save({ projects: state.projects });
+    (state.projects || []).push(project);
+    settings.save(state);
   },
   REMOVE_PROJECT(state, projectId) {
     state.projects.splice(projectId, 1);
-    settings.save({ projects: state.projects });
-  }
-};
-
-const actions = {
-  loadInitialProjects({ commit }) {
-    commit("SET_INITIAL_PROJECTS", settings.load().projects || []);
+    settings.save(state);
+  },
+  UPDATE_SETTING(state, { key, value }) {
+    state[key] = value;
+    settings.save(state);
   }
 };
 
 const getters = {
   projects(state) {
-    return state.projects.map((p, i) => new Project(p, i));
+    return (state.projects || []).map((p, i) => new Project(p, i));
   }
 };
 
 export default {
   state,
   mutations,
-  actions,
   getters
 };
