@@ -32,13 +32,27 @@
         </tbody>
       </table>
 
-      <div class="notification" v-show="!settings.projects.length">
+      <div class="notification has-text-centered" v-show="!settings.projects.length">
         Let's get started by adding your first project to Lifeboat!
       </div>
 
       <div class="holder" ref="dropzone">
-        Drag folder(s) here to add a project
+        <p>Drag folder(s) here to add a project</p>
+        <div class="file">
+          <label class="file-label">
+            <input class="file-input" type="file" name="dir" ref="file" webkitdirectory directory>
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fa fa-upload"></i>
+              </span>
+              <span class="file-label">
+                Or select a folder
+              </span>
+            </span>
+          </label>
+        </div>
       </div>
+
     </div>
   </grid>
 </template>
@@ -94,6 +108,12 @@ export default {
       e.preventDefault();
       e.stopPropagation();
     });
+
+    this.$refs.file.addEventListener("change", e => {
+      for (let f of e.currentTarget.files) {
+        this.addProject(f.path);
+      }
+    });
   }
 };
 </script>
@@ -111,6 +131,11 @@ export default {
   &.over {
     background-color: #efefef;
   }
+}
+
+.file {
+  justify-content: center;
+  margin-top: 1rem;
 }
 </style>
 
