@@ -139,11 +139,6 @@ export default {
     },
     ...mapGetters(["containers"])
   },
-  watch: {
-    $route(to, from) {
-      Vue.nextTick(() => this.setTabAreaHeight());
-    }
-  },
   mounted() {
     this.setTabAreaHeight();
     window.addEventListener("resize", this.setTabAreaHeight);
