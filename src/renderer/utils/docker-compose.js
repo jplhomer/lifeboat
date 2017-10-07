@@ -9,7 +9,7 @@ export default class DockerCompose {
    */
   static sync(dir, args = []) {
     return execFile(
-      which.sync("docker-compose"),
+      which.sync("docker-compose", { path: "/usr/local/bin" }),
       ["-f", `${dir}/docker-compose.yml`].concat(args)
     );
   }
@@ -22,7 +22,7 @@ export default class DockerCompose {
   static async(dir, args = []) {
     return new Promise((resolve, reject) => {
       execFile(
-        which.sync("docker-compose"),
+        which.sync("docker-compose", { path: "/usr/local/bin" }),
         ["-f", `${dir}/docker-compose.yml`].concat(args),
         (error, stdout, stderr) => {
           if (error) {
