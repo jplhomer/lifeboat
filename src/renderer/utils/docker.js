@@ -1,6 +1,5 @@
 import * as Client from "dockerode";
-import which from "which";
-import child_process from "child_process";
+import DockerCompose from "./docker-compose";
 
 const client = new Client({ socketPath: "/var/run/docker.sock" });
 
@@ -10,7 +9,7 @@ export default class Docker {
    * @param {string} dir
    */
   startProject(dir) {
-    return compose.call(this, dir, ["up", "-d"]);
+    return DockerCompose.async(dir, ["up", "-d"]);
   }
 
   /**
@@ -18,7 +17,7 @@ export default class Docker {
    * @param {string} dir
    */
   stopProject(dir) {
-    return compose.call(this, dir, ["down"]);
+    return DockerCompose.async(dir, ["down"]);
   }
 
   /**
@@ -29,16 +28,11 @@ export default class Docker {
   }
 
   logs(dir) {
-    return child_process.execFile(which.sync("docker-compose"), [
-      "-f",
-      `${dir}/docker-compose.yml`,
-      "logs",
-      "-f"
-    ]);
+    return DockerCompose.sync(dir, ["logs", "-f"]);
   }
 
   run(dir, service, commands) {
-    return compose.call(this, dir, ["run", "--rm", service, ...commands]);
+    return DockerCompose.sync(dir, ["run", "--rm", service, ...commands]);
   }
 
   /**
@@ -63,25 +57,4 @@ export default class Docker {
       });
     });
   }
-}
-
-/**
- * Run docker-compose in a given directory
- * @param {string} dir
- * @param {array} args
- */
-function compose(dir, args = []) {
-  return new Promise((resolve, reject) => {
-    child_process.execFile(
-      "/usr/local/bin/docker-compose",
-      ["-f", `${dir}/docker-compose.yml`].concat(args),
-      (error, stdout, stderr) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(stdout || stderr);
-        }
-      }
-    );
-  });
 }

@@ -54,7 +54,10 @@
       </div>
 
       <div class="notification first-time-message has-text-centered is-success" v-show="showFirstTimeMessage">
-        Great work! <b><router-link to="/dashboard">Visit the dashboard</router-link></b> to interact with your project!
+        Great work!
+        <b>
+          <router-link to="/dashboard">Visit the dashboard</router-link>
+        </b> to interact with your project!
       </div>
     </div>
   </grid>

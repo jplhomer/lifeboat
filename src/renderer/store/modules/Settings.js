@@ -1,7 +1,9 @@
 import Project from "@/utils/project";
 import settings from "@/utils/settings";
 
-const state = settings.load() || {};
+const state = settings.load() || {
+  projects: []
+};
 
 const mutations = {
   ADD_PROJECT(state, project) {
