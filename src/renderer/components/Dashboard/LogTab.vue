@@ -51,14 +51,6 @@ export default {
   },
   beforeDestroy() {
     this.killLogger();
-  },
-  watch: {
-    $route(to, from) {
-      this.killLogger();
-      this.logs = "";
-
-      this.startLogger();
-    }
   }
 };
 </script>
