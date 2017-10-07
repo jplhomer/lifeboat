@@ -20,3 +20,14 @@ new Vue({
   store,
   template: "<App/>"
 }).$mount("#app");
+
+// Enable devtools in production - REMOVE
+import { remote } from "electron";
+
+remote.globalShortcut.register("CommandOrControl+Shift+K", () => {
+  remote.BrowserWindow.getFocusedWindow().webContents.openDevTools();
+});
+
+window.addEventListener("beforeunload", () => {
+  remote.globalShortcut.unregisterAll();
+});
