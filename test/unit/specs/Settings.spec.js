@@ -1,12 +1,14 @@
 import Vue from "vue";
-import LandingPage from "@/components/LandingPage";
+import Settings from "@/components/Settings";
 
-describe("LandingPage.vue", () => {
+describe("Settings.vue", () => {
   it("should render correct contents", () => {
     const vm = new Vue({
       el: document.createElement("div"),
-      render: h => h(LandingPage)
+      render: h => h(Settings)
     }).$mount();
+
+    console.log(vm.$el);
 
     expect(vm.$el.querySelector(".title").textContent).to.contain(
       "Welcome to your new project!"

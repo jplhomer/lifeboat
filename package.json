@@ -59,6 +59,7 @@
     "ansi_up": "^2.0.2",
     "axios": "^0.16.1",
     "dockerode": "^2.5.1",
+    "electron-settings": "^3.1.2",
     "js-yaml": "^3.10.0",
     "markdown": "^0.5.0",
     "vue": "^2.3.3",

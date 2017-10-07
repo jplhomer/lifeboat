@@ -6,7 +6,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import settings from "./utils/settings";
 
 export default {
   computed: {

@@ -6,7 +6,7 @@
           <h1 class="title">Settings</h1>
         </div>
         <div class="level-right">
-          <router-link to="/0" v-show="settings.projects.length">Back</router-link>
+          <router-link to="/0" v-show="projects.length">Back</router-link>
         </div>
       </div>
 
@@ -32,7 +32,7 @@
         </tbody>
       </table>
 
-      <div class="notification has-text-centered" v-show="!settings.projects.length">
+      <div class="notification has-text-centered" v-show="!projects.length">
         Let's get started by adding your first project to Lifeboat!
       </div>
 

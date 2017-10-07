@@ -1,4 +1,4 @@
-import * as Client from "dockerode";
+const Client = require("dockerode");
 import DockerCompose from "./docker-compose";
 
 const client = new Client({ socketPath: "/var/run/docker.sock" });
