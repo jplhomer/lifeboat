@@ -32,12 +32,29 @@
         </tbody>
       </table>
 
-      <div class="notification" v-show="!settings.projects.length">
+      <div class="notification has-text-centered" v-show="!settings.projects.length">
         Let's get started by adding your first project to Lifeboat!
       </div>
 
       <div class="holder" ref="dropzone">
-        Drag folder(s) here to add a project
+        <p>Drag folder(s) here to add a project</p>
+        <div class="file">
+          <label class="file-label">
+            <input class="file-input" type="file" name="dir" ref="file" webkitdirectory directory>
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fa fa-upload"></i>
+              </span>
+              <span class="file-label">
+                Or select a folder
+              </span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="notification first-time-message has-text-centered is-success" v-show="showFirstTimeMessage">
+        Great work! <b><router-link to="/dashboard">Visit the dashboard</router-link></b> to interact with your project!
       </div>
     </div>
   </grid>
@@ -51,13 +68,23 @@ import { mapState, mapGetters } from "vuex";
 export default {
   components: { Grid },
   data() {
-    return {};
+    return {
+      showFirstTimeMessage: false
+    };
   },
   methods: {
     addProject(path) {
       if (!fs.statSync(path).isDirectory()) {
         console.error(`${path} is not a directory!`);
         return;
+      }
+
+      if (!this.settings.hasAddedFirstProject) {
+        this.$store.commit("UPDATE_SETTING", {
+          key: "hasAddedFirstProject",
+          value: true
+        });
+        this.showFirstTimeMessage = true;
       }
 
       this.$store.commit("ADD_PROJECT", path);
@@ -94,6 +121,15 @@ export default {
       e.preventDefault();
       e.stopPropagation();
     });
+
+    this.$refs.file.addEventListener("change", e => {
+      for (let f of e.currentTarget.files) {
+        this.addProject(f.path);
+      }
+    });
+  },
+  beforeDestroy() {
+    this.showFirstTimeMessage = false;
   }
 };
 </script>
@@ -111,6 +147,15 @@ export default {
   &.over {
     background-color: #efefef;
   }
+}
+
+.file {
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.first-time-message {
+  margin-top: 1rem;
 }
 </style>
 
