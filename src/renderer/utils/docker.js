@@ -29,15 +29,16 @@ export default class Docker {
   }
 
   logs(dir) {
-    return child_process.spawn("docker-compose", ["logs", "-f"], { cwd: dir });
+    return child_process.execFile(which.sync("docker-compose"), [
+      "-f",
+      `${dir}/docker-compose.yml`,
+      "logs",
+      "-f"
+    ]);
   }
 
   run(dir, service, commands) {
-    return child_process.spawn(
-      "docker-compose",
-      ["run", "--rm", service, ...commands],
-      { cwd: dir }
-    );
+    return compose.call(this, dir, ["run", "--rm", service, ...commands]);
   }
 
   /**
@@ -72,9 +73,8 @@ export default class Docker {
 function compose(dir, args = []) {
   return new Promise((resolve, reject) => {
     child_process.execFile(
-      which.sync("docker-compose"),
-      args,
-      { cwd: dir },
+      "/usr/local/bin/docker-compose",
+      ["-f", `${dir}/docker-compose.yml`].concat(args),
       (error, stdout, stderr) => {
         if (error) {
           reject(error);
