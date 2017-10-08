@@ -6,7 +6,7 @@
           <div class="title is-4">
             {{ project.dirName }}
             <span class="tag" v-show="!running && !starting">Stopped</span>
-            <span class="tag is-success" v-show="running">Running</span>
+            <span class="tag is-success" v-show="running && !missingComposeFile">Running</span>
             <span class="tag is-warning" v-show="starting">Starting</span>
           </div>
         </div>
@@ -35,7 +35,7 @@
       </div>
     </header>
 
-    <div class="services">
+    <div class="services" v-show="!missingComposeFile">
       <div class="columns is-mobile is-multiline">
         <div v-for="service in project.services()" :key="service" class="column is-one-third">
           <project-service :service="service" :container="containerForService(service)"></project-service>
@@ -43,7 +43,7 @@
       </div>
     </div>
 
-    <div class="tabs">
+    <div class="tabs" v-show="!missingComposeFile">
       <ul>
         <li :class="`${activeTab === 'logs' ? 'is-active' : ''}`">
           <a href="#" @click.prevent="setActiveTab('logs')">Logs</a>
@@ -58,10 +58,15 @@
     </div>
 
     <!-- <readme></readme> -->
-    <div class="tab-area" ref="tabArea">
+    <div class="tab-area" ref="tabArea" v-show="!missingComposeFile">
       <log-tab :project="project" v-show="activeTab === 'logs'"></log-tab>
       <readme-tab :project="project" v-show="activeTab === 'about'"></readme-tab>
       <command-tab :project="project" v-show="activeTab === 'commands'"></command-tab>
+    </div>
+
+    <div class="notification is-danger" v-show="missingComposeFile">
+      We couldn't find a
+      <code>docker-compose.yml</code> file in {{ project.dir }}. Please add one and restart Lifeboat.
     </div>
 
   </div>
@@ -136,6 +141,9 @@ export default {
     },
     stopping() {
       return this.projectStatus === status.STOPPING;
+    },
+    missingComposeFile() {
+      return !this.project.config.data;
     },
     ...mapGetters(["containers"])
   },
