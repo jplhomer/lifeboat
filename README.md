@@ -2,6 +2,8 @@
 
 > A Docker UI for beginners
 
+![Screenshot of Lifeboat UI](https://pbs.twimg.com/media/DK_DFpLUMAAg315.png:large)
+
 #### Build Setup
 
 ``` bash
