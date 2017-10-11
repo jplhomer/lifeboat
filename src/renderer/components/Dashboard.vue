@@ -3,7 +3,10 @@
     <aside class="sidebar__menu" slot="sidebar">
       <ul>
         <li v-for="project in projects" :key="project.id">
-          <a href="#" @click.prevent="activeProject = project" :class="`${activeProject == project ? 'is-active' : ''}`">{{ project.dirName }}</a>
+          <a href="#" @click.prevent="activeProject = project" :class="`${activeProject == project ? 'is-active' : ''}`">
+            <span :class="`status status--${project.status()}`"></span>
+            {{ project.dirName }}
+          </a>
         </li>
       </ul>
     </aside>
@@ -47,6 +50,23 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+.status {
+  --size: .5em;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, .5);
+  border-radius: var(--size);
+  display: inline-block;
+  height: var(--size);
+  margin-right: .2em;
+  width: var(--size);
 
+  &--running {
+    background-color: #23d160;
+  }
+
+  &--partial {
+    background-color: #ffdd57;
+  }
+}
 </style>

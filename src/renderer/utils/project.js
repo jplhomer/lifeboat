@@ -49,4 +49,28 @@ export default class Project {
       this.containers().find(c => c.service === s && c.state === "running")
     );
   }
+
+  /**
+   * Determine whether this project is partially running.
+   */
+  partiallyRunning() {
+    return this.services().some(s =>
+      this.containers().find(c => c.service === s && c.state === "running")
+    );
+  }
+
+  /**
+   * Get the status string of a project.
+   */
+  status() {
+    if (this.running()) {
+      return "running";
+    }
+
+    if (this.partiallyRunning()) {
+      return "partial";
+    }
+
+    return "stopped";
+  }
 }

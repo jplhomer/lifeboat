@@ -49,9 +49,6 @@ export default {
       color: #b6c9fb;
       display: block;
       padding: .5rem .5rem;
-      border-left-width: 5px;
-      border-left-style: solid;
-      border-left-color: transparent;
       overflow: hidden;
       text-overflow: ellipsis;
     }
