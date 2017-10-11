@@ -27,6 +27,7 @@ import { mapGetters, mapActions } from "vuex";
 import Grid from "./Grid";
 import Project from "./Dashboard/Project";
 import Container from "../utils/docker-container";
+import Mousetrap from "mousetrap";
 
 export default {
   name: "landing-page",
@@ -37,12 +38,30 @@ export default {
     };
   },
   methods: {
+    previousProject() {
+      const idx = this.projects.indexOf(this.activeProject);
+      this.activeProject =
+        idx === 0 ? this.projects.slice().pop() : this.projects[idx - 1];
+    },
+    nextProject() {
+      const idx = this.projects.indexOf(this.activeProject);
+      this.activeProject =
+        idx === this.projects.length - 1
+          ? this.projects[0]
+          : this.projects[idx + 1];
+    },
     ...mapActions(["fetchContainers", "listenForContainerUpdates"])
   },
   created() {
     this.fetchContainers();
     this.listenForContainerUpdates();
     this.activeProject = this.projects[0];
+  },
+  mounted() {
+    Mousetrap.bind("meta+shift+[", this.previousProject);
+    Mousetrap.bind("ctrl+shift+tab", this.previousProject);
+    Mousetrap.bind("meta+shift+]", this.nextProject);
+    Mousetrap.bind("ctrl+tab", this.previousProject);
   },
   computed: {
     ...mapGetters(["projects"])
