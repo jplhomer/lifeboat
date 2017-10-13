@@ -1,8 +1,12 @@
 # lifeboat
 
-A Docker UI for projects.
+A Docker UI for projects. **[Download for Mac](https://github.com/jplhomer/lifeboat/releases) from the Releases tab.**
 
 ![Screenshot of Lifeboat UI](https://pbs.twimg.com/media/DK_DFpLUMAAg315.png:large)
+
+## Development
+
+This is an Electron app, scaffolded with [electron-vue](https://github.com/SimulatedGREG/electron-vue). You will want to have Node/Yarn installed locally.
 
 #### Build Setup
 
