@@ -32,11 +32,6 @@ import Mousetrap from "mousetrap";
 export default {
   name: "landing-page",
   components: { Grid, Project },
-  data() {
-    return {
-      activeProject: null
-    };
-  },
   methods: {
     previousProject() {
       const idx = this.projects.indexOf(this.activeProject);
@@ -64,6 +59,14 @@ export default {
     Mousetrap.bind("ctrl+tab", this.previousProject);
   },
   computed: {
+    activeProject: {
+      get() {
+        return this.$store.state.App.activeProject;
+      },
+      set(value) {
+        this.$store.commit("SET_ACTIVE_PROJECT", value);
+      }
+    },
     ...mapGetters(["projects"])
   }
 };

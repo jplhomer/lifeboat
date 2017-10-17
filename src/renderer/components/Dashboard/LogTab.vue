@@ -4,6 +4,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import AU from "ansi_up";
 import events from "@/utils/events";
 import scrollToBottom from "@/mixins/scroll-to-bottom";
@@ -23,7 +24,10 @@ export default {
   computed: {
     logOutput() {
       return ansi_up.ansi_to_html(this.logs);
-    }
+    },
+    ...mapState({
+      activeProject: state => state.App.activeProject
+    })
   },
   methods: {
     addLogs(logs) {
@@ -51,6 +55,13 @@ export default {
   },
   beforeDestroy() {
     this.killLogger();
+  },
+  watch: {
+    activeProject(newProject) {
+      if (newProject == this.project) {
+        this.scrollToBottom();
+      }
+    }
   }
 };
 </script>
