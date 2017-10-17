@@ -1,6 +1,7 @@
 "use strict";
 
-import { app, BrowserWindow, Menu } from "electron";
+import { app, BrowserWindow, Menu, ipcMain } from "electron";
+import { autoUpdater } from "electron-updater";
 
 /**
  * Set `__static` path to static files in production
@@ -100,12 +101,17 @@ function setUpMenu() {
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
  */
 
-import { autoUpdater } from "electron-updater";
-
 autoUpdater.on("update-downloaded", () => {
-  autoUpdater.quitAndInstall();
+  // TODO: Set store.dispatch("updateAvailable", true)
+  // autoUpdater.quitAndInstall();
 });
 
 app.on("ready", () => {
   if (process.env.NODE_ENV === "production") autoUpdater.checkForUpdates();
+});
+
+ipcMain.on("autoupdate-check", (e, data) => {
+  autoUpdater.checkForUpdates().then(results => {
+    e.sender.send("autoupdate-results", results);
+  });
 });

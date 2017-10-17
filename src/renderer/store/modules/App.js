@@ -3,7 +3,8 @@ import docker from "@/utils/docker";
 import Container from "@/utils/docker-container";
 
 const state = {
-  containers: []
+  containers: [],
+  updateAvailable: false
 };
 
 const mutations = {
