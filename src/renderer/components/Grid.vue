@@ -82,6 +82,10 @@ export default {
 
 .body {
   grid-area: body;
+
+  .no-sidebar & {
+    overflow: scroll;
+  }
 }
 </style>
 
