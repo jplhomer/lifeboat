@@ -33,4 +33,10 @@ export default class DockerContainer {
   get temp() {
     return this.container.Labels["com.docker.compose.oneoff"] === "True";
   }
+
+  get ports() {
+    return this.container.Ports
+      .filter(p => p.hasOwnProperty("PublicPort"))
+      .map(p => p.PublicPort);
+  }
 }

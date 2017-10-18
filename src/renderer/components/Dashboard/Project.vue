@@ -57,11 +57,10 @@
       </ul>
     </div>
 
-    <!-- <readme></readme> -->
     <div class="tab-area" ref="tabArea" v-show="!missingComposeFile">
-      <log-tab :project="project" v-show="activeTab === 'logs'"></log-tab>
-      <readme-tab :project="project" v-show="activeTab === 'about'"></readme-tab>
-      <command-tab :project="project" v-show="activeTab === 'commands'"></command-tab>
+      <project-log :project="project" v-show="activeTab === 'logs'"></project-log>
+      <project-readme :project="project" v-show="activeTab === 'about'"></project-readme>
+      <project-commands :project="project" v-show="activeTab === 'commands'"></project-commands>
     </div>
 
     <div class="notification is-danger" v-show="missingComposeFile">
@@ -75,9 +74,9 @@
 <script>
 import { mapGetters } from "vuex";
 import ProjectService from "@/components/Dashboard/ProjectService";
-import LogTab from "@/components/Dashboard/LogTab";
-import ReadmeTab from "@/components/Dashboard/ReadmeTab";
-import CommandTab from "@/components/Dashboard/CommandTab";
+import ProjectLog from "@/components/Dashboard/ProjectLog";
+import ProjectReadme from "@/components/Dashboard/ProjectReadme";
+import ProjectCommands from "@/components/Dashboard/ProjectCommands";
 import Vue from "vue";
 import events from "@/utils/events";
 
@@ -90,7 +89,7 @@ const status = {
 
 export default {
   props: ["project"],
-  components: { ProjectService, LogTab, ReadmeTab, CommandTab },
+  components: { ProjectService, ProjectLog, ProjectReadme, ProjectCommands },
   data() {
     return {
       activeTab: "logs",

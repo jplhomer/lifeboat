@@ -1,18 +1,25 @@
 <template>
   <div class="service">
-    <span class="icon has-text-success" v-show="running && !temp">
-      <i class="fa fa-check-square"></i>
-    </span>
-    <span class="icon" v-show="starting">
-      <i class="fa fa-refresh fa-spin"></i>
-    </span>
-    <span class="icon service-temp has-text-warning" v-show="temp">
-      <i class="fa fa-check-square"></i>
-    </span>
-    <span class="icon service-stopped" v-show="stopped">
-      <i class="fa fa-check-square"></i>
-    </span>
-    {{ service }}
+    <div class="service__name">
+      <span class="icon has-text-success" v-show="running && !temp">
+        <i class="fa fa-check-square"></i>
+      </span>
+      <span class="icon" v-show="starting">
+        <i class="fa fa-refresh fa-spin"></i>
+      </span>
+      <span class="icon service-temp has-text-warning" v-show="temp">
+        <i class="fa fa-check-square"></i>
+      </span>
+      <span class="icon service-stopped" v-show="stopped">
+        <i class="fa fa-check-square"></i>
+      </span>
+
+      {{ service }}
+    </div>
+
+    <div class="service__tags tags">
+      <span v-for="port in ports" :key="port" class="tag is-small" :title="`${service} is exposed on port ${port}`">{{ port }}</span>
+    </div>
   </div>
 </template>
 
@@ -31,18 +38,31 @@ export default {
     },
     temp() {
       return this.container && this.container.temp;
+    },
+    ports() {
+      if (this.container) {
+        return this.container.ports;
+      }
+
+      return [];
     }
   }
 };
 </script>
 
-<style>
+<style scoped lang="scss">
 .service {
   background-color: white;
   border-radius: 3px;
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, .25);
+  display: flex;
   font-size: .9em;
   padding: .5em;
+  justify-content: space-between;
+
+  .tag {
+    font-size: .65rem;
+  }
 }
 
 .service-stopped {

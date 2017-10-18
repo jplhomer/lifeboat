@@ -1,5 +1,5 @@
 <template>
-  <div class="readme content" v-html="readme">
+  <div class="readme content" v-html="readme" ref="readme">
   </div>
 </template>
 
@@ -12,7 +12,6 @@ export default {
   data() {
     return {};
   },
-  methods: {},
   computed: {
     readme() {
       try {
@@ -24,6 +23,15 @@ export default {
         return "No README.md file found.";
       }
     }
+  },
+  mounted() {
+    this.$refs.readme.querySelectorAll("a").forEach(el => {
+      if (el.href.slice(0, 1) === "#") return;
+      el.addEventListener("click", e => {
+        e.preventDefault();
+        this.$electron.shell.openExternal(e.target.href);
+      });
+    });
   }
 };
 </script>
