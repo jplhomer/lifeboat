@@ -37,6 +37,7 @@ function createWindow() {
   });
 
   setUpMenu();
+  setUpAutoUpdateListeners();
 }
 
 app.on("ready", createWindow);
@@ -101,6 +102,27 @@ function setUpMenu() {
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
  */
 
+autoUpdater.logger = require("electron-log");
+autoUpdater.logger.transports.file.level = "info";
+
+/**
+ * Listen for important autoUpdate events, and pass them to the mainWindow
+ * so Vue components can pick up and listen to them.
+ */
+function setUpAutoUpdateListeners() {
+  [
+    "error",
+    "checking-for-update",
+    "update-available",
+    "update-not-available",
+    "update-downloaded"
+  ].forEach(e => {
+    autoUpdater.on(e, data => {
+      mainWindow.webContents.send(`autoupdate-${e}`, data);
+    });
+  });
+}
+
 autoUpdater.on("update-downloaded", () => {
   // TODO: Set store.dispatch("updateAvailable", true)
   // autoUpdater.quitAndInstall();
@@ -111,7 +133,14 @@ app.on("ready", () => {
 });
 
 ipcMain.on("autoupdate-check", (e, data) => {
-  autoUpdater.checkForUpdates().then(results => {
-    e.sender.send("autoupdate-results", results);
-  });
+  // Only actually check for updates on production, since it crashes dev
+  if (process.env.NODE_ENV === "production") {
+    autoUpdater.checkForUpdates();
+  } else {
+    setTimeout(() => {
+      // Send a test response instead
+      mainWindow.webContents.send("autoupdate-update-downloaded", {});
+      // mainWindow.webContents.send("autoupdate-update-not-available", {});
+    }, 500);
+  }
 });

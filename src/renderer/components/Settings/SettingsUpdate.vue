@@ -1,7 +1,7 @@
 <template>
   <div :class="`notification ${available ? 'is-info': ''}`">
     <p v-if="available">
-      An update is available! The update will be installed the next time you start Lifeboat - or
+      An update is available! The update will be installed the next time you start Lifeboat.<br>
       <a href="#">Restart and install now</a>.
     </p>
     <p v-else>
@@ -42,8 +42,15 @@ export default {
     }
   },
   mounted() {
-    ipcRenderer.on("autoupdate-results", (e, data) => {
-      console.log(data);
+    ipcRenderer.on("autoupdate-update-not-available", (e, data) => {
+      this.checkingForUpdates = false;
+    });
+
+    ipcRenderer.on("autoupdate-update-available", (e, data) => {
+      this.checkingForUpdates = false;
+    });
+
+    ipcRenderer.on("autoupdate-update-downloaded", (e, data) => {
       this.checkingForUpdates = false;
     });
   }

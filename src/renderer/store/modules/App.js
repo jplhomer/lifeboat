@@ -14,6 +14,9 @@ const mutations = {
   },
   UPDATE_CONTAINERS(state, containers) {
     state.containers = containers;
+  },
+  MARK_UPDATE_AVAILABLE(state, value) {
+    state.updateAvailable = value;
   }
 };
 

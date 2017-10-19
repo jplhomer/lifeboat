@@ -13,6 +13,7 @@
 
     <div class="sidebar__actions" slot="sidebar">
       <router-link to="settings" class="icon is-medium" title="Settings">
+        <span v-show="updateAvailable" class="badge"></span>
         <i class="fa fa-lg fa-cog"></i>
       </router-link>
     </div>
@@ -23,7 +24,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 import Grid from "./Grid";
 import Project from "./Dashboard/Project";
 import Container from "../utils/docker-container";
@@ -67,12 +68,15 @@ export default {
         this.$store.commit("SET_ACTIVE_PROJECT", value);
       }
     },
-    ...mapGetters(["projects"])
+    ...mapGetters(["projects"]),
+    ...mapState({
+      updateAvailable: state => state.App.updateAvailable
+    })
   }
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .status {
   --size: .5em;
   background-color: transparent;
@@ -90,5 +94,21 @@ export default {
   &--partial {
     background-color: #ffdd57;
   }
+}
+
+.sidebar__actions a {
+  position: relative;
+}
+
+.badge {
+  --size: .5em;
+  background-color: #ff3860;
+  border-radius: var(--size);
+  display: inline-block;
+  position: absolute;
+  right: 0.3em;
+  top: 0.3em;
+  height: var(--size);
+  width: var(--size);
 }
 </style>

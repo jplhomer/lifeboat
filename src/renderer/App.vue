@@ -6,6 +6,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { ipcRenderer } from "electron";
 
 export default {
   computed: {
@@ -15,8 +16,19 @@ export default {
     // Send to Settings page if no projects
     if (!this.projects.length) {
       this.$router.push("/settings");
-      return;
     }
+
+    // Check for available updates
+    ipcRenderer.on("autoupdate-update-downloaded", () => {
+      this.$store.commit("MARK_UPDATE_AVAILABLE", true);
+    });
+
+    ipcRenderer.on("autoupdate-update-not-available", () => {
+      this.$store.commit("MARK_UPDATE_AVAILABLE", false);
+    });
+
+    // Run an initial check
+    ipcRenderer.send("autoupdate-check", true);
   }
 };
 </script>
