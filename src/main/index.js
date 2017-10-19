@@ -69,6 +69,22 @@ function setUpMenu() {
           selector: "orderFrontStandardAboutPanel:"
         },
         { type: "separator" },
+        { type: "separator" },
+        {
+          label: "Hide Lifeboat",
+          accelerator: "CommandOrControl+H",
+          selector: "hide:"
+        },
+        {
+          label: "Hide Others",
+          accelerator: "CommandOrControl+Alt+H",
+          selector: "hideOtherApplications:"
+        },
+        {
+          label: "Show All",
+          selector: "unhideAllApplications:"
+        },
+        { type: "separator" },
         {
           label: "Quit",
           accelerator: "Command+Q",
