@@ -2,7 +2,7 @@
   <div :class="`notification ${available ? 'is-info': ''}`">
     <p v-if="available">
       An update is available! The update will be installed the next time you start Lifeboat.<br>
-      <a href="#">Restart and install now</a>.
+      <a @click.prevent="quitAndInstall">Restart and install now</a>.
     </p>
     <p v-else>
       Lifeboat is
@@ -39,6 +39,9 @@ export default {
       this.checkingForUpdates = true;
 
       ipcRenderer.send("autoupdate-check", true);
+    },
+    quitAndInstall() {
+      ipcRenderer.send("autoupdate-quitandinstall", true);
     }
   },
   mounted() {

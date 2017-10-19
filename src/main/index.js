@@ -14,6 +14,7 @@ if (process.env.NODE_ENV !== "development") {
 }
 
 let mainWindow;
+let updateAvailable = false;
 const winURL =
   process.env.NODE_ENV === "development"
     ? `http://localhost:9080`
@@ -52,6 +53,10 @@ app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+app.on("will-quit", () => {
+  if (updateAvailable) autoUpdater.quitAndInstall();
 });
 
 function setUpMenu() {
@@ -124,8 +129,7 @@ function setUpAutoUpdateListeners() {
 }
 
 autoUpdater.on("update-downloaded", () => {
-  // TODO: Set store.dispatch("updateAvailable", true)
-  // autoUpdater.quitAndInstall();
+  updateAvailable = true;
 });
 
 app.on("ready", () => {
@@ -139,8 +143,17 @@ ipcMain.on("autoupdate-check", (e, data) => {
   } else {
     setTimeout(() => {
       // Send a test response instead
-      mainWindow.webContents.send("autoupdate-update-downloaded", {});
-      // mainWindow.webContents.send("autoupdate-update-not-available", {});
+      // mainWindow.webContents.send("autoupdate-update-downloaded", {});
+      mainWindow.webContents.send("autoupdate-update-not-available", {});
     }, 500);
+  }
+});
+
+ipcMain.on("autoupdate-quitandinstall", () => {
+  if (updateAvailable) {
+    autoUpdater.quitAndInstall();
+  } else {
+    app.relaunch();
+    app.quit();
   }
 });
