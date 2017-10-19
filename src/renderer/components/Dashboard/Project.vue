@@ -54,6 +54,9 @@
         <li :class="`${activeTab === 'commands' ? 'is-active' : ''}`">
           <a href="#" @click.prevent="setActiveTab('commands')">Commands</a>
         </li>
+        <li :class="`${activeTab === 'options' ? 'is-active' : ''}`">
+          <a href="#" @click.prevent="setActiveTab('options')">Options</a>
+        </li>
       </ul>
     </div>
 
@@ -61,6 +64,7 @@
       <project-log :project="project" v-show="activeTab === 'logs'"></project-log>
       <project-readme :project="project" v-show="activeTab === 'about'"></project-readme>
       <project-commands :project="project" v-show="activeTab === 'commands'"></project-commands>
+      <project-options :project="project" v-show="activeTab === 'options'"></project-options>
     </div>
 
     <div class="notification is-danger" v-show="missingComposeFile">
@@ -77,6 +81,7 @@ import ProjectService from "@/components/Dashboard/ProjectService";
 import ProjectLog from "@/components/Dashboard/ProjectLog";
 import ProjectReadme from "@/components/Dashboard/ProjectReadme";
 import ProjectCommands from "@/components/Dashboard/ProjectCommands";
+import ProjectOptions from "@/components/Dashboard/ProjectOptions";
 import Vue from "vue";
 import events from "@/utils/events";
 
@@ -89,7 +94,13 @@ const status = {
 
 export default {
   props: ["project"],
-  components: { ProjectService, ProjectLog, ProjectReadme, ProjectCommands },
+  components: {
+    ProjectService,
+    ProjectLog,
+    ProjectReadme,
+    ProjectCommands,
+    ProjectOptions
+  },
   data() {
     return {
       activeTab: "logs",
@@ -166,7 +177,7 @@ header {
   padding: 1rem;
 
   .column {
-    padding: .35rem;
+    padding: 0.35rem;
   }
 }
 
