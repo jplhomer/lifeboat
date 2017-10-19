@@ -10,6 +10,8 @@
         </div>
       </div>
 
+      <settings-update></settings-update>
+
       <table class="table" style="width: 100%">
         <thead>
           <tr>
@@ -66,10 +68,11 @@
 <script>
 import fs from "fs";
 import Grid from "@/components/Grid";
+import SettingsUpdate from "@/components/Settings/SettingsUpdate";
 import { mapState, mapGetters } from "vuex";
 
 export default {
-  components: { Grid },
+  components: { Grid, SettingsUpdate },
   data() {
     return {
       showFirstTimeMessage: false
