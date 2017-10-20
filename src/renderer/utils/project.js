@@ -2,9 +2,15 @@ import DockerConfig from "@/utils/docker-config";
 import store from "@/store";
 
 export default class Project {
-  constructor(dir, id) {
+  constructor(data, id) {
     this.id = id;
-    this.dir = dir;
+
+    if (typeof data === "string") {
+      this.dir = data;
+    } else {
+      this.dir = data.dir;
+    }
+
     this.config = new DockerConfig(this);
   }
 
