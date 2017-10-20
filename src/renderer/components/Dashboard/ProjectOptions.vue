@@ -32,26 +32,18 @@
 </template>
 
 <script>
+let addingNew = false;
+
 export default {
   props: ["project"],
   data() {
     return {
-      variables: [
-        {
-          key: "FORCE_CACHING",
-          value: 1,
-          active: true
-        },
-        {
-          key: "ANOTHER_THING",
-          value: "0",
-          active: false
-        }
-      ]
+      variables: []
     };
   },
   methods: {
     add() {
+      addingNew = true;
       this.variables.push({
         key: "",
         value: "",
@@ -60,6 +52,21 @@ export default {
     },
     remove(idx) {
       this.variables.splice(idx, 1);
+    }
+  },
+  created() {
+    this.variables = this.project.variables;
+  },
+  watch: {
+    variables: {
+      handler(vars) {
+        if (addingNew) {
+          addingNew = false;
+          return;
+        }
+        this.project.variables = vars;
+      },
+      deep: true
     }
   }
 };

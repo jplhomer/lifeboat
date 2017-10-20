@@ -1,10 +1,19 @@
 import DockerConfig from "@/utils/docker-config";
 import store from "@/store";
+import settings from "electron-settings";
 
 export default class Project {
-  constructor(dir, id) {
+  constructor(data, id) {
     this.id = id;
-    this.dir = dir;
+
+    // Support legacy projects which are just strings
+    if (typeof data === "string") {
+      this.dir = data;
+    } else {
+      this.dir = data.dir;
+      this._variables = data.variables;
+    }
+
     this.config = new DockerConfig(this);
   }
 
@@ -72,5 +81,43 @@ export default class Project {
     }
 
     return "stopped";
+  }
+
+  /**
+   * Get the ENV variables for this project
+   */
+  get variables() {
+    return this._variables || [];
+  }
+
+  /**
+   * Set the ENV variables for this project
+   */
+  set variables(value) {
+    this._variables = value;
+    this.save();
+  }
+
+  /**
+   * Returns an object fit for saving into settings
+   */
+  formatForSettings() {
+    return {
+      dir: this.dir,
+      variables: this.variables
+    };
+  }
+
+  /**
+   * Save a given project to the settings
+   */
+  save() {
+    let projects = Object.assign([], store.getters.projects);
+    projects[this.id] = this.formatForSettings();
+    settings.set("projects", projects);
+    // store.commit("UPDATE_SETTING", {
+    //   key: "projects",
+    //   value: projects
+    // });
   }
 }
