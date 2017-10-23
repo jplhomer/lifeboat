@@ -14,7 +14,7 @@
           <div class="level-item">
             <div class="field is-grouped">
               <p class="control">
-                <button @click.prevent="start" :class="`button is-info ${starting ? 'is-loading' : ''}`" v-show="!running">
+                <button @click.prevent="start" :class="`button is-info ${starting ? 'is-loading' : ''}`" v-show="!running && !restarting">
                   <span class="icon">
                     <i class="fa fa-play-circle"></i>
                   </span>
@@ -27,6 +27,13 @@
                     <i class="fa fa-stop-circle"></i>
                   </span>
                   <span>Stop</span>
+                </button>
+              </p>
+              <p class="control">
+                <button @click.prevent="restart" :class="{ button: true,  'is-loading': restarting}" v-show="partiallyRunning" title="Restart">
+                  <span class="icon">
+                  <i class="fa fa-refresh"></i>
+                  </span>
                 </button>
               </p>
             </div>
@@ -84,7 +91,8 @@ const status = {
   STOPPING: "stopping",
   STOPPED: "stopped",
   STARTING: "starting",
-  RUNNING: "running"
+  RUNNING: "running",
+  RESTARTING: "restarting"
 };
 
 export default {
@@ -105,7 +113,7 @@ export default {
       events.$emit("PROJECT_STARTED");
       this.$docker
         .startProject(this.project.dir)
-        .then(() => (this.projectStatus = status.STARTED))
+        .then(() => (this.projectStatus = status.RUNNING))
         .catch(e => console.error(e));
     },
     stop() {
@@ -113,10 +121,17 @@ export default {
       this.$docker
         .stopProject(this.project.dir)
         .then(() => (this.projectStatus = status.STOPPED))
-        .catch(e => {
-          // TODO: Fetch status?
-          console.error(e);
-        });
+        .catch(e => console.error(e));
+    },
+    restart() {
+      this.projectStatus = status.RESTARTING;
+      this.$docker
+        .restartProject(this.project.dir)
+        .then(() => {
+          this.projectStatus = status.RUNNING;
+          this.$store.dispatch("fetchContainers");
+        })
+        .catch(e => console.error(e));
     },
     setActiveTab(tab) {
       this.setTabAreaHeight();
@@ -140,6 +155,9 @@ export default {
     },
     stopping() {
       return this.projectStatus === status.STOPPING;
+    },
+    restarting() {
+      return this.projectStatus === status.RESTARTING;
     },
     missingComposeFile() {
       return !this.project.config.data;
@@ -166,7 +184,7 @@ header {
   padding: 1rem;
 
   .column {
-    padding: .35rem;
+    padding: 0.35rem;
   }
 }
 

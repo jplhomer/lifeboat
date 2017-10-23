@@ -21,6 +21,14 @@ export default class Docker {
   }
 
   /**
+   * Restart a Docker Compose project
+   * @param {string} dir
+   */
+  restartProject(dir) {
+    return DockerCompose.async(dir, ["restart"]);
+  }
+
+  /**
    * List containers in Docker
    */
   static listContainers() {
