@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <div class="level is-mobile">
+      <div class="level is-mobile status-bar">
         <div class="level-left">
           <div class="title is-4">
             {{ project.dirName }}
@@ -13,27 +13,27 @@
         <div class="level-right">
           <div class="level-item">
             <div class="field is-grouped">
-              <p class="control">
-                <button @click.prevent="start" :class="`button is-info ${starting ? 'is-loading' : ''}`" v-show="!running && !restarting">
+              <p class="control" v-if="!running && !restarting">
+                <button @click.prevent="start" :class="`button is-info ${starting ? 'is-loading' : ''}`">
                   <span class="icon">
                     <i class="fa fa-play-circle"></i>
                   </span>
                   <span>Start</span>
                 </button>
               </p>
-              <p class="control">
-                <button @click.prevent="stop" :class="`button is-danger  ${stopping ? 'is-loading' : ''}`" v-show="partiallyRunning">
+              <p class="control" v-if="partiallyRunning && !starting && !stopping">
+                <button @click.prevent="restart" :class="{ button: true,  'is-loading': restarting}" title="Restart">
+                  <span class="icon">
+                  <i class="fa fa-refresh"></i>
+                  </span>
+                </button>
+              </p>
+              <p class="control" v-if="partiallyRunning">
+                <button @click.prevent="stop" :class="`button is-danger  ${stopping ? 'is-loading' : ''}`">
                   <span class="icon">
                     <i class="fa fa-stop-circle"></i>
                   </span>
                   <span>Stop</span>
-                </button>
-              </p>
-              <p class="control">
-                <button @click.prevent="restart" :class="{ button: true,  'is-loading': restarting}" v-show="partiallyRunning" title="Restart">
-                  <span class="icon">
-                  <i class="fa fa-refresh"></i>
-                  </span>
                 </button>
               </p>
             </div>
@@ -177,6 +177,12 @@ export default {
 <style lang="scss">
 header {
   padding: 1em;
+}
+
+.status-bar {
+  .level-item:last-child {
+    margin-right: 0;
+  }
 }
 
 .services {
