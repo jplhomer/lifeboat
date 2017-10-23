@@ -18,7 +18,7 @@
     </div>
 
     <div class="service__tags tags">
-      <span v-for="port in ports" :key="port" class="tag is-small" :title="`${service} is exposed on port ${port}`">{{ port }}</span>
+      <span @click="openLocalhost(port)" v-for="port in ports" :key="port" class="tag is-small" :title="`${service} is exposed on port ${port}`">{{ port }}</span>
     </div>
   </div>
 </template>
@@ -26,6 +26,11 @@
 <script>
 export default {
   props: ["container", "service"],
+  methods: {
+    openLocalhost(port) {
+      this.$electron.shell.openExternal(`http://localhost:${port}`);
+    }
+  },
   computed: {
     running() {
       return this.container && this.container.state === "running";
@@ -54,14 +59,15 @@ export default {
 .service {
   background-color: white;
   border-radius: 3px;
-  box-shadow: 0 0 1px 0 rgba(0, 0, 0, .25);
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.25);
   display: flex;
-  font-size: .9em;
-  padding: .5em;
+  font-size: 0.9em;
+  padding: 0.5em;
   justify-content: space-between;
 
   .tag {
-    font-size: .65rem;
+    cursor: pointer;
+    font-size: 0.65rem;
   }
 }
 
