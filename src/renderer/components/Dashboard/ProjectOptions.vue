@@ -32,18 +32,18 @@
 </template>
 
 <script>
+import _ from "lodash";
 let addingNew = false;
 
 export default {
   props: ["project"],
   data() {
     return {
-      variables: []
+      variables: _.cloneDeep(this.project.variables)
     };
   },
   methods: {
     add() {
-      addingNew = true;
       this.variables.push({
         key: "",
         value: "",
@@ -54,18 +54,14 @@ export default {
       this.variables.splice(idx, 1);
     }
   },
-  created() {
-    this.variables = this.project.variables;
-  },
   watch: {
     variables: {
-      handler(vars) {
-        if (addingNew) {
-          addingNew = false;
-          return;
-        }
-        this.project.variables = vars;
-      },
+      handler: _.debounce(function(val) {
+        this.$store.commit("UPDATE_PROJECT_VARIABLES", {
+          id: this.project.id,
+          variables: val.filter(v => v.key && v.value)
+        });
+      }, 500),
       deep: true
     }
   }
