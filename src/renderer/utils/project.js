@@ -83,11 +83,4 @@ export default class Project {
 
     return "stopped";
   }
-
-  toJson() {
-    return {
-      dir: this.dir,
-      variables: this.variables
-    };
-  }
 }
