@@ -13,13 +13,13 @@
       <tbody>
         <tr v-for="(variable, idx) in variables" :key="idx">
           <td>
-            <input type="checkbox" v-model="variable.active">
+            <input type="checkbox" :checked="variable.active" @change="update(idx, 'active', $event.target.value)">
           </td>
           <td>
-            <input class="input is-small" type="text" v-model="variable.key">
+            <input class="input is-small" type="text" :value="variable.key" @change="update(idx, 'key', $event.target.value)">
           </td>
           <td>
-            <input class="input is-small" type="text" v-model="variable.value">
+            <input class="input is-small" type="text" :value="variable.value" @change="update(idx, 'value', $event.target.value)">
           </td>
           <td valign="center">
             <button class="delete is-small" @click.prevent="remove(idx)"></button>
@@ -32,37 +32,32 @@
 </template>
 
 <script>
-import _ from "lodash";
-let addingNew = false;
-
 export default {
   props: ["project"],
   data() {
     return {
-      variables: _.cloneDeep(this.project.variables)
+      variables: this.project.variables
     };
   },
   methods: {
     add() {
-      this.variables.push({
-        key: "",
-        value: "",
-        active: false
+      this.$store.commit("NEW_PROJECT_VARIABLE", {
+        id: this.project.id
       });
     },
     remove(idx) {
-      this.variables.splice(idx, 1);
-    }
-  },
-  watch: {
-    variables: {
-      handler: _.debounce(function(val) {
-        this.$store.commit("UPDATE_PROJECT_VARIABLES", {
-          id: this.project.id,
-          variables: val.filter(v => v.key && v.value)
-        });
-      }, 500),
-      deep: true
+      this.$store.commit("REMOVE_PROJECT_VARIABLE", {
+        id: this.project.id,
+        idx
+      });
+    },
+    update(idx, key, value) {
+      this.$store.commit("UPDATE_PROJECT_VARIABLE", {
+        id: this.project.id,
+        idx,
+        key,
+        value
+      });
     }
   }
 };

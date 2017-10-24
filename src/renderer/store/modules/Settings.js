@@ -15,14 +15,20 @@ const mutations = {
     state.projects.splice(projectId, 1);
     settings.set("projects", state.projects);
   },
-  UPDATE_PROJECT(state, { id, key, value }) {
-    state.projects[id][key] = value;
-    console.log(state.projects);
-    settings.set("projects", state.projects.map(p => p.toJson()));
+  UPDATE_PROJECT_VARIABLE(state, { id, idx, key, value }) {
+    state.projects[id]["variables"][idx][key] = value;
+    settings.set("projects", state.projects);
   },
-  UPDATE_PROJECT_VARIABLES(state, { id, variables }) {
-    state.projects[id]["variables"] = variables;
-    console.log(state.projects);
+  NEW_PROJECT_VARIABLE(state, { id }) {
+    state.projects[id]["variables"].push({
+      active: false,
+      key: "",
+      value: ""
+    });
+    settings.set("projects", state.projects);
+  },
+  REMOVE_PROJECT_VARIABLE(state, { id, idx }) {
+    state.projects[id].variables.splice(idx, 1);
     settings.set("projects", state.projects);
   },
   UPDATE_SETTING(state, { key, value }) {
