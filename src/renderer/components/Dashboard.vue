@@ -3,7 +3,7 @@
     <aside class="sidebar__menu" slot="sidebar">
       <ul>
         <li v-for="project in projects" :key="project.id">
-          <a href="#" @click.prevent="activeProject = project" :class="`${activeProject == project ? 'is-active' : ''}`">
+          <a href="#" @click.prevent="activeProject = project.id" :class="`${activeProject == project.id ? 'is-active' : ''}`">
             <span :class="`status status--${project.status()}`"></span>
             {{ project.dirName }}
           </a>
@@ -18,7 +18,7 @@
       </router-link>
     </div>
 
-    <project v-for="project in projects" :key="project.id" :project="project" v-show="activeProject == project"></project>
+    <project v-for="project in projects" :key="project.id" :project="project" v-show="activeProject == project.id"></project>
 
   </grid>
 </template>
@@ -31,7 +31,7 @@ import Container from "../utils/docker-container";
 import Mousetrap from "mousetrap";
 
 export default {
-  name: "landing-page",
+  name: "dashboard",
   components: { Grid, Project },
   methods: {
     previousProject() {
@@ -51,7 +51,7 @@ export default {
   created() {
     this.fetchContainers();
     this.listenForContainerUpdates();
-    this.activeProject = this.projects[0];
+    this.activeProject = this.projects[0].id;
   },
   mounted() {
     Mousetrap.bind("meta+shift+[", this.previousProject);
@@ -64,8 +64,8 @@ export default {
       get() {
         return this.$store.state.App.activeProject;
       },
-      set(value) {
-        this.$store.commit("SET_ACTIVE_PROJECT", value);
+      set(projectId) {
+        this.$store.commit("SET_ACTIVE_PROJECT", projectId);
       }
     },
     ...mapGetters(["projects"]),
@@ -78,13 +78,13 @@ export default {
 
 <style lang="scss" scoped>
 .status {
-  --size: .5em;
+  --size: 0.5em;
   background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, .5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--size);
   display: inline-block;
   height: var(--size);
-  margin-right: .2em;
+  margin-right: 0.2em;
   width: var(--size);
 
   &--running {
@@ -101,7 +101,7 @@ export default {
 }
 
 .badge {
-  --size: .5em;
+  --size: 0.5em;
   background-color: #ff3860;
   border-radius: var(--size);
   display: inline-block;
