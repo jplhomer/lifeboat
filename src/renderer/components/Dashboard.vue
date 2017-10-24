@@ -51,7 +51,7 @@ export default {
   created() {
     this.fetchContainers();
     this.listenForContainerUpdates();
-    this.activeProject = this.projects[0];
+    this.activeProject = this.projects[0].id;
   },
   mounted() {
     Mousetrap.bind("meta+shift+[", this.previousProject);
