@@ -7,6 +7,7 @@
 import { mapState } from "vuex";
 import AU from "ansi_up";
 import events from "@/utils/events";
+import Mousetrap from "mousetrap";
 import scrollToBottom from "@/mixins/scroll-to-bottom";
 
 const ansi_up = new AU();
@@ -34,6 +35,9 @@ export default {
       this.logs += logs;
       this.scrollToBottom();
     },
+    clearLogs() {
+      this.logs = "";
+    },
     startLogger() {
       this.logs = "";
 
@@ -52,6 +56,8 @@ export default {
     events.$on("PROJECT_STARTED", () => {
       setTimeout(this.startLogger, 2000);
     });
+
+    Mousetrap.bind("meta+k", this.clearLogs);
   },
   beforeDestroy() {
     this.killLogger();
@@ -70,7 +76,7 @@ export default {
 .log {
   background: #050505;
   color: #fff;
-  font-size: .8em;
+  font-size: 0.8em;
   height: 100%;
   overflow-x: auto;
   padding: 1.25rem 1.5rem;

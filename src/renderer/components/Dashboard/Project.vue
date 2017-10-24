@@ -1,28 +1,33 @@
 <template>
   <div>
     <header>
-      <div class="level is-mobile">
+      <div class="level is-mobile status-bar">
         <div class="level-left">
           <div class="title is-4">
             {{ project.dirName }}
-            <span class="tag" v-show="!running && !starting">Stopped</span>
-            <span class="tag is-success" v-show="running && !missingComposeFile">Running</span>
-            <span class="tag is-warning" v-show="starting">Starting</span>
+            <span :class="{ 'tag': true, 'is-success': running, 'is-warning': starting }">{{ statusText }}</span>
           </div>
         </div>
         <div class="level-right">
           <div class="level-item">
             <div class="field is-grouped">
-              <p class="control">
-                <button @click.prevent="start" :class="`button is-info ${starting ? 'is-loading' : ''}`" v-show="!running">
+              <p class="control" v-if="!running && !restarting">
+                <button @click.prevent="start" :class="{ button: true, 'is-info': true, 'is-loading': starting }">
                   <span class="icon">
                     <i class="fa fa-play-circle"></i>
                   </span>
                   <span>Start</span>
                 </button>
               </p>
-              <p class="control">
-                <button @click.prevent="stop" :class="`button is-danger  ${stopping ? 'is-loading' : ''}`" v-show="partiallyRunning">
+              <p class="control" v-if="partiallyRunning && !starting && !stopping">
+                <button @click.prevent="restart" :class="{ button: true,  'is-loading': restarting}" title="Restart">
+                  <span class="icon">
+                  <i class="fa fa-refresh"></i>
+                  </span>
+                </button>
+              </p>
+              <p class="control" v-if="partiallyRunning">
+                <button @click.prevent="stop" :class="{ button: true, 'is-danger': true, 'is-loading': stopping}">
                   <span class="icon">
                     <i class="fa fa-stop-circle"></i>
                   </span>
@@ -89,7 +94,8 @@ const status = {
   STOPPING: "stopping",
   STOPPED: "stopped",
   STARTING: "starting",
-  RUNNING: "running"
+  RUNNING: "running",
+  RESTARTING: "restarting"
 };
 
 export default {
@@ -116,7 +122,7 @@ export default {
       events.$emit("PROJECT_STARTED");
       this.$docker
         .startProject(this.project.dir)
-        .then(() => (this.projectStatus = status.STARTED))
+        .then(() => (this.projectStatus = status.RUNNING))
         .catch(e => console.error(e));
     },
     stop() {
@@ -124,10 +130,17 @@ export default {
       this.$docker
         .stopProject(this.project.dir)
         .then(() => (this.projectStatus = status.STOPPED))
-        .catch(e => {
-          // TODO: Fetch status?
-          console.error(e);
-        });
+        .catch(e => console.error(e));
+    },
+    restart() {
+      this.projectStatus = status.RESTARTING;
+      this.$docker
+        .restartProject(this.project.dir)
+        .then(() => {
+          this.projectStatus = status.RUNNING;
+          this.$store.dispatch("fetchContainers");
+        })
+        .catch(e => console.error(e));
     },
     setActiveTab(tab) {
       this.setTabAreaHeight();
@@ -144,7 +157,7 @@ export default {
       return this.projectStatus === status.STARTING;
     },
     running() {
-      return this.project.running();
+      return this.project.running() && !this.missingComposeFile;
     },
     partiallyRunning() {
       return this.project.containers().some(c => c.state === "running");
@@ -152,8 +165,22 @@ export default {
     stopping() {
       return this.projectStatus === status.STOPPING;
     },
+    restarting() {
+      return this.projectStatus === status.RESTARTING;
+    },
     missingComposeFile() {
       return !this.project.config.data;
+    },
+    statusText() {
+      if (this.starting) {
+        return "Starting";
+      }
+
+      if (this.running) {
+        return "Running";
+      }
+
+      return "Stopped";
     },
     ...mapGetters(["containers"])
   },
@@ -170,6 +197,12 @@ export default {
 <style lang="scss">
 header {
   padding: 1em;
+}
+
+.status-bar {
+  .level-item:last-child {
+    margin-right: 0;
+  }
 }
 
 .services {

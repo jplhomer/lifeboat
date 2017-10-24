@@ -6,7 +6,11 @@ A Docker UI for projects. **[Download for Mac](https://github.com/jplhomer/lifeb
 
 ## Development
 
-This is an Electron app, scaffolded with [electron-vue](https://github.com/SimulatedGREG/electron-vue). You will want to have Node/Yarn installed locally.
+This is an Electron app, scaffolded with [electron-vue](https://github.com/SimulatedGREG/electron-vue). 
+
+- You will need to have Node/Yarn installed locally.
+- You will need to have [Docker for Mac](https://docs.docker.com/docker-for-mac/install/) installed and running.
+- You will need a test project with a valid `docker-compose.yml` file. Consider using one of the [example Docker Compose projects](https://docs.docker.com/compose/) to test.
 
 #### Build Setup
 
