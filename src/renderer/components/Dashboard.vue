@@ -35,16 +35,12 @@ export default {
   components: { Grid, Project },
   methods: {
     previousProject() {
-      const idx = this.projects.indexOf(this.activeProject);
-      this.activeProject =
-        idx === 0 ? this.projects.slice().pop() : this.projects[idx - 1];
+      const idx = this.activeProject;
+      this.activeProject = idx === 0 ? this.projects.length - 1 : idx - 1;
     },
     nextProject() {
-      const idx = this.projects.indexOf(this.activeProject);
-      this.activeProject =
-        idx === this.projects.length - 1
-          ? this.projects[0]
-          : this.projects[idx + 1];
+      const idx = this.activeProject;
+      this.activeProject = idx === this.projects.length - 1 ? 0 : idx + 1;
     },
     ...mapActions(["fetchContainers", "listenForContainerUpdates"])
   },
