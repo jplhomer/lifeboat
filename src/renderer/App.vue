@@ -19,7 +19,7 @@ export default {
     }
 
     // Ensure projects are using correct schema
-    this.$store.dispatch("maybeMigrateProjectSchema");
+    this.$store.dispatch("migrateProjectSchema");
 
     // Check for available updates
     ipcRenderer.on("autoupdate-update-downloaded", () => {

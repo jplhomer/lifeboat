@@ -26,7 +26,7 @@ const getters = {
 };
 
 const actions = {
-  maybeMigrateProjectSchema({ getters, commit, state }) {
+  migrateProjectSchema({ getters, commit, state }) {
     if (state.projectsSchemaVersion !== PROJECTS_SCHEMA_VERSION) {
       commit("UPDATE_SETTING", {
         key: "projects",
