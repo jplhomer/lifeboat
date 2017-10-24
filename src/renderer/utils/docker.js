@@ -8,8 +8,9 @@ export default class Docker {
    * Start a Docker Compose project
    * @param {string} dir
    */
-  startProject(dir) {
-    return DockerCompose.async(dir, ["up", "-d"]);
+  startProject(dir, vars = []) {
+    const env = parseVariables(vars);
+    return DockerCompose.async(dir, ["up", "-d"], env);
   }
 
   /**
@@ -39,8 +40,9 @@ export default class Docker {
     return DockerCompose.sync(dir, ["logs", "-f"]);
   }
 
-  run(dir, service, commands) {
-    return DockerCompose.sync(dir, ["run", "--rm", service, ...commands]);
+  run(dir, service, commands, vars = []) {
+    const env = parseVariables(vars);
+    return DockerCompose.sync(dir, ["run", "--rm", service, ...commands], env);
   }
 
   /**
@@ -65,4 +67,19 @@ export default class Docker {
       });
     });
   }
+}
+
+/**
+ * Return an object of key/value pairs from an array of project variables
+ * @param {Array} vars
+ */
+function parseVariables(vars) {
+  if (!vars.length) {
+    return {};
+  }
+
+  return vars.reduce((memo, v) => {
+    memo[v.key] = v.value;
+    return memo;
+  }, {});
 }

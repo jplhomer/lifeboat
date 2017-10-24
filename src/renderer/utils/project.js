@@ -35,6 +35,10 @@ export default class Project {
       .replace(/-/g, "");
   }
 
+  get activeVariables() {
+    return this.variables.filter(v => v.active && v.key && v.value);
+  }
+
   /**
    * Get the names of services associated with this project
    */

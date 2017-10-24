@@ -121,7 +121,7 @@ export default {
       this.projectStatus = status.STARTING;
       events.$emit("PROJECT_STARTED");
       this.$docker
-        .startProject(this.project.dir)
+        .startProject(this.project.dir, this.project.activeVariables)
         .then(() => (this.projectStatus = status.RUNNING))
         .catch(e => console.error(e));
     },

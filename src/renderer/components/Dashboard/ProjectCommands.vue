@@ -62,7 +62,8 @@ export default {
       this.cmd = this.$docker.run(
         this.project.dir,
         this.service,
-        this.command.split(" ")
+        this.command.split(" "),
+        this.project.activeVariables
       );
 
       this.command = "";

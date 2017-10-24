@@ -35,6 +35,11 @@ const mutations = {
 const getters = {
   projects(state) {
     return state.projects.map((p, i) => new Project(p, i));
+  },
+  activeProjectVars: (state, getters) => id => {
+    return getters.projects
+      .find(p => p.id == id)
+      .variables.filter(v => v.active && v.key && v.value);
   }
 };
 
