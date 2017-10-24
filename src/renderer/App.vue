@@ -18,6 +18,9 @@ export default {
       this.$router.push("/settings");
     }
 
+    // Ensure projects are using correct schema
+    this.$store.dispatch("migrateProjectSchema");
+
     // Check for available updates
     ipcRenderer.on("autoupdate-update-downloaded", () => {
       this.$store.commit("MARK_UPDATE_AVAILABLE", true);
