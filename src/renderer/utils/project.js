@@ -83,4 +83,15 @@ export default class Project {
 
     return "stopped";
   }
+
+  /**
+   * Get data suitable for storing
+   */
+  toJson() {
+    return {
+      id: this.id,
+      dir: this.dir,
+      variables: this.variables
+    };
+  }
 }

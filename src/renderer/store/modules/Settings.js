@@ -16,11 +16,11 @@ const mutations = {
     settings.set("projects", state.projects);
   },
   UPDATE_PROJECT_VARIABLE(state, { id, idx, key, value }) {
-    state.projects[id]["variables"][idx][key] = value;
+    state.projects[id].variables[idx][key] = value;
     settings.set("projects", state.projects);
   },
   NEW_PROJECT_VARIABLE(state, { id }) {
-    state.projects[id]["variables"].push({
+    state.projects[id].variables.push({
       active: false,
       key: "",
       value: ""
@@ -43,8 +43,20 @@ const getters = {
   }
 };
 
+const actions = {
+  maybeMigrateProjectSchema({ getters, commit, state }) {
+    if (state.projects.some(p => typeof p === "string")) {
+      commit("UPDATE_SETTING", {
+        key: "projects",
+        value: getters.projects.map(p => p.toJson())
+      });
+    }
+  }
+};
+
 export default {
   state,
   mutations,
-  getters
+  getters,
+  actions
 };
