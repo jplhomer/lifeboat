@@ -1,5 +1,6 @@
 import DockerConfig from "@/utils/docker-config";
 import settings from "electron-settings";
+import store from "@/store";
 
 export default class Project {
   constructor(data, id) {
