@@ -6,6 +6,8 @@ import router from "./router";
 import store from "./store";
 import Docker from "./utils/docker";
 
+import { remote } from "electron";
+
 import "./assets/vars.scss";
 
 if (!process.env.IS_WEB) Vue.use(require("vue-electron"));
@@ -21,13 +23,12 @@ new Vue({
   template: "<App/>"
 }).$mount("#app");
 
-// Enable devtools in production - REMOVE
-import { remote } from "electron";
+if (process.env.NODE_ENV === "production") {
+  remote.globalShortcut.register("CommandOrControl+Alt+i", () => {
+    remote.BrowserWindow.getFocusedWindow().webContents.openDevTools();
+  });
 
-remote.globalShortcut.register("CommandOrControl+Shift+K", () => {
-  remote.BrowserWindow.getFocusedWindow().webContents.openDevTools();
-});
-
-window.addEventListener("beforeunload", () => {
-  remote.globalShortcut.unregisterAll();
-});
+  window.addEventListener("beforeunload", () => {
+    remote.globalShortcut.unregisterAll();
+  });
+}
