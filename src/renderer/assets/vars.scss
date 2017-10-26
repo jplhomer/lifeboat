@@ -1,15 +1,30 @@
+$white-ter: #fdfdff;
+$blue: #63949a;
+$turquoise: $blue;
+$red: #cb171b;
+$yellow: #eca400;
+$grey-darker: #393d3f;
+
 :root {
-  --color-blue: #335fff;
+  --color-blue: $blue;
+  --color-light: $white-ter;
+  --color-red: $red;
+  --color-yellow: $yellow;
+  --color-dark: $grey-darker;
   --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", Arial, sans-serif;
 }
 
-$blue: #335fff;
 $primary: $blue;
 $family-sans-serif: var(--font-family-sans-serif);
 @import "~bulma";
 
 html {
   -webkit-font-smoothing: auto;
+  font-size: 15px;
+}
+
+:root {
+  --color-black: $black;
 }
