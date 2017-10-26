@@ -29,6 +29,8 @@ export default class DockerCompose {
             reject(error);
           }
 
+          // Docker Compose ships its status logs to stderr.
+          // Weird, right? https://github.com/docker/compose/issues/5296
           resolve(stdout || stderr);
         }
       );
