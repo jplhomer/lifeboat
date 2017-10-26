@@ -112,7 +112,11 @@ export default {
       this.$docker
         .startProject(this.project.dir)
         .then(() => (this.projectStatus = status.RUNNING))
-        .catch(e => console.error(e));
+        .catch(e => {
+          this.projectStatus = status.STOPPED;
+          events.$emit("PROJECT_ERRORED", e);
+          console.error(e);
+        });
     },
     stop() {
       this.projectStatus = status.STOPPING;

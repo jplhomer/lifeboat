@@ -53,8 +53,15 @@ export default {
   created() {
     this.startLogger();
 
+    let timer;
+
     events.$on("PROJECT_STARTED", () => {
-      setTimeout(this.startLogger, 2000);
+      timer = setTimeout(this.startLogger, 2000);
+    });
+
+    events.$on("PROJECT_ERRORED", e => {
+      clearTimeout(timer);
+      this.addLogs(e);
     });
 
     Mousetrap.bind("meta+k", this.clearLogs);
