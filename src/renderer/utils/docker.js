@@ -9,7 +9,15 @@ export default class Docker {
    * @param {string} dir
    */
   startProject(dir) {
-    return DockerCompose.async(dir, ["up", "-d"]);
+    return DockerCompose.sync(dir, ["up", "-d"]);
+  }
+
+  /**
+   * Builds a Docker Compose project
+   * @param {string} dir
+   */
+  buildProject(dir) {
+    return DockerCompose.sync(dir, ["build"]);
   }
 
   /**
@@ -17,7 +25,7 @@ export default class Docker {
    * @param {string} dir
    */
   stopProject(dir) {
-    return DockerCompose.async(dir, ["down"]);
+    return DockerCompose.sync(dir, ["down"]);
   }
 
   /**
@@ -25,7 +33,7 @@ export default class Docker {
    * @param {string} dir
    */
   restartProject(dir) {
-    return DockerCompose.async(dir, ["restart"]);
+    return DockerCompose.sync(dir, ["restart"]);
   }
 
   /**

@@ -38,6 +38,9 @@ const actions = {
 const getters = {
   containers(state) {
     return state.containers;
+  },
+  activeProject(state) {
+    return state.activeProject;
   }
 };
 
