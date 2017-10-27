@@ -241,6 +241,7 @@ export default {
     ...mapGetters(["containers", "activeProject"])
   },
   created() {
+    // There is a delay on this for some reason.
     setTimeout(() => {
       if (this.running || this.partiallyRunning) {
         this.startLogs();
@@ -259,6 +260,17 @@ export default {
       if (newProjectId == this.project.id) {
         this.setTabAreaHeight();
       }
+    },
+    running(value) {
+      // Attempt to catch a project started outside of Lifeboat and watch the logs
+      setTimeout(() => {
+        if (value && !this.process) {
+          console.log(
+            `Starting logs for ${this.project.name} outside Lifeboat`
+          );
+          this.startLogs();
+        }
+      }, 1000);
     }
   }
 };
