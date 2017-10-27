@@ -123,7 +123,7 @@ export default {
     return {
       activeTab: "logs",
       projectStatus: status.STOPPED,
-      logs: "",
+      logs: "Click Start to see project logs!",
       process: null
     };
   },
@@ -132,6 +132,7 @@ export default {
       return this.project.containers().find(c => c.service === service);
     },
     start() {
+      this.logs = "";
       this.projectStatus = status.STARTING;
 
       this.startProcess(() => this.$docker.startProject(this.project.dir))
@@ -195,6 +196,7 @@ export default {
      * Start getting logs for an already-running project
      */
     startLogs() {
+      this.logs = "";
       this.process = this.$docker.logs(this.project.dir);
       this.logProcess();
     },
