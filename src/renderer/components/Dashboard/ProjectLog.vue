@@ -6,8 +6,6 @@
 <script>
 import { mapGetters } from "vuex";
 import AU from "ansi_up";
-import events from "@/utils/events";
-import Mousetrap from "mousetrap";
 import scrollToBottom from "@/mixins/scroll-to-bottom";
 
 const ansi_up = new AU();
