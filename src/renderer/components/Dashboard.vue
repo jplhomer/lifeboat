@@ -13,7 +13,7 @@
 
     <div class="sidebar__actions" slot="sidebar">
       <router-link to="settings" class="icon is-medium" title="Settings">
-        <span v-show="updateAvailable" class="badge"></span>
+        <span v-show="updateAvailable || updateDownloaded" class="badge"></span>
         <i class="fa fa-lg fa-cog"></i>
       </router-link>
     </div>
@@ -66,7 +66,8 @@ export default {
     },
     ...mapGetters(["projects"]),
     ...mapState({
-      updateAvailable: state => state.App.updateAvailable
+      updateAvailable: state => state.App.updateAvailable,
+      updateDownloaded: state => state.App.updateDownloaded
     })
   }
 };

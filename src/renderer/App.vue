@@ -23,6 +23,10 @@ export default {
 
     // Check for available updates
     ipcRenderer.on("autoupdate-update-downloaded", () => {
+      this.$store.commit("MARK_UPDATE_DOWNLOADED", true);
+    });
+
+    ipcRenderer.on("autoupdate-update-available", () => {
       this.$store.commit("MARK_UPDATE_AVAILABLE", true);
     });
 

@@ -5,6 +5,7 @@ import Container from "@/utils/docker-container";
 const state = {
   containers: [],
   updateAvailable: false,
+  updateDownloaded: false,
   activeProject: 0
 };
 
@@ -17,6 +18,9 @@ const mutations = {
   },
   MARK_UPDATE_AVAILABLE(state, value) {
     state.updateAvailable = value;
+  },
+  MARK_UPDATE_DOWNLOADED(state, value) {
+    state.updateDownloaded = value;
   }
 };
 
