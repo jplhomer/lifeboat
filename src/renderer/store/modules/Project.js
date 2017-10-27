@@ -9,8 +9,9 @@ const state = {
 };
 
 const mutations = {
-  ADD_PROJECT(state, project) {
-    state.projects.push(project);
+  ADD_PROJECT(state, dir) {
+    const project = new Project(dir, state.projects.length);
+    state.projects.push(project.toJson());
     settings.set("projects", state.projects);
   },
   REMOVE_PROJECT(state, projectId) {
