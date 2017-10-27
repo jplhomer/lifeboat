@@ -1,14 +1,11 @@
 <template>
   <div class="service">
     <div class="service__name">
-      <span class="icon has-text-success" v-show="running && !temp">
+      <span class="icon has-text-success" v-show="running">
         <i class="fa fa-check-square"></i>
       </span>
       <span class="icon" v-show="starting">
         <i class="fa fa-refresh fa-spin"></i>
-      </span>
-      <span class="icon service-temp has-text-warning" v-show="temp">
-        <i class="fa fa-check-square"></i>
       </span>
       <span class="icon service-stopped" v-show="stopped">
         <i class="fa fa-check-square"></i>
@@ -40,9 +37,6 @@ export default {
     },
     stopped() {
       return !this.container || (!this.running && !this.starting);
-    },
-    temp() {
-      return this.container && this.container.temp;
     },
     ports() {
       if (this.container) {

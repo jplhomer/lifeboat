@@ -46,6 +46,7 @@ export default class Project {
   containers() {
     return store.state.App.containers
       .filter(c => c.project === this.name)
+      .filter(c => !c.temp)
       .filter(c => this.services().includes(c.service));
   }
 
