@@ -11,14 +11,37 @@
         <div class="level-right">
           <div class="level-item">
             <div class="field is-grouped">
-              <p class="control" v-if="!running && !restarting">
-                <button @click.prevent="start" :class="{ button: true, 'is-info': true, 'is-loading': starting }">
-                  <span class="icon">
-                    <i class="fa fa-play-circle"></i>
-                  </span>
-                  <span>Start</span>
-                </button>
-              </p>
+              <div class="control" v-if="!running && !restarting">
+                <div :class="{ dropdown: true, 'is-hoverable': !starting, 'is-right': true }">
+                  <div class="dropdown-trigger">
+                    <button @click.prevent="start" :class="{ button: true, 'is-info': true, 'is-loading': starting }" aria-haspopup="true" aria-controls="start-button">
+                      <span class="icon">
+                        <i class="fa fa-play-circle"></i>
+                      </span>
+                      <span>Start</span>
+                      <span class="icon is-small">
+                        <i class="fa fa-angle-down" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="dropdown-menu" id="start-button" role="menu">
+                    <div class="dropdown-content">
+                      <a href="#" class="dropdown-item" @click.prevent="start">
+                        <span class="icon">
+                          <i class="fa fa-play-circle"></i>
+                        </span>
+                        Start
+                      </a>
+                      <a href="#" class="dropdown-item" @click.prevent="buildAndStart">
+                        <span class="icon">
+                          <i class="fa fa-archive"></i>
+                        </span>
+                        Build and Start
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <p class="control" v-if="partiallyRunning && !starting && !stopping">
                 <button @click.prevent="restart" :class="{ button: true,  'is-loading': restarting}" title="Restart">
                   <span class="icon">
@@ -63,7 +86,7 @@
     </div>
 
     <div class="tab-area" ref="tabArea" v-show="!missingComposeFile">
-      <project-log :project="project" v-show="activeTab === 'logs'"></project-log>
+      <project-log :project="project" :logs="logs" v-show="activeTab === 'logs'"></project-log>
       <project-readme :project="project" v-show="activeTab === 'about'"></project-readme>
       <project-commands :project="project" v-show="activeTab === 'commands'"></project-commands>
     </div>
@@ -99,7 +122,9 @@ export default {
   data() {
     return {
       activeTab: "logs",
-      projectStatus: status.STOPPED
+      projectStatus: status.STOPPED,
+      logs: "Click Start to see project logs!",
+      process: null
     };
   },
   methods: {
@@ -107,29 +132,35 @@ export default {
       return this.project.containers().find(c => c.service === service);
     },
     start() {
+      this.logs = "";
       this.projectStatus = status.STARTING;
-      events.$emit("PROJECT_STARTED");
-      this.$docker
-        .startProject(this.project.dir)
-        .then(() => (this.projectStatus = status.RUNNING))
-        .catch(e => {
-          this.projectStatus = status.STOPPED;
-          events.$emit("PROJECT_ERRORED", e);
-          console.error(e);
-        });
+
+      this.startProcess(() => this.$docker.startProject(this.project.dir))
+        .then(() => {
+          this.projectStatus = status.RUNNING;
+          this.startLogs();
+        })
+        .catch(() => (this.projectStatus = status.STOPPED));
+    },
+    buildAndStart() {
+      this.projectStatus = status.STARTING;
+
+      this.startProcess(() => this.$docker.buildProject(this.project.dir))
+        .then(() => this.start())
+        .catch(() => (this.projectStatus = status.STOPPED));
     },
     stop() {
       this.projectStatus = status.STOPPING;
-      this.$docker
-        .stopProject(this.project.dir)
+      this.startProcess(() => this.$docker.stopProject(this.project.dir))
         .then(() => (this.projectStatus = status.STOPPED))
-        .catch(e => console.error(e));
+        .catch(() => (this.projectStatus = status.STOPPED));
     },
     restart() {
       this.projectStatus = status.RESTARTING;
-      this.$docker
-        .restartProject(this.project.dir)
+      this.startProcess(() => this.$docker.restartProject(this.project.dir))
         .then(() => {
+          // For some reason, the logs persist from the previous running app?
+          // So we don't need to call startLogs() again.
           this.projectStatus = status.RUNNING;
           this.$store.dispatch("fetchContainers");
         })
@@ -143,6 +174,38 @@ export default {
       const height =
         window.innerHeight - this.$refs.tabArea.getBoundingClientRect().top;
       this.$refs.tabArea.style.height = `${height}px`;
+    },
+    /**
+     * Starts a child process passed as a closure, then prints the output of the
+     * process, and resolves or rejects based on the exit code returned.
+     */
+    startProcess(method) {
+      this.process = method.call();
+      this.logProcess();
+      return new Promise((resolve, reject) => {
+        this.process.on("exit", signal => {
+          if (signal === 1) {
+            reject();
+          } else {
+            resolve();
+          }
+        });
+      });
+    },
+    /**
+     * Start getting logs for an already-running project
+     */
+    startLogs() {
+      this.logs = "";
+      this.process = this.$docker.logs(this.project.dir);
+      this.logProcess();
+    },
+    /**
+     * Log out a process's output. Docker Compose outputs a lot of stuff on stderr.
+     */
+    logProcess() {
+      this.process.stdout.on("data", d => (this.logs += d.toString()));
+      this.process.stderr.on("data", d => (this.logs += d.toString()));
     }
   },
   computed: {
@@ -175,7 +238,15 @@ export default {
 
       return "Stopped";
     },
-    ...mapGetters(["containers"])
+    ...mapGetters(["containers", "activeProject"])
+  },
+  created() {
+    // There is a delay on this for some reason.
+    setTimeout(() => {
+      if (this.running || this.partiallyRunning) {
+        this.startLogs();
+      }
+    }, 500);
   },
   mounted() {
     this.setTabAreaHeight();
@@ -183,6 +254,24 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.setTabAreaHeight);
+  },
+  watch: {
+    activeProject(newProjectId) {
+      if (newProjectId == this.project.id) {
+        this.setTabAreaHeight();
+      }
+    },
+    running(value) {
+      // Attempt to catch a project started outside of Lifeboat and watch the logs
+      setTimeout(() => {
+        if (value && !this.process) {
+          console.log(
+            `Starting logs for ${this.project.name} outside Lifeboat`
+          );
+          this.startLogs();
+        }
+      }, 1000);
+    }
   }
 };
 </script>

@@ -4,21 +4,18 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 import AU from "ansi_up";
-import events from "@/utils/events";
-import Mousetrap from "mousetrap";
 import scrollToBottom from "@/mixins/scroll-to-bottom";
 
 const ansi_up = new AU();
 let logger;
 
 export default {
-  props: ["project"],
+  props: ["project", "logs"],
   mixins: [scrollToBottom],
   data() {
     return {
-      logs: "",
       isScrolledUp: false
     };
   },
@@ -26,52 +23,14 @@ export default {
     logOutput() {
       return ansi_up.ansi_to_html(this.logs);
     },
-    ...mapState({
-      activeProject: state => state.App.activeProject
-    })
-  },
-  methods: {
-    addLogs(logs) {
-      this.logs += logs;
-      this.scrollToBottom();
-    },
-    clearLogs() {
-      this.logs = "";
-    },
-    startLogger() {
-      this.logs = "";
-
-      logger = this.$docker.logs(this.project.dir);
-      logger.stdout.on("data", data => {
-        this.addLogs(data.toString());
-      });
-    },
-    killLogger() {
-      if (logger) logger.kill();
-    }
-  },
-  created() {
-    this.startLogger();
-
-    let timer;
-
-    events.$on("PROJECT_STARTED", () => {
-      timer = setTimeout(this.startLogger, 2000);
-    });
-
-    events.$on("PROJECT_ERRORED", e => {
-      clearTimeout(timer);
-      this.addLogs(e);
-    });
-
-    Mousetrap.bind("meta+k", this.clearLogs);
-  },
-  beforeDestroy() {
-    this.killLogger();
+    ...mapGetters(["activeProject"])
   },
   watch: {
-    activeProject(newProject) {
-      if (newProject == this.project) {
+    logs() {
+      this.scrollToBottom();
+    },
+    activeProject(newProjectId) {
+      if (newProjectId == this.project.id) {
         this.scrollToBottom();
       }
     }
