@@ -123,7 +123,7 @@ export default {
     return {
       activeTab: "logs",
       projectStatus: status.STOPPED,
-      logs: "Click Start to see project logs!",
+      logs: "Click Start to see project logs",
       process: null
     };
   },
