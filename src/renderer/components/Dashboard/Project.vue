@@ -158,6 +158,8 @@ export default {
       this.projectStatus = status.RESTARTING;
       this.startProcess(() => this.$docker.restartProject(this.project.dir))
         .then(() => {
+          // For some reason, the logs persist from the previous running app?
+          // So we don't need to call startLogs() again.
           this.projectStatus = status.RUNNING;
           this.$store.dispatch("fetchContainers");
         })
