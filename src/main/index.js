@@ -160,6 +160,7 @@ ipcMain.on("autoupdate-check", (e, data) => {
     setTimeout(() => {
       // Send a test response instead
       // mainWindow.webContents.send("autoupdate-update-downloaded", {});
+      // mainWindow.webContents.send("autoupdate-update-available", {});
       mainWindow.webContents.send("autoupdate-update-not-available", {});
     }, 500);
   }
