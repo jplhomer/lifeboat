@@ -2,6 +2,10 @@
 
 import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
+import fixPath from "fix-path";
+
+// Updates the process path variable for build
+fixPath();
 
 /**
  * Set `__static` path to static files in production
