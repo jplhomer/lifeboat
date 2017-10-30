@@ -22,13 +22,3 @@ new Vue({
   store,
   template: "<App/>"
 }).$mount("#app");
-
-if (process.env.NODE_ENV === "production") {
-  remote.globalShortcut.register("CommandOrControl+Alt+i", () => {
-    remote.BrowserWindow.getFocusedWindow().webContents.openDevTools();
-  });
-
-  window.addEventListener("beforeunload", () => {
-    remote.globalShortcut.unregisterAll();
-  });
-}

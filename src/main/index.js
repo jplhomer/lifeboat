@@ -107,6 +107,15 @@ function setUpMenu() {
           label: "Select All",
           accelerator: "CmdOrCtrl+A",
           selector: "selectAll:"
+        },
+        { type: "separator" },
+        {
+          label: "Open Developer Tools",
+          accelerator:
+            process.platform === "darwin" ? "Alt+Cmd+I" : "Ctrl+Shift+I",
+          click() {
+            mainWindow.webContents.toggleDevTools();
+          }
         }
       ]
     }
