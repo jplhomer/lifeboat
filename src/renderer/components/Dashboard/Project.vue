@@ -143,6 +143,7 @@ export default {
         .catch(() => (this.projectStatus = status.STOPPED));
     },
     buildAndStart() {
+      this.logs = "";
       this.projectStatus = status.STARTING;
 
       this.startProcess(() => this.$docker.buildProject(this.project.dir))
