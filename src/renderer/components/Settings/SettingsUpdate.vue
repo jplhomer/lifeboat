@@ -63,7 +63,7 @@ export default {
     });
 
     ipcRenderer.on("autoupdate-update-downloaded", (e, data) => {
-      this.downloading == false;
+      this.downloading = false;
       this.checkingForUpdates = false;
     });
   }
