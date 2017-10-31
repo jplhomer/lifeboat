@@ -8,7 +8,7 @@ import Docker from "./utils/docker";
 
 import { remote } from "electron";
 
-import "./assets/vars.scss";
+import "./assets/app.scss";
 
 if (!process.env.IS_WEB) Vue.use(require("vue-electron"));
 Vue.http = Vue.prototype.$http = axios;

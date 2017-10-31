@@ -40,7 +40,7 @@ export default {
 
 <style scoped>
 .log {
-  background: var(--color-black);
+  background: var(--black-gradient);
   color: #fff;
   font-size: 0.8em;
   height: 100%;

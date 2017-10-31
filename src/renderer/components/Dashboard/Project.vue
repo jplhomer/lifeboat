@@ -10,11 +10,11 @@
         </div>
         <div class="level-right">
           <div class="level-item">
-            <div class="field is-grouped">
+            <div class="field has-addons">
               <div class="control" v-if="!running && !restarting">
                 <div :class="{ dropdown: true, 'is-hoverable': !starting, 'is-right': true }">
                   <div class="dropdown-trigger">
-                    <button @click.prevent="start" :class="{ button: true, 'is-info': true, 'is-loading': starting }" aria-haspopup="true" aria-controls="start-button">
+                    <button @click.prevent="start" :class="{ button: true, 'is-primary': true, 'is-loading': starting }" aria-haspopup="true" aria-controls="start-button">
                       <span class="icon">
                         <i class="fa fa-play-circle"></i>
                       </span>
@@ -50,11 +50,10 @@
                 </button>
               </p>
               <p class="control" v-if="partiallyRunning">
-                <button @click.prevent="stop" :class="{ button: true, 'is-danger': true, 'is-loading': stopping}">
+                <button @click.prevent="stop" :class="{ button: true, 'is-loading': stopping}" title="Stop">
                   <span class="icon">
                     <i class="fa fa-stop-circle"></i>
                   </span>
-                  <span>Stop</span>
                 </button>
               </p>
             </div>
@@ -289,7 +288,7 @@ header {
 }
 
 .services {
-  background-color: #efefef;
+  background-color: #eef1f1;
   padding: 1rem;
 
   .column {
