@@ -14,11 +14,6 @@ let logger;
 export default {
   props: ["project", "logs"],
   mixins: [scrollToBottom],
-  data() {
-    return {
-      isScrolledUp: false
-    };
-  },
   computed: {
     logOutput() {
       return ansi_up.ansi_to_html(this.logs);
