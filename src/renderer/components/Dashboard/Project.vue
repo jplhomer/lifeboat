@@ -14,11 +14,10 @@
               <div class="control" v-if="!running && !restarting">
                 <div :class="{ dropdown: true, 'is-hoverable': !starting, 'is-right': true }">
                   <div class="dropdown-trigger">
-                    <button @click.prevent="start" :class="{ button: true, 'is-primary': true, 'is-loading': starting }" aria-haspopup="true" aria-controls="start-button">
+                    <button @click.prevent="start" :class="{ button: true, 'is-primary': true, 'is-loading': starting }" aria-haspopup="true" aria-controls="start-button" title="Start">
                       <span class="icon">
-                        <i class="fa fa-play-circle"></i>
+                        <i class="fa fa-play"></i>
                       </span>
-                      <span>Start</span>
                       <span class="icon is-small">
                         <i class="fa fa-angle-down" aria-hidden="true"></i>
                       </span>
@@ -28,7 +27,7 @@
                     <div class="dropdown-content">
                       <a href="#" class="dropdown-item" @click.prevent="start">
                         <span class="icon">
-                          <i class="fa fa-play-circle"></i>
+                          <i class="fa fa-play"></i>
                         </span>
                         Start
                       </a>
@@ -52,7 +51,7 @@
               <p class="control" v-if="partiallyRunning">
                 <button @click.prevent="stop" :class="{ button: true, 'is-loading': stopping}" title="Stop">
                   <span class="icon">
-                    <i class="fa fa-stop-circle"></i>
+                    <i class="fa fa-stop"></i>
                   </span>
                 </button>
               </p>
