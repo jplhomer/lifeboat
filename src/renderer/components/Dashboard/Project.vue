@@ -72,14 +72,29 @@
 
     <div class="tabs" v-show="!missingComposeFile">
       <ul>
-        <li :class="`${activeTab === 'logs' ? 'is-active' : ''}`">
-          <a href="#" @click.prevent="setActiveTab('logs')">Logs</a>
+        <li :class="{'is-active': activeTab === 'logs'}">
+          <a href="#" @click.prevent="setActiveTab('logs')">
+            <span class="icon is-small">
+              <i class="fa fa-eye"></i>
+            </span>
+            <span>Logs</span>
+          </a>
         </li>
-        <li :class="`${activeTab === 'about' ? 'is-active' : ''}`">
-          <a href="#" @click.prevent="setActiveTab('about')">About</a>
+        <li :class="{'is-active': activeTab === 'about'}">
+          <a href="#" @click.prevent="setActiveTab('about')">
+            <span class="icon is-small">
+              <i class="fa fa-info-circle"></i>
+            </span>
+            <span>About</span>
+          </a>
         </li>
-        <li :class="`${activeTab === 'commands' ? 'is-active' : ''}`">
-          <a href="#" @click.prevent="setActiveTab('commands')">Commands</a>
+        <li :class="{'is-active': activeTab === 'commands'}">
+          <a href="#" @click.prevent="setActiveTab('commands')">
+            <span class="icon is-small">
+              <i class="fa fa-play-circle"></i>
+            </span>
+            <span>Commands</span>
+          </a>
         </li>
       </ul>
     </div>
