@@ -1,16 +1,20 @@
 import Vue from "vue";
 
 const REF = "scrollToBottom";
-let isScrolledUp = false;
 
 /**
  * Use the scrollToBottom mixin by including it in the component and marking
  * the scroll area with ref="scrollToBottom"
  */
 export default {
+  data() {
+    return {
+      isScrolledUp: false
+    };
+  },
   methods: {
     scrollToBottom() {
-      if (isScrolledUp) {
+      if (this.isScrolledUp) {
         return;
       }
 
