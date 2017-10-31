@@ -59,7 +59,7 @@ export default {
     }
 
     a.is-active {
-      background-color: hsla(176, 32%, 60%, 1);
+      background-color: hsl(191, 42%, 60%);
       color: #fff;
     }
 

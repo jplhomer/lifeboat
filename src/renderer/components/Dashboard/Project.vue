@@ -288,7 +288,7 @@ header {
 }
 
 .services {
-  background-color: #eef1f1;
+  background-color: var(--color-primary-white);
   padding: 1rem;
 
   .column {

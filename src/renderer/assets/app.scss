@@ -1,14 +1,14 @@
-@import url("https://fonts.googleapis.com/css?family=Lato|Source+Sans+Pro");
+@import url("https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,900");
 
-$primary: #57a8a3;
-// $family-sans-serif: "Source Sans Pro", sans-serif;
+$primary: #4aa1b5;
 $family-sans-serif: "Lato";
 $blue: $primary;
+$white-ter: hsl(191, 25%, 95%);
 @import "~bulma";
 
 :root {
   --color-primary: $primary;
-  --color-primary-white: #eef1f1;
+  --color-primary-white: hsl(191, 25%, 95%);
   --color-blue: $blue;
   --color-light: $white-ter;
   --color-red: $red;
