@@ -5,7 +5,7 @@
         <div class="level-left">
           <div class="title is-4">
             {{ project.dirName }}
-            <span :class="{ 'tag': true, 'is-success': running, 'is-warning': starting }">{{ statusText }}</span>
+            <span :class="{ 'tag': true, 'is-primary': running, 'is-warning': starting }">{{ statusText }}</span>
           </div>
         </div>
         <div class="level-right">
