@@ -44,7 +44,7 @@ export default class Docker {
   }
 
   logs(dir) {
-    return DockerCompose.sync(dir, ["logs", "-f"]);
+    return DockerCompose.sync(dir, ["logs", "-f", "--tail=100"]);
   }
 
   run(dir, service, commands) {
