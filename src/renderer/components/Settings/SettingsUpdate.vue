@@ -1,10 +1,17 @@
 <template>
-  <div :class="`notification ${available ? 'is-info': ''}`">
+  <div :class="{ notification: true, 'is-info': (available || downloading) }">
     <p v-if="available">
       An update is available! The update will be installed the next time you start Lifeboat.<br>
       <a @click.prevent="quitAndInstall">Restart and install now</a>.
     </p>
-    <p v-else>
+    <p v-if="downloading">
+      An update is available! It is downloading right now...
+
+      <span class="icon is-pulled-right">
+        <i class="fa fa-refresh fa-spin"></i>
+      </span>
+    </p>
+    <p v-if="!available && !downloading">
       Lifeboat is
       <b>up to date</b> running version {{ version }}!
       <a @click.prevent="checkForUpdates" class="is-pulled-right" v-show="!checkingForUpdates">Check for updates</a>
@@ -23,7 +30,8 @@ import { autoUpdater } from "electron-updater";
 export default {
   data() {
     return {
-      checkingForUpdates: false
+      checkingForUpdates: false,
+      downloading: false
     };
   },
   computed: {
@@ -50,10 +58,12 @@ export default {
     });
 
     ipcRenderer.on("autoupdate-update-available", (e, data) => {
+      this.downloading = true;
       this.checkingForUpdates = false;
     });
 
     ipcRenderer.on("autoupdate-update-downloaded", (e, data) => {
+      this.downloading == false;
       this.checkingForUpdates = false;
     });
   }

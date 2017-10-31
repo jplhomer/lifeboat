@@ -1,4 +1,4 @@
-import { execFile } from "child_process";
+import { execFile, spawn } from "child_process";
 import which from "which";
 
 export default class DockerCompose {
@@ -8,10 +8,7 @@ export default class DockerCompose {
    * @param {array} args
    */
   static sync(dir, args = []) {
-    return execFile(
-      which.sync("docker-compose", { path: "/usr/local/bin" }),
-      ["-f", `${dir}/docker-compose.yml`].concat(args)
-    );
+    return spawn("docker-compose", args, { cwd: dir });
   }
 
   /**

@@ -123,7 +123,7 @@ export default {
     return {
       activeTab: "logs",
       projectStatus: status.STOPPED,
-      logs: "Click Start to see project logs!",
+      logs: "Click Start to see project logs",
       process: null
     };
   },
@@ -143,6 +143,7 @@ export default {
         .catch(() => (this.projectStatus = status.STOPPED));
     },
     buildAndStart() {
+      this.logs = "";
       this.projectStatus = status.STARTING;
 
       this.startProcess(() => this.$docker.buildProject(this.project.dir))

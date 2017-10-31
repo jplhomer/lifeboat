@@ -2,6 +2,10 @@
 
 import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
+import fixPath from "fix-path";
+
+// Updates the process path variable for build
+fixPath();
 
 /**
  * Set `__static` path to static files in production
@@ -107,6 +111,15 @@ function setUpMenu() {
           label: "Select All",
           accelerator: "CmdOrCtrl+A",
           selector: "selectAll:"
+        },
+        { type: "separator" },
+        {
+          label: "Open Developer Tools",
+          accelerator:
+            process.platform === "darwin" ? "Alt+Cmd+I" : "Ctrl+Shift+I",
+          click() {
+            mainWindow.webContents.toggleDevTools();
+          }
         }
       ]
     }
@@ -160,6 +173,7 @@ ipcMain.on("autoupdate-check", (e, data) => {
     setTimeout(() => {
       // Send a test response instead
       // mainWindow.webContents.send("autoupdate-update-downloaded", {});
+      // mainWindow.webContents.send("autoupdate-update-available", {});
       mainWindow.webContents.send("autoupdate-update-not-available", {});
     }, 500);
   }
