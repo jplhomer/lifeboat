@@ -1,7 +1,12 @@
 const Client = require("dockerode");
 import DockerCompose from "./docker-compose";
 
-const client = new Client({ socketPath: "/var/run/docker.sock" });
+const client = new Client({
+  socketPath:
+    process.platform === "win32"
+      ? "//./pipe/docker_engine"
+      : "/var/run/docker.sock"
+});
 
 export default class Docker {
   /**
