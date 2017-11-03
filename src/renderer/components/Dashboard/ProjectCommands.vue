@@ -130,7 +130,7 @@ select {
 }
 
 .commands {
-  background: #050505;
+  background: var(--black-gradient);
   color: #fff;
   height: 100%;
   overflow: scroll;

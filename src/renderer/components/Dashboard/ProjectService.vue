@@ -1,7 +1,7 @@
 <template>
   <div class="service">
     <div class="service__name">
-      <span class="icon has-text-success" v-show="running">
+      <span class="icon has-text-primary" v-show="running">
         <i class="fa fa-check-square"></i>
       </span>
       <span class="icon" v-show="starting">

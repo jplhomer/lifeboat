@@ -84,7 +84,7 @@ export default {
   width: var(--size);
 
   &--running {
-    background-color: #23d160;
+    background-color: #ddeeed;
   }
 
   &--partial {
