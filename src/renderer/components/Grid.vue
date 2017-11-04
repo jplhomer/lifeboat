@@ -20,15 +20,20 @@ export default {
 <style lang="scss">
 .grid {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   height: 100vh;
+  padding-top: 1.5rem;
   overflow: hidden;
 }
 
 .titlebar {
   background: hsla(176, 32%, 14%, 1);
   -webkit-app-region: drag;
-  flex-basis: 100%;
+  height: 1.5rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 
   .platform-win32 & {
     display: none;
@@ -82,6 +87,7 @@ export default {
 
 .body {
   flex-grow: 1;
+  height: calc(100vh - 1.5rem);
 
   .no-sidebar & {
     overflow: scroll;
