@@ -73,16 +73,19 @@ function setUpMenu() {
         {
           label: "Hide Lifeboat",
           accelerator: "CommandOrControl+H",
-          selector: "hide:"
+          selector: "hide:",
+          visible: process.platform === "darwin"
         },
         {
           label: "Hide Others",
           accelerator: "CommandOrControl+Alt+H",
-          selector: "hideOtherApplications:"
+          selector: "hideOtherApplications:",
+          visible: process.platform === "darwin"
         },
         {
           label: "Show All",
-          selector: "unhideAllApplications:"
+          selector: "unhideAllApplications:",
+          visible: process.platform === "darwin"
         },
         { type: "separator" },
         {
