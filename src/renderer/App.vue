@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="`platform-${platform}`">
     <router-view></router-view>
   </div>
 </template>
@@ -9,6 +9,11 @@ import { mapGetters } from "vuex";
 import { ipcRenderer } from "electron";
 
 export default {
+  data() {
+    return {
+      platform: process.platform
+    };
+  },
   computed: {
     ...mapGetters(["projects"])
   },

@@ -18,3 +18,8 @@ $white-ter: hsl(191, 25%, 95%);
   --black-gradient: linear-gradient(to right bottom, $black, #333);
   --font-family-sans-serif: $family-sans-serif;
 }
+
+// Prevent scrollbar on Windows
+html {
+  overflow: hidden;
+}

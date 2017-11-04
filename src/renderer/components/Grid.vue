@@ -19,28 +19,24 @@ export default {
 
 <style lang="scss">
 .grid {
-  display: grid;
-  grid-template-areas: "top top top" "side body body" "side body body";
-  grid-template-rows: 1.5rem 1fr 1fr;
-  grid-template-columns: 200px 1fr 1fr;
+  display: flex;
+  flex-flow: row wrap;
   height: 100vh;
   overflow: hidden;
-
-  &.no-sidebar {
-    grid-template-areas: "top" "body";
-    grid-template-rows: 1.5rem 1fr;
-    grid-template-columns: 1fr;
-  }
 }
 
 .titlebar {
   background: hsla(176, 32%, 14%, 1);
-  grid-area: top;
   -webkit-app-region: drag;
+  flex-basis: 100%;
+
+  .platform-win32 & {
+    display: none;
+  }
 }
 
 .sidebar {
-  grid-area: side;
+  width: 200px;
   background-color: var(--color-primary);
   position: relative;
 
@@ -78,10 +74,14 @@ export default {
       color: #fff;
     }
   }
+
+  .no-sidebar & {
+    display: none;
+  }
 }
 
 .body {
-  grid-area: body;
+  flex-grow: 1;
 
   .no-sidebar & {
     overflow: scroll;
