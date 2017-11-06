@@ -2,6 +2,8 @@ import DockerConfig from "@/utils/docker-config";
 import settings from "electron-settings";
 import store from "@/store";
 
+const SEP = process.platform === "win32" ? "\\" : "/";
+
 export default class Project {
   constructor(data, id) {
     this.id = id;
@@ -20,7 +22,7 @@ export default class Project {
    * Get the final name of the directory where the project lives
    */
   get dirName() {
-    return this.dir.split("/").pop();
+    return this.dir.split(SEP).pop();
   }
 
   /**
@@ -28,7 +30,7 @@ export default class Project {
    */
   get name() {
     return this.dir
-      .split("/")
+      .split(SEP)
       .pop()
       .replace(/-/g, "");
   }

@@ -5,20 +5,19 @@
         <div class="level-left">
           <div class="title is-4">
             {{ project.dirName }}
-            <span :class="{ 'tag': true, 'is-success': running, 'is-warning': starting }">{{ statusText }}</span>
+            <span :class="{ 'tag': true, 'is-primary': running, 'is-warning': starting }">{{ statusText }}</span>
           </div>
         </div>
         <div class="level-right">
           <div class="level-item">
-            <div class="field is-grouped">
+            <div class="field has-addons">
               <div class="control" v-if="!running && !restarting">
                 <div :class="{ dropdown: true, 'is-hoverable': !starting, 'is-right': true }">
                   <div class="dropdown-trigger">
-                    <button @click.prevent="start" :class="{ button: true, 'is-info': true, 'is-loading': starting }" aria-haspopup="true" aria-controls="start-button">
+                    <button @click.prevent="start" :class="{ button: true, 'is-primary': true, 'is-loading': starting }" aria-haspopup="true" aria-controls="start-button" title="Start">
                       <span class="icon">
-                        <i class="fa fa-play-circle"></i>
+                        <i class="fa fa-play"></i>
                       </span>
-                      <span>Start</span>
                       <span class="icon is-small">
                         <i class="fa fa-angle-down" aria-hidden="true"></i>
                       </span>
@@ -28,7 +27,7 @@
                     <div class="dropdown-content">
                       <a href="#" class="dropdown-item" @click.prevent="start">
                         <span class="icon">
-                          <i class="fa fa-play-circle"></i>
+                          <i class="fa fa-play"></i>
                         </span>
                         Start
                       </a>
@@ -50,11 +49,10 @@
                 </button>
               </p>
               <p class="control" v-if="partiallyRunning">
-                <button @click.prevent="stop" :class="{ button: true, 'is-danger': true, 'is-loading': stopping}">
+                <button @click.prevent="stop" :class="{ button: true, 'is-loading': stopping}" title="Stop">
                   <span class="icon">
-                    <i class="fa fa-stop-circle"></i>
+                    <i class="fa fa-stop"></i>
                   </span>
-                  <span>Stop</span>
                 </button>
               </p>
             </div>
@@ -73,14 +71,29 @@
 
     <div class="tabs" v-show="!missingComposeFile">
       <ul>
-        <li :class="`${activeTab === 'logs' ? 'is-active' : ''}`">
-          <a href="#" @click.prevent="setActiveTab('logs')">Logs</a>
+        <li :class="{'is-active': activeTab === 'logs'}">
+          <a href="#" @click.prevent="setActiveTab('logs')">
+            <span class="icon is-small">
+              <i class="fa fa-eye"></i>
+            </span>
+            <span>Logs</span>
+          </a>
         </li>
-        <li :class="`${activeTab === 'about' ? 'is-active' : ''}`">
-          <a href="#" @click.prevent="setActiveTab('about')">About</a>
+        <li :class="{'is-active': activeTab === 'about'}">
+          <a href="#" @click.prevent="setActiveTab('about')">
+            <span class="icon is-small">
+              <i class="fa fa-info-circle"></i>
+            </span>
+            <span>About</span>
+          </a>
         </li>
-        <li :class="`${activeTab === 'commands' ? 'is-active' : ''}`">
-          <a href="#" @click.prevent="setActiveTab('commands')">Commands</a>
+        <li :class="{'is-active': activeTab === 'commands'}">
+          <a href="#" @click.prevent="setActiveTab('commands')">
+            <span class="icon is-small">
+              <i class="fa fa-play-circle"></i>
+            </span>
+            <span>Commands</span>
+          </a>
         </li>
       </ul>
     </div>
@@ -289,7 +302,7 @@ header {
 }
 
 .services {
-  background-color: #efefef;
+  background-color: var(--color-primary-white);
   padding: 1rem;
 
   .column {

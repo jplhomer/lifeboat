@@ -59,10 +59,6 @@ app.on("activate", () => {
   }
 });
 
-app.on("will-quit", () => {
-  if (updateAvailable) autoUpdater.quitAndInstall();
-});
-
 function setUpMenu() {
   var template = [
     {

@@ -34,37 +34,37 @@ export default {
 }
 
 .titlebar {
-  background: #010101;
+  background: hsla(176, 32%, 14%, 1);
   grid-area: top;
   -webkit-app-region: drag;
 }
 
 .sidebar {
   grid-area: side;
-  background-image: linear-gradient(130deg, #335fff 15%, #05b5ff 70%);
+  background-color: var(--color-primary);
   position: relative;
 
   &__menu {
     a {
-      color: #b6c9fb;
+      color: var(--color-light);
       display: block;
-      padding: .5rem .5rem;
+      padding: 0.5rem 0.5rem;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     a:hover,
     a:focus {
-      background-color: rgba(255, 255, 255, .1);
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     a.is-active {
-      background-color: #558bff;
+      background-color: hsl(191, 42%, 60%);
       color: #fff;
     }
 
     small {
-      font-size: .8em;
+      font-size: 0.8em;
     }
   }
 

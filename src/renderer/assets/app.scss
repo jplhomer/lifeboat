@@ -1,0 +1,20 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,900");
+
+$primary: #4aa1b5;
+$family-sans-serif: "Lato";
+$blue: $primary;
+$white-ter: hsl(191, 25%, 95%);
+@import "~bulma";
+
+:root {
+  --color-primary: $primary;
+  --color-primary-white: hsl(191, 25%, 95%);
+  --color-blue: $blue;
+  --color-light: $white-ter;
+  --color-red: $red;
+  --color-yellow: $yellow;
+  --color-dark: $grey-darker;
+  --color-black: $black;
+  --black-gradient: linear-gradient(to right bottom, $black, #333);
+  --font-family-sans-serif: $family-sans-serif;
+}
