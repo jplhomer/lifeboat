@@ -42,6 +42,7 @@ export default {
 
 .sidebar {
   width: 200px;
+  flex-shrink: 0;
   background-color: var(--color-primary);
   position: relative;
 
