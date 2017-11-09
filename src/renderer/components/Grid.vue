@@ -18,6 +18,10 @@ export default {
 
 
 <style lang="scss">
+:root {
+  --sidebar-size: 200px;
+}
+
 .grid {
   display: flex;
   flex-flow: row nowrap;
@@ -41,7 +45,7 @@ export default {
 }
 
 .sidebar {
-  width: 200px;
+  width: var(--sidebar-size);
   flex-shrink: 0;
   background-color: var(--color-primary);
   position: relative;
@@ -87,11 +91,12 @@ export default {
 }
 
 .body {
-  flex-grow: 1;
+  width: calc(100% - var(--sidebar-size));
   height: calc(100vh - 1.5rem);
 
   .no-sidebar & {
     overflow: scroll;
+    width: 100%;
   }
 }
 </style>
