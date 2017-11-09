@@ -19,28 +19,30 @@ export default {
 
 <style lang="scss">
 .grid {
-  display: grid;
-  grid-template-areas: "top top top" "side body body" "side body body";
-  grid-template-rows: 1.5rem 1fr 1fr;
-  grid-template-columns: 200px 1fr 1fr;
+  display: flex;
+  flex-flow: row nowrap;
   height: 100vh;
+  padding-top: 1.5rem;
   overflow: hidden;
-
-  &.no-sidebar {
-    grid-template-areas: "top" "body";
-    grid-template-rows: 1.5rem 1fr;
-    grid-template-columns: 1fr;
-  }
 }
 
 .titlebar {
   background: hsla(176, 32%, 14%, 1);
-  grid-area: top;
   -webkit-app-region: drag;
+  height: 1.5rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  .platform-win32 & {
+    display: none;
+  }
 }
 
 .sidebar {
-  grid-area: side;
+  width: 200px;
+  flex-shrink: 0;
   background-color: var(--color-primary);
   position: relative;
 
@@ -78,10 +80,15 @@ export default {
       color: #fff;
     }
   }
+
+  .no-sidebar & {
+    display: none;
+  }
 }
 
 .body {
-  grid-area: body;
+  flex-grow: 1;
+  height: calc(100vh - 1.5rem);
 
   .no-sidebar & {
     overflow: scroll;
