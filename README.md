@@ -1,15 +1,15 @@
 # lifeboat
 
-A Docker UI for projects. **[Download for Mac](https://github.com/jplhomer/lifeboat/releases) from the Releases tab.**
+A Docker UI for projects. **[Download for Mac, Windows and Linux](https://github.com/jplhomer/lifeboat/releases) from the Releases tab.**
 
-![Screenshot of Lifeboat UI](https://pbs.twimg.com/media/DK_DFpLUMAAg315.png:large)
+![Screenshot of Lifeboat UI](https://user-images.githubusercontent.com/848147/32585014-ea2a74b2-c4c0-11e7-8563-9bd4800590ff.png)
 
 ## Development
 
-This is an Electron app, scaffolded with [electron-vue](https://github.com/SimulatedGREG/electron-vue). 
+This is an Electron app, scaffolded with [electron-vue](https://github.com/SimulatedGREG/electron-vue).
 
 - You will need to have Node/Yarn installed locally.
-- You will need to have [Docker for Mac](https://docs.docker.com/docker-for-mac/install/) installed and running.
+- You will need to have [Docker for Mac](https://docs.docker.com/docker-for-mac/install/) or [Docker for Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows) installed and running. **Older implementations of Docker, using docker-machine or boot2docker, are supported**.
 - You will need a test project with a valid `docker-compose.yml` file. Consider using one of the [example Docker Compose projects](https://docs.docker.com/compose/) to test.
 
 #### Build Setup
