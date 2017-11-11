@@ -4,8 +4,8 @@
       <ul>
         <li v-for="project in projects" :key="project.id">
           <a href="#" @click.prevent="activeProject = project.id" :class="`${activeProject == project.id ? 'is-active' : ''}`">
-            <span :class="`status status--${project.status()}`"></span>
-            {{ project.dirName }}
+            <span :class="`status status--${project.status}`"></span>
+            {{ $store.getters.projectDirName(project.id) }}
           </a>
         </li>
       </ul>
@@ -64,9 +64,10 @@ export default {
         this.$store.commit("SET_ACTIVE_PROJECT", projectId);
       }
     },
-    ...mapGetters(["projects"]),
+    // ...mapGetters(["projects"]),
     ...mapState({
-      updateAvailable: state => state.App.updateAvailable
+      updateAvailable: state => state.App.updateAvailable,
+      projects: state => state.Project.projects
     })
   }
 };

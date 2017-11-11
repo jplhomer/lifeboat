@@ -36,41 +36,6 @@ export default class Project {
   }
 
   /**
-   * Get the names of services associated with this project
-   */
-  services() {
-    return this.config.services();
-  }
-
-  /**
-   * Get the containers associated with this project
-   */
-  containers() {
-    return store.state.App.containers
-      .filter(c => c.project === this.name)
-      .filter(c => !c.temp)
-      .filter(c => this.services().includes(c.service));
-  }
-
-  /**
-   * Determine whether this project is running.
-   */
-  running() {
-    return this.services().every(s =>
-      this.containers().find(c => c.service === s && c.state === "running")
-    );
-  }
-
-  /**
-   * Determine whether this project is partially running.
-   */
-  partiallyRunning() {
-    return this.services().some(s =>
-      this.containers().find(c => c.service === s && c.state === "running")
-    );
-  }
-
-  /**
    * Get the status string of a project.
    */
   status() {

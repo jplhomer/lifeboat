@@ -105,7 +105,7 @@ export default {
   },
   computed: {
     services() {
-      return this.project.services();
+      return this.project.services;
     },
     running() {
       return !!this.cmd;

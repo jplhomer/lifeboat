@@ -4,7 +4,7 @@
       <div class="level is-mobile status-bar">
         <div class="level-left">
           <div class="title is-4">
-            {{ project.dirName }}
+            {{ $store.getters.projectDirName(project.id) }}
             <span :class="{ 'tag': true, 'is-primary': running, 'is-warning': starting }">{{ statusText }}</span>
           </div>
         </div>
@@ -63,7 +63,7 @@
 
     <div class="services" v-show="!missingComposeFile">
       <div class="columns is-mobile is-multiline">
-        <div v-for="service in project.services()" :key="service" class="column is-one-third">
+        <div v-for="service in project.services" :key="service" class="column is-one-third">
           <project-service :service="service" :container="containerForService(service)"></project-service>
         </div>
       </div>
@@ -142,7 +142,9 @@ export default {
   },
   methods: {
     containerForService(service) {
-      return this.project.containers().find(c => c.service === service);
+      return this.$store.getters
+        .containersForProject(this.project.id)
+        .find(c => c.service === service);
     },
     start() {
       this.logs = "";
@@ -227,10 +229,11 @@ export default {
       return this.projectStatus === status.STARTING;
     },
     running() {
-      return this.project.running() && !this.missingComposeFile;
+      return this.$store.getters.projectRunning(this.project.id);
+      // return this.project.running() && !this.missingComposeFile;
     },
     partiallyRunning() {
-      return this.project.containers().some(c => c.state === "running");
+      return this.$store.getters.projectPartiallyRunning(this.project.id);
     },
     stopping() {
       return this.projectStatus === status.STOPPING;
@@ -239,7 +242,7 @@ export default {
       return this.projectStatus === status.RESTARTING;
     },
     missingComposeFile() {
-      return !this.project.config.data;
+      return this.project.missingComposeFile;
     },
     statusText() {
       if (this.starting) {
