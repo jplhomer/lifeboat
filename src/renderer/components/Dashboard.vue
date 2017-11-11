@@ -4,7 +4,7 @@
       <ul>
         <li v-for="project in projects" :key="project.id">
           <a href="#" @click.prevent="activeProject = project.id" :class="`${activeProject == project.id ? 'is-active' : ''}`">
-            <span :class="`status status--${project.status}`"></span>
+            <span :class="`status status--${$store.getters.projectStatus(project.id)}`"></span>
             {{ $store.getters.projectDirName(project.id) }}
           </a>
         </li>

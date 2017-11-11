@@ -19,38 +19,6 @@ export default class Project {
   }
 
   /**
-   * Get the final name of the directory where the project lives
-   */
-  get dirName() {
-    return this.dir.split(SEP).pop();
-  }
-
-  /**
-   * Get the name of the app, formatted for Docker consumption
-   */
-  get name() {
-    return this.dir
-      .split(SEP)
-      .pop()
-      .replace(/-/g, "");
-  }
-
-  /**
-   * Get the status string of a project.
-   */
-  status() {
-    if (this.running()) {
-      return "running";
-    }
-
-    if (this.partiallyRunning()) {
-      return "partial";
-    }
-
-    return "stopped";
-  }
-
-  /**
    * Get data suitable for storing
    */
   toJson() {

@@ -62,6 +62,21 @@ const getters = {
     return state.projects[id].dir.split(SEP).pop();
   },
 
+  /**
+   * Get string of project status (for CSS classes)
+   */
+  projectStatus: (state, getters) => id => {
+    if (getters.projectRunning(id)) {
+      return "running";
+    }
+
+    if (getters.projectPartiallyRunning(id)) {
+      return "partial";
+    }
+
+    return "stopped";
+  },
+
   containersForProject: (state, getters) => id => {
     const project = state.projects[id];
     return getters.containers
