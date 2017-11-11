@@ -1,3 +1,4 @@
 export const UPDATE_PROJECTS = "UPDATE_PROJECTS";
 export const ADD_PROJECT = "ADD_PROJECT";
 export const REMOVE_PROJECT = "REMOVE_PROJECT";
+export const UPDATE_PROJECT = "UPDATE_PROJECT";

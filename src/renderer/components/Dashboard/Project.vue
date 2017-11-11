@@ -134,7 +134,6 @@ export default {
   components: { ProjectService, ProjectLog, ProjectReadme, ProjectCommands },
   data() {
     return {
-      activeTab: "logs",
       projectStatus: status.STOPPED,
       logs: "Click Start to see project logs",
       process: null
@@ -182,9 +181,13 @@ export default {
         })
         .catch(e => console.error(e));
     },
-    setActiveTab(tab) {
+    setActiveTab(value) {
       this.setTabAreaHeight();
-      this.activeTab = tab;
+      this.$store.dispatch("updateProjectState", {
+        id: this.project.id,
+        key: "activeTab",
+        value
+      });
     },
     setTabAreaHeight() {
       const height =
@@ -254,6 +257,9 @@ export default {
       }
 
       return "Stopped";
+    },
+    activeTab() {
+      return this.$store.getters.projectActiveTab(this.project.id);
     },
     ...mapGetters(["containers", "activeProject"])
   },

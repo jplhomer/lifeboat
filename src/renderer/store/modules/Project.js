@@ -24,6 +24,12 @@ const mutations = {
   [types.REMOVE_PROJECT](state, projectId) {
     state.projects.splice(projectId, 1);
     settings.set("projects", state.projects);
+  },
+
+  [types.UPDATE_PROJECT](state, { id, key, value }) {
+    let p = state.projects[id];
+    p[key] = value;
+    state.projects.splice(id, 1, p);
   }
 };
 
@@ -76,6 +82,13 @@ const getters = {
     return "stopped";
   },
 
+  /**
+   * Get a project's active tab
+   */
+  projectActiveTab: state => id => {
+    return state.projects[id].activeTab || "logs";
+  },
+
   containersForProject: (state, getters) => id => {
     const project = state.projects[id];
     return getters.containers
@@ -112,6 +125,10 @@ const actions = {
         value: PROJECTS_SCHEMA_VERSION
       });
     }
+  },
+
+  updateProjectState({ commit }, payload) {
+    commit(types.UPDATE_PROJECT, payload);
   }
 };
 
