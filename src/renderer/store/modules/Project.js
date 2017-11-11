@@ -1,20 +1,26 @@
 import Project from "@/utils/project";
 import settings from "electron-settings";
+import * as types from "../mutation-types";
 
 const PROJECTS_SCHEMA_VERSION = "1";
 
 const state = {
   projectsSchemaVersion: settings.get("projectsSchemaVersion"),
-  projects: settings.get("projects", [])
+  projects: []
 };
 
 const mutations = {
-  ADD_PROJECT(state, dir) {
+  [types.UPDATE_PROJECTS](state, projects) {
+    state.projects = projects;
+  },
+
+  [types.ADD_PROJECT](state, dir) {
     const project = new Project(dir, state.projects.length);
     state.projects.push(project.toJson());
     settings.set("projects", state.projects);
   },
-  REMOVE_PROJECT(state, projectId) {
+
+  [types.REMOVE_PROJECT](state, projectId) {
     state.projects.splice(projectId, 1);
     settings.set("projects", state.projects);
   }
@@ -27,6 +33,11 @@ const getters = {
 };
 
 const actions = {
+  loadProjects({ commit }) {
+    const projects = settings.get("projects", []);
+    commit(types.UPDATE_PROJECTS, projects);
+  },
+
   migrateProjectSchema({ getters, commit, state }) {
     if (state.projectsSchemaVersion !== PROJECTS_SCHEMA_VERSION) {
       commit("UPDATE_SETTING", {
