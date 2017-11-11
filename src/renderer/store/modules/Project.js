@@ -1,4 +1,3 @@
-import Project from "@/utils/project";
 import settings from "electron-settings";
 import * as types from "../mutation-types";
 import DockerConfig from "../../utils/docker-config";
@@ -30,7 +29,7 @@ const mutations = {
 
 const getters = {
   projects(state) {
-    return state.projects.map((p, i) => new Project(p, i));
+    return state.projects;
   },
 
   projectRunning: (state, getters) => id => {
