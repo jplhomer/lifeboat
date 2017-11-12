@@ -22,7 +22,7 @@
         <tbody>
           <tr v-for="project in projects" :key="project.id">
             <td>
-              {{ project.name }}
+              {{ $store.getters.projectName(project.id) }}
             </td>
             <td>
               {{ project.dir }}
