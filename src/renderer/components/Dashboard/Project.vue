@@ -120,14 +120,7 @@ import ProjectReadme from "@/components/Dashboard/ProjectReadme";
 import ProjectCommands from "@/components/Dashboard/ProjectCommands";
 import Vue from "vue";
 import events from "@/utils/events";
-
-const status = {
-  STOPPING: "stopping",
-  STOPPED: "stopped",
-  STARTING: "starting",
-  RUNNING: "running",
-  RESTARTING: "restarting"
-};
+import * as status from "@/utils/project-status";
 
 export default {
   props: ["project"],

@@ -2,17 +2,10 @@ import settings from "electron-settings";
 import * as types from "../mutation-types";
 import DockerConfig from "../../utils/docker-config";
 import Docker from "@/utils/docker";
+import * as status from "@/utils/project-status";
 
 const PROJECTS_SCHEMA_VERSION = "1";
 const SEP = process.platform === "win32" ? "\\" : "/";
-
-const status = {
-  STOPPING: "stopping",
-  STOPPED: "stopped",
-  STARTING: "starting",
-  RUNNING: "running",
-  RESTARTING: "restarting"
-};
 
 let processes = {};
 
