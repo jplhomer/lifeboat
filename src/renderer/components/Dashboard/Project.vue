@@ -200,21 +200,21 @@ export default {
     window.removeEventListener("resize", this.setTabAreaHeight);
   },
   watch: {
-    activeProject(newProjectId) {
-      if (newProjectId == this.project.id) {
+    project(to, from) {
+      Vue.nextTick(() => {
         this.setTabAreaHeight();
-      }
+      });
     },
     running(value) {
       // Attempt to catch a project started outside of Lifeboat and watch the logs
-      setTimeout(() => {
-        if (value && !this.process) {
-          console.log(
-            `Starting logs for ${this.project.name} outside Lifeboat`
-          );
-          this.startLogs();
-        }
-      }, 1000);
+      // setTimeout(() => {
+      //   if (value && !this.process) {
+      //     console.log(
+      //       `Starting logs for ${this.project.name} outside Lifeboat`
+      //     );
+      //     this.startLogs();
+      //   }
+      // }, 1000);
     }
   }
 };

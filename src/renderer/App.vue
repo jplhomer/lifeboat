@@ -19,6 +19,7 @@ export default {
   },
   created() {
     this.$store.dispatch("loadProjects");
+    this.$store.dispatch("listenForContainerUpdates");
 
     // Send to Settings page if no projects
     if (!this.projects.length) {
