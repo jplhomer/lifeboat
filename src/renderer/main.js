@@ -12,7 +12,7 @@ import "./assets/app.scss";
 
 if (!process.env.IS_WEB) Vue.use(require("vue-electron"));
 Vue.http = Vue.prototype.$http = axios;
-Vue.docker = Vue.prototype.$docker = new Docker();
+Vue.docker = Vue.prototype.$docker = Docker;
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
