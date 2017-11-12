@@ -122,7 +122,7 @@ const getters = {
 };
 
 const actions = {
-  loadProjects({ commit }) {
+  loadProjects({ commit, dispatch }) {
     // Fetch the JSON data persisted in storage
     let projects = settings.get("projects", []);
 
@@ -132,6 +132,11 @@ const actions = {
       p.missingComposeFile = !config.data;
       p.logs = "Click Start to see project logs";
       p.services = config.services();
+
+      // Watch the config for changes to the file
+      config.onChange(() =>
+        dispatch("updateProjectState", [p.id, "services", config.services()])
+      );
     });
 
     commit(types.UPDATE_PROJECTS, projects);
