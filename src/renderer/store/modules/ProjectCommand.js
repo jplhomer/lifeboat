@@ -128,8 +128,8 @@ const actions = {
     });
   },
 
-  runMounted({}, id) {
-    const command = getters.command[id];
+  runMounted({ commit, dispatch, getters }, id) {
+    const command = getters.command(id);
 
     // Provide clear functionality
     if (command === "clear") {
@@ -146,6 +146,10 @@ const actions = {
 
     // Clear the command
     commit(types.UPDATE_PROJECT_COMMAND_COMMAND, { id, command: "" });
+  },
+
+  cancel(context, id) {
+    commands[id].kill();
   }
 };
 

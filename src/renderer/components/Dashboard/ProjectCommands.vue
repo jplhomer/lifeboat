@@ -16,7 +16,7 @@
           <button @click.prevent="run(project.id)" class="button">Run</button>
         </div>
         <div class="control">
-          <button @click.prevent="cancel" class="button is-danger" v-show="running(project.id)">Cancel</button>
+          <button @click.prevent="cancel(project.id)" class="button is-danger" v-show="running(project.id)">Cancel</button>
         </div>
       </div>
     </div>
@@ -45,9 +45,6 @@ export default {
       this.log += data;
       this.scrollToBottom();
     },
-    cancel() {
-      this.cmd.kill();
-    },
     loadPreviousCommand() {
       if (this.commandPointer) {
         this.command = this.commandHistory[--this.commandPointer];
@@ -59,7 +56,7 @@ export default {
       }
     },
 
-    ...mapActions("ProjectCommand", ["run"])
+    ...mapActions("ProjectCommand", ["run", "cancel"])
   },
   computed: {
     services() {
