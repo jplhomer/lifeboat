@@ -17,7 +17,7 @@ const state = {
 
 const mutations = {
   [types.UPDATE_PROJECT_COMMAND_COMMAND](state, { id, command }) {
-    state.commands[id] = command;
+    Vue.set(state.commands, id, command);
   },
 
   [types.UPDATE_PROJECT_COMMAND_SERVICE](state, { id, service }) {
@@ -31,7 +31,7 @@ const mutations = {
   },
 
   [types.UPDATE_PROJECT_COMMAND_POINTER](state, { id, idx }) {
-    state.commandPointer[id] = idx;
+    Vue.set(state.commandPointer, id, idx);
   },
 
   [types.UPDATE_PROJECT_COMMAND_LOGS](state, { id, logs }) {
@@ -150,6 +150,39 @@ const actions = {
 
   cancel(context, id) {
     commands[id].kill();
+  },
+
+  loadPreviousCommand({ commit, state }, id) {
+    // Don't go less than zero
+    if (!state.commandPointer[id]) return;
+
+    // Update the pointer
+    commit(types.UPDATE_PROJECT_COMMAND_POINTER, {
+      id,
+      idx: state.commandPointer[id] - 1
+    });
+
+    // Load the corresponding command
+    commit(types.UPDATE_PROJECT_COMMAND_COMMAND, {
+      id,
+      command: state.commandHistory[id][state.commandPointer[id]]
+    });
+  },
+
+  loadNextCommand({ commit, state }, id) {
+    if (state.commandPointer[id] < state.commandHistory[id].length) {
+      // Update the pointer
+      commit(types.UPDATE_PROJECT_COMMAND_POINTER, {
+        id,
+        idx: state.commandPointer[id] + 1
+      });
+
+      // Load the corresponding command
+      commit(types.UPDATE_PROJECT_COMMAND_COMMAND, {
+        id,
+        command: state.commandHistory[id][state.commandPointer[id]]
+      });
+    }
   }
 };
 

@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="control is-expanded">
-          <input v-model="command" class="command-text input" type="text" @keyup.enter="run(project.id)" @keydown.up="loadPreviousCommand" @keydown.down="loadNextCommand" :placeholder="`Type a command to run in ${service}...`">
+          <input v-model="command" class="command-text input" type="text" @keyup.enter="run(project.id)" @keydown.up="loadPreviousCommand(project.id)" @keydown.down="loadNextCommand(project.id)" :placeholder="`Type a command to run in ${service}...`">
         </div>
         <div class="control">
           <button @click.prevent="run(project.id)" class="button">Run</button>
@@ -33,30 +33,13 @@ const ansi_up = new AU();
 export default {
   props: ["project"],
   mixins: [scrollToBottom],
-  data() {
-    return {
-      cmd: null,
-      commandHistory: [],
-      commandPointer: 0
-    };
-  },
   methods: {
-    addLog(data) {
-      this.log += data;
-      this.scrollToBottom();
-    },
-    loadPreviousCommand() {
-      if (this.commandPointer) {
-        this.command = this.commandHistory[--this.commandPointer];
-      }
-    },
-    loadNextCommand() {
-      if (this.commandPointer < this.commandHistory.length) {
-        this.command = this.commandHistory[++this.commandPointer];
-      }
-    },
-
-    ...mapActions("ProjectCommand", ["run", "cancel"])
+    ...mapActions("ProjectCommand", [
+      "run",
+      "cancel",
+      "loadPreviousCommand",
+      "loadNextCommand"
+    ])
   },
   computed: {
     services() {
