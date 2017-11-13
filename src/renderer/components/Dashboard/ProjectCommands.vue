@@ -79,7 +79,12 @@ export default {
     ...mapGetters("ProjectCommand", ["logs", "running"])
   },
   created() {
-    this.service = this.services[0];
+    if (!this.service) this.service = this.services[0];
+  },
+  watch: {
+    $route() {
+      if (!this.service) this.service = this.services[0];
+    }
   }
 };
 </script>

@@ -21,7 +21,7 @@ const mutations = {
   },
 
   [types.UPDATE_PROJECT_COMMAND_SERVICE](state, { id, service }) {
-    state.services[id] = service;
+    Vue.set(state.services, id, service);
   },
 
   [types.ADD_TO_PROJECT_COMMAND_HISTORY](state, id) {
