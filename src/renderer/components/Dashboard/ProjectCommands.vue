@@ -10,13 +10,13 @@
           </div>
         </div>
         <div class="control is-expanded">
-          <input v-model="command" class="command-text input" type="text" @keyup.enter="run" @keydown.up="loadPreviousCommand" @keydown.down="loadNextCommand" :placeholder="`Type a command to run in ${service}...`">
+          <input v-model="command" class="command-text input" type="text" @keyup.enter="run(project.id)" @keydown.up="loadPreviousCommand" @keydown.down="loadNextCommand" :placeholder="`Type a command to run in ${service}...`">
         </div>
         <div class="control">
-          <button @click.prevent="run" class="button">Run</button>
+          <button @click.prevent="run(project.id)" class="button">Run</button>
         </div>
         <div class="control">
-          <button @click.prevent="cancel" class="button is-danger" v-show="running">Cancel</button>
+          <button @click.prevent="cancel" class="button is-danger" v-show="running(project.id)">Cancel</button>
         </div>
       </div>
     </div>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import AU from "ansi_up";
 import scrollToBottom from "@/mixins/scroll-to-bottom";
 const ansi_up = new AU();
@@ -45,7 +45,7 @@ export default {
       this.log += data;
       this.scrollToBottom();
     },
-    run() {
+    _run() {
       this.commandHistory.push(this.command);
       this.commandPointer = this.commandHistory.length;
 
@@ -99,15 +99,15 @@ export default {
       if (this.commandPointer < this.commandHistory.length) {
         this.command = this.commandHistory[++this.commandPointer];
       }
-    }
+    },
+
+    ...mapActions("ProjectCommand", ["run"])
   },
   computed: {
     services() {
       return this.project.services;
     },
-    running() {
-      return !!this.cmd;
-    },
+
     logOutput() {
       return ansi_up.ansi_to_html(this.logs(this.project.id));
     },
@@ -138,7 +138,7 @@ export default {
       }
     },
 
-    ...mapGetters("ProjectCommand", ["logs"])
+    ...mapGetters("ProjectCommand", ["logs", "running"])
   },
   created() {
     this.service = this.services[0];
