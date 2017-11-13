@@ -34,7 +34,6 @@ export default {
   mixins: [scrollToBottom],
   data() {
     return {
-      command: "",
       log: "",
       cmd: null,
       commandHistory: [],
@@ -112,6 +111,7 @@ export default {
     logOutput() {
       return ansi_up.ansi_to_html(this.log);
     },
+
     service: {
       get() {
         return this.$store.getters["ProjectCommand/service"](this.project.id);
@@ -121,6 +121,19 @@ export default {
         this.$store.dispatch("ProjectCommand/setService", {
           id: this.project.id,
           service
+        });
+      }
+    },
+
+    command: {
+      get() {
+        return this.$store.getters["ProjectCommand/command"](this.project.id);
+      },
+
+      set(command) {
+        this.$store.dispatch("ProjectCommand/setCommand", {
+          id: this.project.id,
+          command
         });
       }
     }
