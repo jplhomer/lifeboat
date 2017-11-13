@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import AU from "ansi_up";
 import scrollToBottom from "@/mixins/scroll-to-bottom";
 const ansi_up = new AU();
@@ -34,7 +35,6 @@ export default {
   mixins: [scrollToBottom],
   data() {
     return {
-      log: "",
       cmd: null,
       commandHistory: [],
       commandPointer: 0
@@ -109,7 +109,7 @@ export default {
       return !!this.cmd;
     },
     logOutput() {
-      return ansi_up.ansi_to_html(this.log);
+      return ansi_up.ansi_to_html(this.logs(this.project.id));
     },
 
     service: {
@@ -136,7 +136,9 @@ export default {
           command
         });
       }
-    }
+    },
+
+    ...mapGetters("ProjectCommand", ["logs"])
   },
   created() {
     this.service = this.services[0];

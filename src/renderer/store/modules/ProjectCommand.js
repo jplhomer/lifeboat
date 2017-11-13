@@ -1,8 +1,9 @@
 import * as types from "../mutation-types";
 
 const state = {
+  commands: {},
   services: {},
-  commands: {}
+  logs: {}
 };
 
 const mutations = {
@@ -20,8 +21,12 @@ const getters = {
     return state.commands[id] || "";
   },
 
+  logs: state => id => {
+    return state.logs[id] || "";
+  },
+
   service: state => id => {
-    return state.services[id] || 0;
+    return state.services[id];
   }
 };
 
