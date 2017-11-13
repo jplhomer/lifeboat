@@ -91,6 +91,12 @@ const actions = {
       idx: state.commandHistory[id].length
     });
 
+    // If running a command in an attached session, run mounted command instead
+    if (getters.running(id)) {
+      dispatch("runMounted", id);
+      return;
+    }
+
     // Update the logs
     commit(types.UPDATE_PROJECT_COMMAND_LOGS, {
       id,
@@ -120,6 +126,26 @@ const actions = {
     commands[id].on("exit", data => {
       commit(types.UPDATE_PROJECT_COMMAND_RUNNING, { id, running: false });
     });
+  },
+
+  runMounted({}, id) {
+    const command = getters.command[id];
+
+    // Provide clear functionality
+    if (command === "clear") {
+      commit(types.UPDATE_PROJECT_COMMAND_LOGS, { id, logs: "" });
+      commit(types.UPDATE_PROJECT_COMMAND_COMMAND, { id, command: "" });
+      return;
+    }
+
+    // Add to logs
+    dispatch("addLogs", { id, logs: `$ ${command}\r\n` });
+
+    // Run command via the stdin pipe
+    commands[id].stdin.write(command + "\n");
+
+    // Clear the command
+    commit(types.UPDATE_PROJECT_COMMAND_COMMAND, { id, command: "" });
   }
 };
 

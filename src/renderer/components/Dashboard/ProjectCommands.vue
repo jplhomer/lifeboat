@@ -45,48 +45,6 @@ export default {
       this.log += data;
       this.scrollToBottom();
     },
-    _run() {
-      this.commandHistory.push(this.command);
-      this.commandPointer = this.commandHistory.length;
-
-      if (this.running) {
-        this.runMounted();
-        return;
-      }
-
-      this.log = `$ docker-compose run --rm ${this.service} ${this
-        .command}\r\n`;
-
-      this.cmd = this.$docker.run(
-        this.project.dir,
-        this.service,
-        this.command.split(" ")
-      );
-
-      this.command = "";
-
-      this.cmd.stdout.on("data", data => {
-        this.addLog(data.toString());
-      });
-
-      this.cmd.stderr.on("data", data => {
-        this.addLog(data.toString());
-      });
-
-      this.cmd.on("exit", data => {
-        this.cmd = null;
-      });
-    },
-    runMounted() {
-      if (this.command === "clear") {
-        this.log = this.command = "";
-        return;
-      }
-
-      this.addLog(`$ ${this.command}\r\n`);
-      this.cmd.stdin.write(this.command + "\n");
-      this.command = "";
-    },
     cancel() {
       this.cmd.kill();
     },
