@@ -144,7 +144,12 @@ export default {
         window.innerHeight - this.$refs.tabArea.getBoundingClientRect().top;
       this.$refs.tabArea.style.height = `${height}px`;
     },
-    ...mapActions(["start", "stop", "restart", "buildAndStart"])
+    ...mapActions({
+      start: "startProject",
+      stop: "stopProject",
+      restart: "restartProject",
+      buildAndStart: "buildAndStartProject"
+    })
   },
   computed: {
     starting() {
@@ -186,11 +191,11 @@ export default {
   },
   created() {
     // There is a delay on this for some reason.
-    setTimeout(() => {
-      if (this.running || this.partiallyRunning) {
-        this.$store.dispatch("startProjectLogs", this.project.id);
-      }
-    }, 500);
+    // setTimeout(() => {
+    //   if (this.running || this.partiallyRunning) {
+    //     this.$store.dispatch("startProjectLogs", this.project.id);
+    //   }
+    // }, 500);
   },
   mounted() {
     this.setTabAreaHeight();
@@ -204,17 +209,6 @@ export default {
       Vue.nextTick(() => {
         this.setTabAreaHeight();
       });
-    },
-    running(value) {
-      // Attempt to catch a project started outside of Lifeboat and watch the logs
-      // setTimeout(() => {
-      //   if (value && !this.process) {
-      //     console.log(
-      //       `Starting logs for ${this.project.name} outside Lifeboat`
-      //     );
-      //     this.startLogs();
-      //   }
-      // }, 1000);
     }
   }
 };
