@@ -286,6 +286,16 @@ const actions = {
   },
 
   /**
+   * Clear project logs
+   */
+  clearProjectLogs({ commit }, id) {
+    commit(types.UPDATE_PROJECT_LOGS, {
+      id,
+      logs: ""
+    });
+  },
+
+  /**
    * Begin a Docker Compose logging process for a project
    */
   startProjectLogs({ dispatch, state }, id) {

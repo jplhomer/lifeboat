@@ -145,6 +145,7 @@ export default {
     },
     checkForExternalLogs() {
       if ((this.running || this.partiallyRunning) && !this.isLogging) {
+        this.$store.dispatch("clearProjectLogs", this.project.id);
         this.$store.dispatch("startProjectLogs", this.project.id);
       }
     },
