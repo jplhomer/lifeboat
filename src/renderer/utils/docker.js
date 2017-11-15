@@ -1,14 +1,18 @@
 const Client = require("dockerode");
 import DockerCompose from "./docker-compose";
 
-const client = new Client({
-  socketPath:
-    process.platform === "win32"
-      ? "//./pipe/docker_engine"
-      : "/var/run/docker.sock"
-});
-
-export default class Docker {
+class Docker {
+  /**
+   * Creates a new Docker helper.
+   */
+  constructor() {
+    this.client = new Client({
+      socketPath:
+        process.platform === "win32"
+          ? "//./pipe/docker_engine"
+          : "/var/run/docker.sock"
+    });
+  }
   /**
    * Start a Docker Compose project
    * @param {string} dir
@@ -44,8 +48,8 @@ export default class Docker {
   /**
    * List containers in Docker
    */
-  static listContainers() {
-    return client.listContainers({ all: true });
+  listContainers() {
+    return this.client.listContainers({ all: true });
   }
 
   logs(dir) {
@@ -60,8 +64,8 @@ export default class Docker {
    * Listen to Docker events on the system
    * @param {closure} cb
    */
-  static listen(cb) {
-    client.getEvents((error, stream) => {
+  listen(cb) {
+    this.client.getEvents((error, stream) => {
       if (error || !stream) {
         return;
       }
@@ -79,3 +83,5 @@ export default class Docker {
     });
   }
 }
+
+export default new Docker();

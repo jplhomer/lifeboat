@@ -12,12 +12,13 @@ export default new Router({
       component: require("@/components/Settings")
     },
     {
-      path: "/dashboard",
-      component: require("@/components/Dashboard")
+      path: "/dashboard/:id",
+      component: require("@/components/Dashboard"),
+      name: "dashboard"
     },
     {
       path: "*",
-      redirect: "/dashboard"
+      redirect: "/dashboard/0"
     }
   ]
 });

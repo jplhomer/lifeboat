@@ -1,5 +1,5 @@
 import router from "@/router";
-import docker from "@/utils/docker";
+import Docker from "@/utils/docker";
 import Container from "@/utils/docker-container";
 
 const state = {
@@ -22,14 +22,14 @@ const mutations = {
 
 const actions = {
   fetchContainers({ commit }) {
-    docker.listContainers().then(containers => {
+    Docker.listContainers().then(containers => {
       commit("UPDATE_CONTAINERS", containers.map(c => new Container(c)));
     });
   },
 
   // Listen to any status updates from Docker
   listenForContainerUpdates({ dispatch, commit }) {
-    docker.listen(data => {
+    Docker.listen(data => {
       dispatch("fetchContainers");
     });
   }

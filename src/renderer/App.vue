@@ -18,6 +18,9 @@ export default {
     ...mapGetters(["projects"])
   },
   created() {
+    this.$store.dispatch("loadProjects");
+    this.$store.dispatch("listenForContainerUpdates");
+
     // Send to Settings page if no projects
     if (!this.projects.length) {
       this.$router.push("/settings");

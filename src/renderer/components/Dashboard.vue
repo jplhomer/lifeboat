@@ -3,23 +3,22 @@
     <aside class="sidebar__menu" slot="sidebar">
       <ul>
         <li v-for="project in projects" :key="project.id">
-          <a href="#" @click.prevent="activeProject = project.id" :class="`${activeProject == project.id ? 'is-active' : ''}`">
-            <span :class="`status status--${project.status()}`"></span>
-            {{ project.dirName }}
-          </a>
+          <router-link :to="{ name: 'dashboard', params: { id: project.id } }">
+            <span :class="`status status--${$store.getters.projectStatus(project.id)}`"></span>
+            {{ $store.getters.projectDirName(project.id) }}
+          </router-link>
         </li>
       </ul>
     </aside>
 
     <div class="sidebar__actions" slot="sidebar">
-      <router-link to="settings" class="icon is-medium" title="Settings">
+      <router-link to="/settings" class="icon is-medium" title="Settings">
         <span v-show="updateAvailable" class="badge"></span>
         <i class="fa fa-lg fa-cog"></i>
       </router-link>
     </div>
 
-    <project v-for="project in projects" :key="project.id" :project="project" v-show="activeProject == project.id"></project>
-
+    <project :project="project"></project>
   </grid>
 </template>
 
@@ -36,37 +35,46 @@ export default {
   methods: {
     previousProject() {
       const idx = this.activeProject;
-      this.activeProject = idx === 0 ? this.projects.length - 1 : idx - 1;
+      this.$router.push({
+        name: "dashboard",
+        params: {
+          id: idx === 0 ? this.projects.length - 1 : idx - 1
+        }
+      });
     },
     nextProject() {
       const idx = this.activeProject;
-      this.activeProject = idx === this.projects.length - 1 ? 0 : idx + 1;
+      this.$router.push({
+        name: "dashboard",
+        params: {
+          id: idx === this.projects.length - 1 ? 0 : idx + 1
+        }
+      });
     },
-    ...mapActions(["fetchContainers", "listenForContainerUpdates"])
+    ...mapActions(["fetchContainers"])
   },
   created() {
     this.fetchContainers();
-    this.listenForContainerUpdates();
-    this.activeProject = this.projects[0].id;
   },
   mounted() {
     Mousetrap.bind("meta+shift+[", this.previousProject);
     Mousetrap.bind("ctrl+shift+tab", this.previousProject);
     Mousetrap.bind("meta+shift+]", this.nextProject);
-    Mousetrap.bind("ctrl+tab", this.previousProject);
+    Mousetrap.bind("ctrl+tab", this.nextProject);
   },
   computed: {
-    activeProject: {
-      get() {
-        return this.$store.state.App.activeProject;
-      },
-      set(projectId) {
-        this.$store.commit("SET_ACTIVE_PROJECT", projectId);
-      }
+    activeProject() {
+      return parseInt(this.$route.params.id, 10);
     },
-    ...mapGetters(["projects"]),
+
+    // Get the active project object
+    project() {
+      return this.projects[this.activeProject];
+    },
+
     ...mapState({
-      updateAvailable: state => state.App.updateAvailable
+      updateAvailable: state => state.App.updateAvailable,
+      projects: state => state.Project.projects
     })
   }
 };

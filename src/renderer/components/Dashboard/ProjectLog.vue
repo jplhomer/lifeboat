@@ -12,9 +12,12 @@ const ansi_up = new AU();
 let logger;
 
 export default {
-  props: ["project", "logs"],
+  props: ["project"],
   mixins: [scrollToBottom],
   computed: {
+    logs() {
+      return this.$store.getters.projectLogs(this.project.id);
+    },
     logOutput() {
       return ansi_up.ansi_to_html(this.logs);
     },
