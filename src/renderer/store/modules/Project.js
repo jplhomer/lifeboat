@@ -84,7 +84,9 @@ const getters = {
    * the other one is set during start/stop/restart events.
    */
   projectStatus: (state, getters) => id => {
-    if (state.projects[id].missingComposeFile) return "stopped";
+    if (state.projects[id].missingComposeFile) {
+      return "stopped";
+    }
 
     if (getters.projectRunning(id)) {
       return "running";
@@ -125,24 +127,30 @@ const getters = {
 
 const actions = {
   loadProjects({ commit, dispatch }) {
-    // Fetch the JSON data persisted in storage
-    let projects = settings.get("projects", []);
+    return new Promise((resolve, reject) => {
+      // Fetch the JSON data persisted in storage
+      let projects = settings.get("projects", []);
 
-    projects.forEach(p => {
-      // Build a list of service names based on the YML Compose file
-      const config = new DockerConfig(p);
-      p.missingComposeFile = !config.data;
-      p.logs = "Click Start to see project logs";
-      p.services = config.services();
-      p.isLogging = false;
+      projects.forEach((p, idx) => {
+        // Build a list of service names based on the YML Compose file
+        const config = new DockerConfig(p);
+        p.missingComposeFile = !config.data;
+        p.logs = "Click Start to see project logs";
+        p.services = config.services();
+        p.isLogging = false;
 
-      // Watch the config for changes to the file
-      config.onChange(() =>
-        dispatch("updateProjectState", [p.id, "services", config.services()])
-      );
+        // Override saved index for the project
+        p.id = idx;
+
+        // Watch the config for changes to the file
+        config.onChange(() =>
+          dispatch("updateProjectState", [p.id, "services", config.services()])
+        );
+      });
+
+      commit(types.UPDATE_PROJECTS, projects);
+      resolve();
     });
-
-    commit(types.UPDATE_PROJECTS, projects);
   },
 
   /**

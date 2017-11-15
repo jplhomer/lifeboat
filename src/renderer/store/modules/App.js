@@ -5,7 +5,8 @@ import Container from "@/utils/docker-container";
 const state = {
   containers: [],
   updateAvailable: false,
-  activeProject: 0
+  activeProject: 0,
+  loaded: false
 };
 
 const mutations = {
@@ -17,10 +18,20 @@ const mutations = {
   },
   MARK_UPDATE_AVAILABLE(state, value) {
     state.updateAvailable = value;
+  },
+  MARK_LOADED(state) {
+    state.loaded = true;
   }
 };
 
 const actions = {
+  async boot({ dispatch, commit }) {
+    await dispatch("loadProjects");
+    dispatch("listenForContainerUpdates");
+
+    commit("MARK_LOADED");
+  },
+
   fetchContainers({ commit }) {
     Docker.listContainers().then(containers => {
       commit("UPDATE_CONTAINERS", containers.map(c => new Container(c)));
@@ -41,6 +52,9 @@ const getters = {
   },
   activeProject(state) {
     return state.activeProject;
+  },
+  loaded(state) {
+    return state.loaded;
   }
 };
 

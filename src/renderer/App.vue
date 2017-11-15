@@ -1,6 +1,6 @@
 <template>
   <div id="app" :class="`platform-${platform}`">
-    <router-view></router-view>
+    <router-view v-if="loaded"></router-view>
   </div>
 </template>
 
@@ -15,11 +15,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["projects"])
+    ...mapGetters(["projects", "loaded"])
   },
   created() {
-    this.$store.dispatch("loadProjects");
-    this.$store.dispatch("listenForContainerUpdates");
+    this.$store.dispatch("boot");
 
     // Send to Settings page if no projects
     if (!this.projects.length) {
