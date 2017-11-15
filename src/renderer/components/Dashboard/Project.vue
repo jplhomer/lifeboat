@@ -104,9 +104,8 @@
       <project-commands :project="project" v-show="activeTab === 'commands'"></project-commands>
     </div>
 
-    <div class="notification is-danger" v-show="missingComposeFile">
-      We couldn't find a
-      <code>docker-compose.yml</code> file in {{ project.dir }}. Please add one and restart Lifeboat.
+    <div class="notification" v-show="missingComposeFile">
+      Lifeboat couldn't find a Docker Compose file in <b>{{ project.dir }}</b>. Please add one and restart Lifeboat.
     </div>
 
   </div>

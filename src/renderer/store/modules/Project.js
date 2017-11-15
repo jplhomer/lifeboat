@@ -84,6 +84,8 @@ const getters = {
    * the other one is set during start/stop/restart events.
    */
   projectStatus: (state, getters) => id => {
+    if (state.projects[id].missingComposeFile) return "stopped";
+
     if (getters.projectRunning(id)) {
       return "running";
     }
