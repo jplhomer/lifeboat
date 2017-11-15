@@ -3,11 +3,14 @@ const fs = require("fs");
 const path = require("path");
 
 export default class DockerConfig {
+  /**
+   * Create a new DockerConfig instance by passing the project directory.
+   * @param {Object} Project data
+   */
   constructor(project) {
-    const { dir, name } = project;
+    const { dir } = project;
     this.watchers = [];
     this.dir = dir;
-    this.name = name;
     this.composeFile = this.getComposeFile();
 
     if (this.composeFile) {

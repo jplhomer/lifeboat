@@ -93,10 +93,10 @@ export default {
         this.showFirstTimeMessage = true;
       }
 
-      this.$store.commit("ADD_PROJECT", path);
+      this.$store.dispatch("addProject", path);
     },
     deleteProject(project) {
-      this.$store.commit("REMOVE_PROJECT", project.id);
+      this.$store.dispatch("removeProject", project.id);
     }
   },
   computed: {

@@ -3,6 +3,7 @@ import * as types from "../mutation-types";
 import DockerConfig from "@/utils/docker-config";
 import Docker from "@/utils/docker";
 import * as status from "@/utils/project-status";
+import store from "@/store";
 
 const PROJECTS_SCHEMA_VERSION = "1";
 const SEP = process.platform === "win32" ? "\\" : "/";
@@ -19,15 +20,9 @@ const mutations = {
     state.projects = projects;
   },
 
-  [types.ADD_PROJECT](state, dir) {
-    const project = new Project(dir, state.projects.length);
-    state.projects.push(project.toJson());
-    settings.set("projects", state.projects);
-  },
-
   [types.REMOVE_PROJECT](state, projectId) {
     state.projects.splice(projectId, 1);
-    settings.set("projects", state.projects);
+    settings.set("projects", state.projects.map(p => convertProjectToJSON(p)));
   },
 
   [types.UPDATE_PROJECT](state, [id, key, value]) {
@@ -138,8 +133,6 @@ const actions = {
         p.logs = "Click Start to see project logs";
         p.services = config.services();
         p.isLogging = false;
-
-        // Override saved index for the project
         p.id = idx;
 
         // Watch the config for changes to the file
@@ -151,6 +144,25 @@ const actions = {
       commit(types.UPDATE_PROJECTS, projects);
       resolve();
     });
+  },
+
+  /**
+   * Add project to settings, then reset state.
+   */
+  addProject({ dispatch, state }, dir) {
+    settings.set(
+      "projects",
+      state.projects.map(p => convertProjectToJSON(p)).concat([{ dir }])
+    );
+    dispatch("loadProjects");
+  },
+
+  /**
+   * Remove project from app, save it, and reset state.
+   */
+  removeProject({ commit, dispatch }, id) {
+    commit(types.REMOVE_PROJECT, id);
+    dispatch("loadProjects");
   },
 
   /**
@@ -317,7 +329,7 @@ const actions = {
     if (state.projectsSchemaVersion !== PROJECTS_SCHEMA_VERSION) {
       commit("UPDATE_SETTING", {
         key: "projects",
-        value: getters.projects.map(p => p.toJson())
+        value: getters.projects.map(p => convertProjectToJSON(p))
       });
 
       commit("UPDATE_SETTING", {
@@ -331,6 +343,16 @@ const actions = {
     commit(types.UPDATE_PROJECT, payload);
   }
 };
+
+/**
+ * Returns an object representation of a project for saving to the DB.
+ * @param {Object} Project state
+ */
+function convertProjectToJSON(project) {
+  return {
+    dir: project.dir
+  };
+}
 
 export default {
   state,
