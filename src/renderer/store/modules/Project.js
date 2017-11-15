@@ -1,6 +1,6 @@
 import settings from "electron-settings";
 import * as types from "../mutation-types";
-import DockerConfig from "../../utils/docker-config";
+import DockerConfig from "@/utils/docker-config";
 import Docker from "@/utils/docker";
 import * as status from "@/utils/project-status";
 
@@ -132,6 +132,7 @@ const actions = {
       p.missingComposeFile = !config.data;
       p.logs = "Click Start to see project logs";
       p.services = config.services();
+      p.isLogging = false;
 
       // Watch the config for changes to the file
       config.onChange(() =>
@@ -182,6 +183,7 @@ const actions = {
         method: () => Docker.stopProject(p.dir)
       });
       dispatch("setProjectStatus", { id, status: status.STOPPED });
+      dispatch("updateProjectState", [id, "isLogging", false]);
     } catch (e) {
       dispatch("setProjectStatus", { id, status: status.STOPPED });
     }
@@ -287,6 +289,7 @@ const actions = {
   startProjectLogs({ dispatch, state }, id) {
     const p = state.projects[id];
     processes[id] = Docker.logs(p.dir);
+    dispatch("updateProjectState", [id, "isLogging", true]);
     dispatch("logProcess", id);
   },
 
