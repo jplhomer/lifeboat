@@ -40,6 +40,15 @@ const mutations = {
 
   [types.UPDATE_PROJECT_COMMAND_RUNNING](state, { id, running }) {
     Vue.set(state.running, id, running);
+  },
+
+  [types.RESET_PROJECT_COMMAND_STATE](state) {
+    state.commands = {};
+    state.commandHistory = {};
+    state.commandPointer = {};
+    state.logs = {};
+    state.running = {};
+    state.services = {};
   }
 };
 
@@ -183,6 +192,16 @@ const actions = {
         command: state.commandHistory[id][state.commandPointer[id]]
       });
     }
+  },
+
+  clearState({ commit }) {
+    commit(types.RESET_PROJECT_COMMAND_STATE);
+
+    // Kill any running commands
+    Object.keys(commands).forEach(c => {
+      if (commands[c]) commands[c].kill();
+      delete commands[c];
+    });
   }
 };
 

@@ -122,6 +122,10 @@ const getters = {
 
 const actions = {
   loadProjects({ commit, dispatch }) {
+    // Clear the state of project commands to make sure
+    // there is no leakage between projects
+    dispatch("ProjectCommand/clearState");
+
     return new Promise((resolve, reject) => {
       // Fetch the JSON data persisted in storage
       let projects = settings.get("projects", []);
