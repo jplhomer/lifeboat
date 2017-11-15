@@ -258,7 +258,7 @@ const actions = {
       // For some reason, the logs persist from the previous running app?
       // So we don't need to call startLogs() again.
       dispatch("setProjectStatus", { id, status: status.RUNNING });
-      this.$store.dispatch("fetchContainers");
+      dispatch("fetchContainers");
     } catch (e) {
       console.error(`Could not restart project`, e);
     }
