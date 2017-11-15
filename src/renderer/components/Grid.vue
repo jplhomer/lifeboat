@@ -28,6 +28,10 @@ export default {
   height: 100vh;
   padding-top: 1.5rem;
   overflow: hidden;
+
+  .platform-win32 & {
+    padding-top: 0;
+  }
 }
 
 .titlebar {
