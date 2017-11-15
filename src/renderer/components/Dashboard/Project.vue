@@ -144,6 +144,11 @@ export default {
         window.innerHeight - this.$refs.tabArea.getBoundingClientRect().top;
       this.$refs.tabArea.style.height = `${height}px`;
     },
+    checkForExternalLogs() {
+      if ((this.running || this.partiallyRunning) && !this.isLogging) {
+        this.$store.dispatch("startProjectLogs", this.project.id);
+      }
+    },
     ...mapActions({
       start: "startProject",
       stop: "stopProject",
@@ -187,15 +192,18 @@ export default {
     projectStatus() {
       return this.$store.state.Project.projects[this.project.id].status;
     },
+    isLogging() {
+      return !!this.$store.state.Project.projects[this.project.id].isLogging;
+    },
     ...mapGetters(["activeProject"])
   },
   created() {
-    // There is a delay on this for some reason.
-    // setTimeout(() => {
-    //   if (this.running || this.partiallyRunning) {
-    //     this.$store.dispatch("startProjectLogs", this.project.id);
-    //   }
-    // }, 500);
+    // Do an initial check for external logs after half a second
+    setTimeout(this.checkForExternalLogs, 500);
+
+    // Poll the active project every 5s for new logs.
+    // This is so unsexy but it's the only way to catch an external project.
+    setInterval(this.checkForExternalLogs, 5 * 1000);
   },
   mounted() {
     this.setTabAreaHeight();
@@ -206,6 +214,8 @@ export default {
   },
   watch: {
     project(to, from) {
+      this.checkForExternalLogs();
+
       Vue.nextTick(() => {
         this.setTabAreaHeight();
       });
