@@ -188,7 +188,7 @@ const actions = {
       dispatch("setProjectStatus", { id, status: status.RUNNING });
       dispatch("startProjectLogs", id);
     } catch (e) {
-      console.log(e);
+      console.error(`Could not start project`, e);
       dispatch("setProjectStatus", { id, status: status.STOPPED });
     }
   },
@@ -211,6 +211,7 @@ const actions = {
       dispatch("setProjectStatus", { id, status: status.STOPPED });
       dispatch("updateProjectState", [id, "isLogging", false]);
     } catch (e) {
+      console.error(`Could not stop project`, e);
       dispatch("setProjectStatus", { id, status: status.STOPPED });
     }
   },
@@ -221,6 +222,8 @@ const actions = {
    * @param {Int}  id           Project ID
    */
   async buildAndStartProject({ dispatch, commit }, id) {
+    const p = state.projects[id];
+
     commit(types.UPDATE_PROJECT_LOGS, { id, logs: "" });
     dispatch("setProjectStatus", { id, status: status.STARTING });
 
@@ -231,6 +234,7 @@ const actions = {
       });
       dispatch("startProject", id);
     } catch (e) {
+      console.error(`Could not build project`, e);
       dispatch("setProjectStatus", { id, status: status.STOPPED });
     }
   },
@@ -241,6 +245,8 @@ const actions = {
    * @param {Int}  id           Project ID
    */
   async restartProject({ dispatch, commit }, id) {
+    const p = state.projects[id];
+
     commit(types.UPDATE_PROJECT_LOGS, { id, logs: "" });
     dispatch("setProjectStatus", { id, status: status.RESTARTING });
 
@@ -254,7 +260,7 @@ const actions = {
       dispatch("setProjectStatus", { id, status: status.RUNNING });
       this.$store.dispatch("fetchContainers");
     } catch (e) {
-      console.error(e);
+      console.error(`Could not restart project`, e);
     }
   },
 
