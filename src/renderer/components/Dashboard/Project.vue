@@ -100,6 +100,7 @@
 
     <div class="tab-area" ref="tabArea" v-show="!missingComposeFile">
       <project-log :project="project" v-show="activeTab === 'logs'"></project-log>
+      <project-log-filter :project="project" v-show="activeTab === 'logs'"></project-log-filter>
       <project-readme :project="project" v-show="activeTab === 'about'"></project-readme>
       <project-commands :project="project" v-show="activeTab === 'commands'"></project-commands>
     </div>
@@ -115,6 +116,7 @@
 import { mapGetters, mapActions } from "vuex";
 import ProjectService from "@/components/Dashboard/ProjectService";
 import ProjectLog from "@/components/Dashboard/ProjectLog";
+import ProjectLogFilter from "@/components/Dashboard/ProjectLogFilter";
 import ProjectReadme from "@/components/Dashboard/ProjectReadme";
 import ProjectCommands from "@/components/Dashboard/ProjectCommands";
 import Vue from "vue";
@@ -123,7 +125,13 @@ import * as status from "@/utils/project-status";
 
 export default {
   props: ["project"],
-  components: { ProjectService, ProjectLog, ProjectReadme, ProjectCommands },
+  components: {
+    ProjectService,
+    ProjectLog,
+    ProjectLogFilter,
+    ProjectReadme,
+    ProjectCommands
+  },
   methods: {
     containerForService(service) {
       return this.$store.getters

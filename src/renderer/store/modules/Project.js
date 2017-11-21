@@ -35,6 +35,17 @@ const mutations = {
     let p = state.projects[id];
     p.logs = logs;
     state.projects.splice(id, 1, p);
+  },
+
+  [types.TOGGLE_PROJECT_LOG_FILTER](state, { id, service }) {
+    let p = state.projects[id];
+    let filters = p.logFilters;
+    if (filters.includes(service)) {
+      p.logFilters = filters.filter(f => f !== service);
+    } else {
+      p.logFilters.push(service);
+    }
+    state.projects.splice(id, 1, p);
   }
 };
 
@@ -109,6 +120,11 @@ const getters = {
   },
 
   /**
+   * Get a project's log filters
+   */
+  projectLogFilters: state => id => state.projects[id].logFilters,
+
+  /**
    * Get a project's containers
    */
   containersForProject: (state, getters) => id => {
@@ -135,6 +151,7 @@ const actions = {
         const config = new DockerConfig(p);
         p.missingComposeFile = !config.data;
         p.logs = "Click Start to see project logs";
+        p.logFilters = [];
         p.services = config.services();
         p.isLogging = false;
         p.id = idx;
@@ -333,6 +350,13 @@ const actions = {
     processes[id] = Docker.logs(p.dir);
     dispatch("updateProjectState", [id, "isLogging", true]);
     dispatch("logProcess", id);
+  },
+
+  /**
+   * Toggle a project's log filter
+   */
+  toggleProjectLogFilter({ dispatch, commit }, payload) {
+    commit(types.TOGGLE_PROJECT_LOG_FILTER, payload);
   },
 
   migrateProjectSchema({ getters, commit, state }) {
