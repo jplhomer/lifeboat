@@ -19,12 +19,22 @@ export default {
       return this.$store.getters.projectLogs(this.project.id);
     },
     logOutput() {
-      return ansi_up.ansi_to_html(this.logs);
+      let logs = this.logs.split("\n");
+
+      if (this.activeFilters.length) {
+        const regex = new RegExp(`(${this.activeFilters.join("|")})_`);
+        logs = logs.filter(l => regex.test(l.trim()));
+      }
+
+      return ansi_up.ansi_to_html(logs.join("\n"));
     },
     activeTab() {
       return this.projectActiveTab(this.project.id);
     },
-    ...mapGetters(["activeProject", "projectActiveTab"])
+    activeFilters() {
+      return this.projectLogFilters(this.project.id);
+    },
+    ...mapGetters(["activeProject", "projectActiveTab", "projectLogFilters"])
   },
   watch: {
     logs() {
@@ -51,7 +61,7 @@ export default {
   font-size: 0.8em;
   height: 100%;
   overflow-x: auto;
-  padding: 1.25rem 1.5rem;
+  padding: 3.25rem 1.5rem 1.25rem;
   white-space: pre-wrap;
   word-wrap: normal;
   -webkit-font-smoothing: auto;
