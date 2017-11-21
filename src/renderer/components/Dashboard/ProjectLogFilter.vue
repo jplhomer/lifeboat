@@ -1,6 +1,6 @@
 <template>
   <div class="filter-bar">
-    <span class="icon">
+    <span :class="{ icon: true, 'has-text-primary': activeFilters.length }" @click="clear">
       <i class="fa fa-filter fa-lg"></i>
     </span>
     <button v-for="service in project.services" :key="service" :class="{ active: activeFilters.includes(service) }" @click="toggle(service)">{{ service }}</button>
@@ -19,6 +19,10 @@ export default {
         id: this.project.id,
         service
       });
+    },
+
+    clear() {
+      this.$store.dispatch("clearProjectLogFilters", this.project.id);
     }
   },
 
@@ -46,6 +50,7 @@ export default {
 }
 
 .filter-bar span {
+  cursor: pointer;
   margin-right: 0.5em;
 }
 

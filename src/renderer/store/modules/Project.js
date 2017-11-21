@@ -46,6 +46,12 @@ const mutations = {
       p.logFilters.push(service);
     }
     state.projects.splice(id, 1, p);
+  },
+
+  [types.CLEAR_PROJECT_LOG_FILTERS](state, id) {
+    let p = state.projects[id];
+    p.logFilters = [];
+    state.projects.splice(id, 1, p);
   }
 };
 
@@ -355,8 +361,12 @@ const actions = {
   /**
    * Toggle a project's log filter
    */
-  toggleProjectLogFilter({ dispatch, commit }, payload) {
+  toggleProjectLogFilter({ commit }, payload) {
     commit(types.TOGGLE_PROJECT_LOG_FILTER, payload);
+  },
+
+  clearProjectLogFilters({ commit }, id) {
+    commit(types.CLEAR_PROJECT_LOG_FILTERS, id);
   },
 
   migrateProjectSchema({ getters, commit, state }) {
