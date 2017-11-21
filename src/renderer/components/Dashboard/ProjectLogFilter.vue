@@ -43,9 +43,10 @@ export default {
   top: 0;
   right: 0;
   left: 0;
-  padding: 0.3rem;
+  padding: 0.2rem;
   font-size: 0.8em;
   display: flex;
+  align-items: center;
   overflow-y: scroll;
 }
 
@@ -58,7 +59,7 @@ button {
   -webkit-appearance: none;
   cursor: pointer;
   border: 0;
-  padding: 0 10px 2px;
+  padding: 3px 10px 5px;
   background-color: #ddd;
   border-radius: 10px;
   margin-right: 5px;
