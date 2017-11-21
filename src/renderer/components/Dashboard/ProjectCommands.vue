@@ -80,6 +80,13 @@ export default {
   },
   created() {
     if (!this.service) this.service = this.services[0];
+
+    // Manually watch this ProjectCommand's logs since the
+    // normal getter requires a param
+    this.$store.watch(
+      state => state.ProjectCommand.logs[this.project.id],
+      () => this.scrollToBottom()
+    );
   },
   watch: {
     $route() {
