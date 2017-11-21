@@ -38,7 +38,7 @@ export default {
 
 <style scoped>
 .filter-bar {
-  background: #efefef;
+  background: rgba(255, 255, 255, 0.9);
   position: absolute;
   top: 0;
   right: 0;
