@@ -1,9 +1,12 @@
 <template>
   <div class="filter-bar">
-    <span :class="{ icon: true, 'has-text-primary': activeFilters.length }" @click="clear">
+    <span :class="{ icon: true, 'has-text-primary': activeFilters.length }" @click="clear" title="Clear filters">
       <i class="fa fa-filter fa-lg"></i>
     </span>
-    <button v-for="service in project.services" :key="service" :class="{ active: activeFilters.includes(service) }" @click="toggle(service)">{{ service }}</button>
+    <button v-for="service in project.services" :key="service"
+      :class="{ active: activeFilters.includes(service) }"
+      @click="toggle(service)"
+      :title="`Show logs for ${service}`">{{ service }}</button>
   </div>
 </template>
 
