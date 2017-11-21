@@ -14,7 +14,13 @@
       {{ service }}
     </div>
     <div class="service__actions">
-      <span :class="{ button: true, 'is-text': true, icon: true, 'has-text-primary': activeFilters.includes(service) }" @click="toggleLogFilter" :title="`Filters logs by ${service}`">
+      <span :class="{
+        'toggle-logs': true,
+        button: true,
+        'is-text': true,
+        icon: true,
+        'has-text-primary': activeFilters.includes(service)
+      }" @click="toggleLogFilter" :title="`Filters logs by ${service}`">
         <i class="fa fa-file-text-o"></i>
       </span>
       <div class="tags">
@@ -80,6 +86,15 @@ export default {
   padding: 0.4em;
   justify-content: space-between;
   align-items: center;
+
+  .toggle-logs {
+    display: none;
+  }
+
+  &:hover .toggle-logs,
+  .toggle-logs.has-text-primary {
+    display: flex;
+  }
 
   .tags {
     padding-left: 2px;

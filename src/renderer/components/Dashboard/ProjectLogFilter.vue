@@ -55,11 +55,6 @@ export default {
   align-items: center;
 }
 
-.filter-bar span {
-  cursor: pointer;
-  margin-right: 0.5em;
-}
-
 button {
   -webkit-appearance: none;
   cursor: pointer;
@@ -72,19 +67,6 @@ button {
 
 button:hover {
   background-color: #ccc;
-}
-
-button.active {
-  background-color: var(--color-primary);
-  color: #fff;
-}
-
-button.active:hover {
-  background-color: var(--color-primary);
-}
-
-button:focus {
-  outline: 0;
 }
 </style>
 
