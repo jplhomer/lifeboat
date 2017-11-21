@@ -49,6 +49,9 @@ export default {
       if (newTab === "logs") {
         this.scrollToBottom();
       }
+    },
+    activeFilters() {
+      this.scrollToBottom();
     }
   }
 };
