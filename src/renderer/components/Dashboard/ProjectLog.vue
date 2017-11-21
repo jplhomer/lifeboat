@@ -21,7 +21,10 @@ export default {
     logOutput() {
       return ansi_up.ansi_to_html(this.logs);
     },
-    ...mapGetters(["activeProject"])
+    activeTab() {
+      return this.projectActiveTab(this.project.id);
+    },
+    ...mapGetters(["activeProject", "projectActiveTab"])
   },
   watch: {
     logs() {
@@ -29,6 +32,11 @@ export default {
     },
     activeProject(newProjectId) {
       if (newProjectId == this.project.id) {
+        this.scrollToBottom();
+      }
+    },
+    activeTab(newTab) {
+      if (newTab === "logs") {
         this.scrollToBottom();
       }
     }
