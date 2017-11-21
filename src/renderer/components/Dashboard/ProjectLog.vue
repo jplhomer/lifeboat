@@ -64,7 +64,7 @@ export default {
   font-size: 0.8em;
   height: 100%;
   overflow-x: auto;
-  padding: 3.25rem 1.5rem 1.25rem;
+  padding: 1.25rem 1.5rem;
   white-space: pre-wrap;
   word-wrap: normal;
   -webkit-font-smoothing: auto;

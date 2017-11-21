@@ -1,12 +1,10 @@
 <template>
   <div class="filter-bar">
-    <span :class="{ icon: true, 'has-text-primary': activeFilters.length }" @click="clear" title="Clear filters">
-      <i class="fa fa-filter fa-lg"></i>
-    </span>
-    <button v-for="service in project.services" :key="service"
-      :class="{ active: activeFilters.includes(service) }"
-      @click="toggle(service)"
-      :title="`Show logs for ${service}`">{{ service }}</button>
+    <div>
+      Showing logs for:
+      <b>{{ activeFilterList }}</b>
+    </div>
+    <button @click="clear">Clear Filters</button>
   </div>
 </template>
 
@@ -34,6 +32,10 @@ export default {
       return this.projectLogFilters(this.project.id);
     },
 
+    activeFilterList() {
+      return this.activeFilters.join(", ");
+    },
+
     ...mapGetters(["projectLogFilters"])
   }
 };
@@ -41,16 +43,16 @@ export default {
 
 <style scoped>
 .filter-bar {
-  background: rgba(255, 255, 255, 0.9);
+  background: #efefef;
   position: absolute;
   top: 0;
   right: 0;
   left: 0;
-  padding: 0.2rem;
+  padding: 0.2rem 0.5rem;
   font-size: 0.8em;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  overflow-y: scroll;
 }
 
 .filter-bar span {
