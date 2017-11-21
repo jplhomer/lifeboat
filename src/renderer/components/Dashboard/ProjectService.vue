@@ -20,7 +20,7 @@
         'is-text': true,
         icon: true,
         'has-text-primary': activeFilters.includes(service)
-      }" @click="toggleLogFilter" :title="`Filters logs by ${service}`">
+      }" @click="toggleLogFilter" :title="`Filter logs by ${service}`">
         <i class="fa fa-file-text-o"></i>
       </span>
       <div class="tags">
@@ -102,6 +102,10 @@ export default {
 
   .tags:last-child {
     margin-bottom: 0;
+  }
+
+  .tag:not(:last-child) {
+    margin-right: 2px;
   }
 
   .tag {
