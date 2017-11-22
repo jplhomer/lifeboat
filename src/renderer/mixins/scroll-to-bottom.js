@@ -25,6 +25,7 @@ export default {
     }
   },
   mounted() {
+    if (!this.$refs[REF]) return;
     this.$refs[REF].addEventListener("scroll", () => {
       this.isScrolledUp =
         this.$refs[REF].scrollTop !=
