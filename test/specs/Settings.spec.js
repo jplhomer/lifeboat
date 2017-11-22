@@ -4,7 +4,6 @@ import Settings from "@/components/Settings";
 import Grid from "@/components/Grid";
 
 const localVue = createLocalVue();
-
 localVue.use(Vuex);
 
 describe("Settings.vue", () => {

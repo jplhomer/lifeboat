@@ -42,22 +42,22 @@ export default class DockerConfig {
    * Get the compose file for this project
    */
   getComposeFile() {
-    return [
-      "docker-compose.yml",
-      "docker-compose.yaml"
-    ].reduce((match, file) => {
-      if (match) return match;
+    return ["docker-compose.yml", "docker-compose.yaml"].reduce(
+      (match, file) => {
+        if (match) return match;
 
-      // Check to see if the file exists
-      try {
-        const stats = fs.statSync(path.join(this.dir, file));
+        // Check to see if the file exists
+        try {
+          const stats = fs.statSync(path.join(this.dir, file));
 
-        // Set the file as a match
-        if (stats.isFile()) match = file;
-      } catch (e) {}
+          // Set the file as a match
+          if (stats.isFile()) match = file;
+        } catch (e) {}
 
-      return match;
-    }, null);
+        return match;
+      },
+      null
+    );
   }
 }
 
