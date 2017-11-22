@@ -106,33 +106,37 @@ export default {
     ...mapGetters(["projects"])
   },
   mounted() {
-    this.$refs.dropzone.addEventListener("drop", e => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.currentTarget.classList.remove("over");
+    if (this.$refs.dropzone) {
+      this.$refs.dropzone.addEventListener("drop", e => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.currentTarget.classList.remove("over");
 
-      for (let f of e.dataTransfer.files) {
-        this.addProject(f.path);
-      }
-    });
+        for (let f of e.dataTransfer.files) {
+          this.addProject(f.path);
+        }
+      });
 
-    this.$refs.dropzone.addEventListener("dragover", function(e) {
-      this.classList.add("over");
-      e.preventDefault();
-      e.stopPropagation();
-    });
+      this.$refs.dropzone.addEventListener("dragover", function(e) {
+        this.classList.add("over");
+        e.preventDefault();
+        e.stopPropagation();
+      });
 
-    this.$refs.dropzone.addEventListener("dragleave", function(e) {
-      this.classList.remove("over");
-      e.preventDefault();
-      e.stopPropagation();
-    });
+      this.$refs.dropzone.addEventListener("dragleave", function(e) {
+        this.classList.remove("over");
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    }
 
-    this.$refs.file.addEventListener("change", e => {
-      for (let f of e.currentTarget.files) {
-        this.addProject(f.path);
-      }
-    });
+    if (this.$refs.file) {
+      this.$refs.file.addEventListener("change", e => {
+        for (let f of e.currentTarget.files) {
+          this.addProject(f.path);
+        }
+      });
+    }
   },
   beforeDestroy() {
     this.showFirstTimeMessage = false;
