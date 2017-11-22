@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <div class="notification first-time-message has-text-centered is-success" v-show="showFirstTimeMessage">
+      <div class="notification first-time-message has-text-centered is-success" v-if="showFirstTimeMessage">
         Great work!
         <b>
           <router-link to="/dashboard">Visit the dashboard</router-link>
