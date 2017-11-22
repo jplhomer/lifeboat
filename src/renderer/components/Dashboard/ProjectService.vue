@@ -38,6 +38,13 @@ export default {
   methods: {
     openLocalhost(port) {
       this.$electron.shell.openExternal(`http://localhost:${port}`);
+    },
+
+    toggleLogFilter() {
+      this.$store.dispatch("toggleProjectLogFilter", {
+        id: this.project.id,
+        service: this.service
+      });
     }
   },
   computed: {
@@ -63,15 +70,6 @@ export default {
     },
 
     ...mapGetters(["projectLogFilters"])
-  },
-
-  methods: {
-    toggleLogFilter() {
-      this.$store.dispatch("toggleProjectLogFilter", {
-        id: this.project.id,
-        service: this.service
-      });
-    }
   }
 };
 </script>
