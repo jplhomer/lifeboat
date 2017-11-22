@@ -35,7 +35,7 @@ install:
 - npm install -g xvfb-maybe
 - yarn
 script:
-#- xvfb-maybe node_modules/.bin/karma start test/unit/karma.conf.js
+- xvfb-maybe NODE_ENV=test node_modules/.bin/mocha-webpack --webpack-config .electron-vue/webpack.renderer.config.js --require test/unit/setup.js test/unit/specs/*.spec.js
 #- yarn run pack && xvfb-maybe node_modules/.bin/mocha test/e2e
 - yarn run build
 branches:
