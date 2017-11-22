@@ -1,5 +1,5 @@
 <template>
-  <div class="log" v-html="logOutput" ref="scrollToBottom">
+  <div :class="{ log: true, 'is-filtered': activeFilters.length }" v-html="logOutput" ref="scrollToBottom">
   </div>
 </template>
 
@@ -69,5 +69,9 @@ export default {
   word-wrap: normal;
   -webkit-font-smoothing: auto;
   font-family: monospace;
+}
+
+.log.is-filtered {
+  padding-top: 3.5rem;
 }
 </style>
