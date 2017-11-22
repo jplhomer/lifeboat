@@ -1,5 +1,5 @@
 <template>
-  <div class="log" v-html="logOutput" ref="scrollToBottom">
+  <div :class="{ log: true, 'is-filtered': activeFilters.length }" v-html="logOutput" ref="scrollToBottom">
   </div>
 </template>
 
@@ -19,12 +19,22 @@ export default {
       return this.$store.getters.projectLogs(this.project.id);
     },
     logOutput() {
-      return ansi_up.ansi_to_html(this.logs);
+      let logs = this.logs.split("\n");
+
+      if (this.activeFilters.length) {
+        const regex = new RegExp(`(${this.activeFilters.join("|")})_`);
+        logs = logs.filter(l => regex.test(l.trim()));
+      }
+
+      return ansi_up.ansi_to_html(logs.join("\n"));
     },
     activeTab() {
       return this.projectActiveTab(this.project.id);
     },
-    ...mapGetters(["activeProject", "projectActiveTab"])
+    activeFilters() {
+      return this.projectLogFilters(this.project.id);
+    },
+    ...mapGetters(["activeProject", "projectActiveTab", "projectLogFilters"])
   },
   watch: {
     logs() {
@@ -39,6 +49,9 @@ export default {
       if (newTab === "logs") {
         this.scrollToBottom();
       }
+    },
+    activeFilters() {
+      this.scrollToBottom();
     }
   }
 };
@@ -56,5 +69,9 @@ export default {
   word-wrap: normal;
   -webkit-font-smoothing: auto;
   font-family: monospace;
+}
+
+.log.is-filtered {
+  padding-top: 3.5rem;
 }
 </style>

@@ -35,8 +35,8 @@ export default class DockerContainer {
   }
 
   get ports() {
-    return this.container.Ports
-      .filter(p => p.hasOwnProperty("PublicPort"))
-      .map(p => p.PublicPort);
+    return this.container.Ports.filter(p => p.hasOwnProperty("PublicPort")).map(
+      p => p.PublicPort
+    );
   }
 }

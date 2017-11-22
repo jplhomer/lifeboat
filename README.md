@@ -27,13 +27,21 @@ yarn run build
 # quick build (.app only)
 yarn run build:dir
 
-# run unit & end-to-end tests
+# run unit tests
 yarn test
 
 # lint all JS/Vue component files in `src/`
 yarn run lint
 
 ```
+
+#### Writing Tests
+
+Unit tests are written for Vue components and should be placed in the `test/specs` directory. Here are a few guides for writing tests using Lifeboat's setup:
+
+- [Vue Test Utils](https://vue-test-utils.vuejs.org): The library of tool used to test shallow copies of Vue components.
+- [Expect](https://facebook.github.io/jest/docs/en/expect.html): Part of Facebook's Jest testing suite. Used for assertions.
+- [Sinon](http://sinonjs.org/): Used for spies, mocks, stubs, and fake timers.
 
 #### Troubleshooting
 

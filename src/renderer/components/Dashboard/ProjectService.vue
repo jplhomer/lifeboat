@@ -13,19 +13,38 @@
 
       {{ service }}
     </div>
-
-    <div class="service__tags tags">
-      <span @click="openLocalhost(port)" v-for="port in ports" :key="port" class="tag is-small" :title="`${service} is exposed on port ${port}`">{{ port }}</span>
+    <div class="service__actions">
+      <span :class="{
+        'toggle-logs': true,
+        button: true,
+        'is-text': true,
+        icon: true,
+        'has-text-primary': activeFilters.includes(service)
+      }" @click="toggleLogFilter" :title="`Filter logs by ${service}`">
+        <i class="fa fa-file-text-o"></i>
+      </span>
+      <div class="tags">
+        <span @click="openLocalhost(port)" v-for="port in ports" :key="port" class="tag is-small" :title="`${service} is exposed on port ${port}`">{{ port }}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-  props: ["container", "service"],
+  props: ["project", "container", "service"],
   methods: {
     openLocalhost(port) {
       this.$electron.shell.openExternal(`http://localhost:${port}`);
+    },
+
+    toggleLogFilter() {
+      this.$store.dispatch("toggleProjectLogFilter", {
+        id: this.project.id,
+        service: this.service
+      });
     }
   },
   computed: {
@@ -44,7 +63,13 @@ export default {
       }
 
       return [];
-    }
+    },
+
+    activeFilters() {
+      return this.projectLogFilters(this.project.id);
+    },
+
+    ...mapGetters(["projectLogFilters"])
   }
 };
 </script>
@@ -56,12 +81,44 @@ export default {
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.25);
   display: flex;
   font-size: 0.9em;
-  padding: 0.5em;
+  padding: 0.4em;
   justify-content: space-between;
+  align-items: center;
+
+  .toggle-logs {
+    display: none;
+  }
+
+  &:hover .toggle-logs,
+  .toggle-logs.has-text-primary {
+    display: flex;
+  }
+
+  .tags {
+    padding-left: 2px;
+  }
+
+  .tags:last-child {
+    margin-bottom: 0;
+  }
+
+  .tag:not(:last-child) {
+    margin-right: 2px;
+  }
 
   .tag {
     cursor: pointer;
     font-size: 0.65rem;
+    margin-bottom: 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+
+    button {
+      text-decoration: none;
+    }
   }
 }
 

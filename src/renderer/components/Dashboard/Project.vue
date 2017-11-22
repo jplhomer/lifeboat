@@ -64,7 +64,7 @@
     <div class="services" v-show="!missingComposeFile">
       <div class="columns is-mobile is-multiline">
         <div v-for="service in project.services" :key="service" class="column is-one-third">
-          <project-service :service="service" :container="containerForService(service)"></project-service>
+          <project-service :project="project" :service="service" :container="containerForService(service)"></project-service>
         </div>
       </div>
     </div>
@@ -100,6 +100,7 @@
 
     <div class="tab-area" ref="tabArea" v-show="!missingComposeFile">
       <project-log :project="project" v-show="activeTab === 'logs'"></project-log>
+      <project-log-filter :project="project" v-if="activeTab === 'logs' && activeLogFilters.length"></project-log-filter>
       <project-readme :project="project" v-show="activeTab === 'about'"></project-readme>
       <project-commands :project="project" v-show="activeTab === 'commands'"></project-commands>
     </div>
@@ -115,6 +116,7 @@
 import { mapGetters, mapActions } from "vuex";
 import ProjectService from "@/components/Dashboard/ProjectService";
 import ProjectLog from "@/components/Dashboard/ProjectLog";
+import ProjectLogFilter from "@/components/Dashboard/ProjectLogFilter";
 import ProjectReadme from "@/components/Dashboard/ProjectReadme";
 import ProjectCommands from "@/components/Dashboard/ProjectCommands";
 import Vue from "vue";
@@ -123,7 +125,13 @@ import * as status from "@/utils/project-status";
 
 export default {
   props: ["project"],
-  components: { ProjectService, ProjectLog, ProjectReadme, ProjectCommands },
+  components: {
+    ProjectService,
+    ProjectLog,
+    ProjectLogFilter,
+    ProjectReadme,
+    ProjectCommands
+  },
   methods: {
     containerForService(service) {
       return this.$store.getters
@@ -195,7 +203,10 @@ export default {
     isLogging() {
       return !!this.$store.state.Project.projects[this.project.id].isLogging;
     },
-    ...mapGetters(["activeProject"])
+    activeLogFilters() {
+      return this.projectLogFilters(this.project.id);
+    },
+    ...mapGetters(["activeProject", "projectLogFilters"])
   },
   created() {
     // Do an initial check for external logs after half a second

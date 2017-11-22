@@ -18,7 +18,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
  * that provide pure *.vue files that need compiling
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
-let whiteListedModules = ["vue", "bulma"];
+let whiteListedModules = ["vue"];
 
 let rendererConfig = {
   devtool: "#cheap-module-eval-source-map",
@@ -76,6 +76,7 @@ let rendererConfig = {
           loader: "vue-loader",
           options: {
             extractCSS: process.env.NODE_ENV === "production",
+            optimizeSSR: false,
             loaders: {
               sass: "vue-style-loader!css-loader!sass-loader?indentedSyntax=1",
               scss: "vue-style-loader!css-loader!sass-loader"
@@ -163,6 +164,14 @@ if (process.env.NODE_ENV !== "production") {
       __static: `"${path.join(__dirname, "../static").replace(/\\/g, "\\\\")}"`
     })
   );
+}
+
+/**
+ * Update the devtool for Mocha tests
+ */
+if (process.env.NODE_ENV === "test") {
+  rendererConfig.devtool = "inline-cheap-module-source-map";
+  rendererConfig.target = "node";
 }
 
 /**
