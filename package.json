@@ -1,6 +1,6 @@
 {
   "name": "lifeboat",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "author": "Josh Larson <jplhomer@gmail.com>",
   "description": "A Docker UI for beginners",
   "license": "MIT",
