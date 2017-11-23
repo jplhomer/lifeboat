@@ -323,9 +323,6 @@ const actions = {
     processes[id].on("data", d =>
       dispatch("appendProjectLogs", { id, logs: d.toString() })
     );
-    // processes[id].stderr.on("data", d =>
-    //   dispatch("appendProjectLogs", { id, logs: d.toString() })
-    // );
   },
 
   /**

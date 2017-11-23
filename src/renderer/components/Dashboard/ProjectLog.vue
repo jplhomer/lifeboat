@@ -9,6 +9,7 @@ import { mapGetters } from "vuex";
 import AU from "ansi_up";
 import { Terminal } from "xterm";
 import "xterm/lib/xterm.css";
+import _ from "lodash";
 
 Terminal.loadAddon("fit");
 const xterm = new Terminal({
@@ -53,10 +54,14 @@ export default {
     xterm.fit();
     xterm.write(this.logs);
 
-    window.addEventListener("resize", () => {
-      xterm.fit();
-      xterm.refresh();
-    });
+    window.addEventListener(
+      "resize",
+      _.debounce(() => {
+        xterm.fit();
+        xterm.clear();
+        xterm.write(this.logOutput);
+      }, 200)
+    );
   },
   watch: {
     logOutput(val) {
@@ -79,12 +84,12 @@ export default {
   color: #fff;
   font-size: 0.8em;
   height: 100%;
-  padding: 1.25rem 0 1.25rem 1.5rem;
+  padding: 1rem 0 1rem 1rem;
   width: 100%;
 }
 
 .log-wrapper.is-filtered {
-  padding-top: 3.5rem;
+  padding-top: 2rem;
 }
 
 .log {
