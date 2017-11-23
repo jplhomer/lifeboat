@@ -9,37 +9,33 @@ import AU from "ansi_up";
 import { Terminal } from "xterm";
 import "xterm/lib/xterm.css";
 
-// Notice it's called statically on the type, not an object
 Terminal.loadAddon("fit");
-
-// Instantiate the terminal and call fit
 const xterm = new Terminal();
-
-// import scrollToBottom from "@/mixins/scroll-to-bottom";
-// const ansi_up = new AU();
 
 export default {
   props: ["project"],
-  // mixins: [scrollToBottom],
   computed: {
     logs() {
       return this.$store.getters.projectLogs(this.project.id);
     },
     logOutput() {
-      let logs = this.logs.split("\n");
+      let logs = this.logs.trim().split("\n");
 
       if (this.activeFilters.length) {
         const regex = new RegExp(`(${this.activeFilters.join("|")})_`);
         logs = logs.filter(l => regex.test(l.trim()));
       }
 
-      // return ansi_up.ansi_to_html(logs.join("\n"));
+      return logs.join("\n");
     },
     activeTab() {
       return this.projectActiveTab(this.project.id);
     },
     activeFilters() {
       return this.projectLogFilters(this.project.id);
+    },
+    activeFilterString() {
+      return this.activeFilters.join();
     },
     ...mapGetters(["projectActiveTab", "projectLogFilters"])
   },
@@ -49,19 +45,14 @@ export default {
     xterm.write(this.logs);
   },
   watch: {
-    logs(val) {
+    logOutput(val) {
       xterm.write(val);
     },
     $route() {
       xterm.clear();
     },
-    activeTab(newTab) {
-      if (newTab === "logs") {
-        // this.scrollToBottom();
-      }
-    },
-    activeFilters() {
-      // this.scrollToBottom();
+    activeFilterString(val) {
+      xterm.clear();
     }
   }
 };
