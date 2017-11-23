@@ -1,5 +1,6 @@
 <template>
-  <div :class="{ log: true, 'is-filtered': activeFilters.length }" ref="log">
+  <div :class="{ 'log-wrapper': true, 'is-filtered': activeFilters.length }">
+    <div class="log" ref="log"></div>
   </div>
 </template>
 
@@ -10,7 +11,15 @@ import { Terminal } from "xterm";
 import "xterm/lib/xterm.css";
 
 Terminal.loadAddon("fit");
-const xterm = new Terminal();
+const xterm = new Terminal({
+  disableStdin: true,
+  fontFamily: "monospace",
+  fontSize: 13,
+  lineHeight: 1.3,
+  theme: {
+    background: "#0a0a0a"
+  }
+});
 
 export default {
   props: ["project"],
@@ -43,6 +52,11 @@ export default {
     xterm.open(this.$refs.log);
     xterm.fit();
     xterm.write(this.logs);
+
+    window.addEventListener("resize", () => {
+      xterm.fit();
+      xterm.refresh();
+    });
   },
   watch: {
     logOutput(val) {
@@ -53,26 +67,28 @@ export default {
     },
     activeFilterString(val) {
       xterm.clear();
+      xterm.fit();
     }
   }
 };
 </script>
 
 <style scoped>
-.log {
-  background: var(--black-gradient);
+.log-wrapper {
+  background: #0a0a0a;
   color: #fff;
   font-size: 0.8em;
   height: 100%;
-  overflow-x: auto;
-  padding: 1.25rem 1.5rem;
-  white-space: pre-wrap;
-  word-wrap: normal;
-  -webkit-font-smoothing: auto;
-  font-family: monospace;
+  padding: 1.25rem 0 1.25rem 1.5rem;
+  width: 100%;
 }
 
-.log.is-filtered {
+.log-wrapper.is-filtered {
   padding-top: 3.5rem;
+}
+
+.log {
+  height: 100%;
+  width: 100%;
 }
 </style>
