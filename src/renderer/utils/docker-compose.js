@@ -1,5 +1,5 @@
 import { execFile, spawn } from "child_process";
-import which from "which";
+import * as pty from "node-pty";
 
 export default class DockerCompose {
   /**
@@ -8,7 +8,10 @@ export default class DockerCompose {
    * @param {array} args
    */
   static sync(dir, args = []) {
-    return spawn("docker-compose", args, { cwd: dir });
+    return pty.spawn("docker-compose", args, {
+      name: "xterm-color",
+      cwd: dir
+    });
   }
 
   /**

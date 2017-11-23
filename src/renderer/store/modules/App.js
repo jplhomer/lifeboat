@@ -5,14 +5,10 @@ import Container from "@/utils/docker-container";
 const state = {
   containers: [],
   updateAvailable: false,
-  activeProject: 0,
   loaded: false
 };
 
 const mutations = {
-  SET_ACTIVE_PROJECT(state, projectId) {
-    state.activeProject = projectId;
-  },
   UPDATE_CONTAINERS(state, containers) {
     state.containers = containers;
   },
@@ -49,9 +45,6 @@ const actions = {
 const getters = {
   containers(state) {
     return state.containers;
-  },
-  activeProject(state) {
-    return state.activeProject;
   },
   loaded(state) {
     return state.loaded;

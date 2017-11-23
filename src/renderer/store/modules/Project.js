@@ -320,12 +320,12 @@ const actions = {
    * Log the process for a given project
    */
   logProcess({ dispatch }, id) {
-    processes[id].stdout.on("data", d =>
+    processes[id].on("data", d =>
       dispatch("appendProjectLogs", { id, logs: d.toString() })
     );
-    processes[id].stderr.on("data", d =>
-      dispatch("appendProjectLogs", { id, logs: d.toString() })
-    );
+    // processes[id].stderr.on("data", d =>
+    //   dispatch("appendProjectLogs", { id, logs: d.toString() })
+    // );
   },
 
   /**

@@ -1,19 +1,26 @@
 <template>
-  <div :class="{ log: true, 'is-filtered': activeFilters.length }" v-html="logOutput" ref="scrollToBottom">
+  <div :class="{ log: true, 'is-filtered': activeFilters.length }" ref="log">
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import AU from "ansi_up";
-import scrollToBottom from "@/mixins/scroll-to-bottom";
+import { Terminal } from "xterm";
+import "xterm/lib/xterm.css";
 
-const ansi_up = new AU();
-let logger;
+// Notice it's called statically on the type, not an object
+Terminal.loadAddon("fit");
+
+// Instantiate the terminal and call fit
+const xterm = new Terminal();
+
+// import scrollToBottom from "@/mixins/scroll-to-bottom";
+// const ansi_up = new AU();
 
 export default {
   props: ["project"],
-  mixins: [scrollToBottom],
+  // mixins: [scrollToBottom],
   computed: {
     logs() {
       return this.$store.getters.projectLogs(this.project.id);
@@ -26,7 +33,7 @@ export default {
         logs = logs.filter(l => regex.test(l.trim()));
       }
 
-      return ansi_up.ansi_to_html(logs.join("\n"));
+      // return ansi_up.ansi_to_html(logs.join("\n"));
     },
     activeTab() {
       return this.projectActiveTab(this.project.id);
@@ -34,24 +41,27 @@ export default {
     activeFilters() {
       return this.projectLogFilters(this.project.id);
     },
-    ...mapGetters(["activeProject", "projectActiveTab", "projectLogFilters"])
+    ...mapGetters(["projectActiveTab", "projectLogFilters"])
+  },
+  mounted() {
+    xterm.open(this.$refs.log);
+    xterm.fit();
+    xterm.write(this.logs);
   },
   watch: {
-    logs() {
-      this.scrollToBottom();
+    logs(val) {
+      xterm.write(val);
     },
-    activeProject(newProjectId) {
-      if (newProjectId == this.project.id) {
-        this.scrollToBottom();
-      }
+    $route() {
+      xterm.clear();
     },
     activeTab(newTab) {
       if (newTab === "logs") {
-        this.scrollToBottom();
+        // this.scrollToBottom();
       }
     },
     activeFilters() {
-      this.scrollToBottom();
+      // this.scrollToBottom();
     }
   }
 };
