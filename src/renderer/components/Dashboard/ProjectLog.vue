@@ -6,7 +6,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import AU from "ansi_up";
 import { Terminal } from "xterm";
 import "xterm/lib/xterm.css";
 import _ from "lodash";

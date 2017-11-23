@@ -82,6 +82,10 @@ const actions = {
     commit(types.UPDATE_PROJECT_COMMAND_COMMAND, { id, command });
   },
 
+  sendKey(context, { id, key }) {
+    commands[id].write(key);
+  },
+
   setService({ commit }, { id, service }) {
     commit(types.UPDATE_PROJECT_COMMAND_SERVICE, { id, service });
   },
@@ -109,7 +113,7 @@ const actions = {
     // Update the logs
     commit(types.UPDATE_PROJECT_COMMAND_LOGS, {
       id,
-      logs: `$ docker-compose run --rm ${service} ${command}\r\n`
+      logs: `\r\n`
     });
 
     // Mark the command as running
@@ -121,13 +125,7 @@ const actions = {
     // Clear the command
     commit(types.UPDATE_PROJECT_COMMAND_COMMAND, { id, command: "" });
 
-    // Listen for stdout data
-    commands[id].stdout.on("data", data => {
-      dispatch("addLogs", { id, logs: data.toString() });
-    });
-
-    // Listen for stderr data
-    commands[id].stderr.on("data", data => {
+    commands[id].on("data", data => {
       dispatch("addLogs", { id, logs: data.toString() });
     });
 
@@ -135,6 +133,8 @@ const actions = {
     commands[id].on("exit", data => {
       commit(types.UPDATE_PROJECT_COMMAND_RUNNING, { id, running: false });
     });
+
+    return commands[id];
   },
 
   runMounted({ commit, dispatch, getters }, id) {

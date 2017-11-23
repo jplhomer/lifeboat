@@ -20,20 +20,75 @@
         </div>
       </div>
     </div>
-    <pre class="commands__log" v-html="logOutput"></pre>
+    <div class="commands__log" ref="terminal"></div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import AU from "ansi_up";
-import scrollToBottom from "@/mixins/scroll-to-bottom";
-const ansi_up = new AU();
+import { Terminal } from "xterm";
+import "xterm/lib/xterm.css";
+import _ from "lodash";
+
+Terminal.loadAddon("fit");
+let xterm;
+let process;
 
 export default {
   props: ["project"],
-  mixins: [scrollToBottom],
   methods: {
+    createTerminalInstance() {
+      xterm = new Terminal({
+        fontFamily: "monospace",
+        fontSize: 13,
+        lineHeight: 1.3,
+        cursorBlink: true,
+        theme: {
+          background: "#0a0a0a"
+        }
+      });
+      xterm.open(this.$refs.terminal);
+      xterm.fit();
+      xterm.prompt = function() {
+        xterm.write(`\r\n$ `);
+      };
+
+      xterm.writeln("Type any command to run inside app");
+      xterm.prompt();
+      this.handleTerminalInput();
+    },
+
+    handleTerminalInput() {
+      var self = this;
+
+      xterm.on("key", function(key, ev) {
+        if (self.running(self.project.id)) {
+          self.$store.dispatch("ProjectCommand/sendKey", {
+            id: self.project.id,
+            key
+          });
+          return;
+        }
+
+        if (ev.keyCode === 13) {
+          xterm.clear();
+          xterm.writeln("");
+          self.run(self.project.id).then(p => {
+            p.on("data", function(data) {
+              xterm.write(data);
+            });
+
+            p.on("exit", function() {
+              xterm.prompt();
+            });
+          });
+        } else {
+          xterm.write(key);
+          self.command += key;
+        }
+      });
+    },
+
     ...mapActions("ProjectCommand", [
       "run",
       "cancel",
@@ -47,7 +102,7 @@ export default {
     },
 
     logOutput() {
-      return ansi_up.ansi_to_html(this.logs(this.project.id));
+      return this.logs(this.project.id);
     },
 
     service: {
@@ -76,26 +131,36 @@ export default {
       }
     },
 
-    ...mapGetters("ProjectCommand", ["logs", "running"])
+    activeTab() {
+      return this.projectActiveTab(this.project.id);
+    },
+
+    ...mapGetters("ProjectCommand", ["logs", "running"]),
+    ...mapGetters(["projectActiveTab"])
   },
   created() {
     if (!this.service) this.service = this.services[0];
-
-    // Manually watch this ProjectCommand's logs since the
-    // normal getter requires a param
-    this.$store.watch(
-      state => state.ProjectCommand.logs[this.project.id],
-      () => this.scrollToBottom()
-    );
   },
+  mounted() {},
   watch: {
     $route() {
       if (!this.service) this.service = this.services[0];
+    },
+    activeTab(val) {
+      if (val === "commands") {
+        if (!xterm) this.createTerminalInstance();
+        xterm.focus();
+      }
+    },
+    logOutput() {
+      // if (xterm) {
+      //   xterm.clear();
+      //   xterm.write(this.logOutput);
+      // }
     }
   }
 };
 </script>
-
 
 <style lang="scss" scoped>
 .input,
@@ -106,11 +171,10 @@ select {
 }
 
 .commands {
-  background: var(--black-gradient);
-  color: #fff;
+  background: #0a0a0a;
   height: 100%;
-  overflow: scroll;
-  padding-bottom: 2rem;
+  padding: 1rem 1rem 2.5rem;
+  width: 100%;
 
   &__bar {
     position: absolute;
@@ -120,11 +184,8 @@ select {
   }
 
   &__log {
-    background-color: inherit;
-    color: inherit;
-    font-family: monospace;
-    padding: 1rem;
-    white-space: pre-wrap;
+    height: 100%;
+    width: 100%;
   }
 }
 
