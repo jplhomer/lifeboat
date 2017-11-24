@@ -1,26 +1,6 @@
 <template>
-  <div class="commands" ref="scrollToBottom">
-    <div class="commands__bar">
-      <div class="field has-addons">
-        <div class="control">
-          <div class="select">
-            <select v-model="service" class="select">
-              <option v-for="option in services" :value="option" :key="option">{{ option }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="control is-expanded">
-          <input v-model="command" class="command-text input" type="text" @keyup.enter="run(project.id)" @keydown.up="loadPreviousCommand(project.id)" @keydown.down="loadNextCommand(project.id)" :placeholder="`Type a command to run in ${service}...`">
-        </div>
-        <div class="control">
-          <button @click.prevent="run(project.id)" class="button">Run</button>
-        </div>
-        <div class="control">
-          <button @click.prevent="cancel(project.id)" class="button is-danger" v-show="running(project.id)">Cancel</button>
-        </div>
-      </div>
-    </div>
-    <div class="commands__log" ref="terminal"></div>
+  <div class="commands">
+    <div class="commands__terminal" ref="terminal"></div>
   </div>
 </template>
 
@@ -184,33 +164,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.input,
-.button,
-.field,
-select {
-  border-radius: 0 !important;
-}
-
 .commands {
   background: #0a0a0a;
   height: 100%;
-  padding: 1rem 1rem 2.5rem;
+  padding: 1rem;
   width: 100%;
 
-  &__bar {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-
-  &__log {
+  &__terminal {
     height: 100%;
     width: 100%;
   }
-}
-
-.command-text {
-  font-family: monospace;
 }
 </style>
