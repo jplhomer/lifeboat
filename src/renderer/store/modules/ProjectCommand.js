@@ -90,6 +90,10 @@ const actions = {
     commit(types.UPDATE_PROJECT_COMMAND_SERVICE, { id, service });
   },
 
+  getProcess(context, id) {
+    return commands[id];
+  },
+
   run({ commit, getters, state, dispatch, rootGetters }, id) {
     const project = rootGetters.projects[id];
     const service = getters.service(id);

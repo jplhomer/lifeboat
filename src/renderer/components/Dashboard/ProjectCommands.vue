@@ -32,11 +32,16 @@ import _ from "lodash";
 
 Terminal.loadAddon("fit");
 let xterm;
-let process;
 
 export default {
   props: ["project"],
   methods: {
+    async attachToProcess() {
+      let process = await this.getProcess(this.project.id);
+      process.on("data", d => xterm.write(d));
+      process.on("exit", this.prompt);
+    },
+
     createTerminalInstance() {
       xterm = new Terminal({
         fontFamily: "monospace",
@@ -49,60 +54,74 @@ export default {
       });
       xterm.open(this.$refs.terminal);
       xterm.fit();
-      xterm.prompt = function() {
-        xterm.write(`\r\n$ `);
-      };
 
-      xterm.writeln("Type any command to run inside app");
-      xterm.prompt();
+      xterm.writeln("Type any command to run inside the selected service");
+      this.prompt();
       this.handleTerminalInput();
     },
 
     handleTerminalInput() {
-      var self = this;
+      xterm.on("key", this.handleKey);
+    },
 
-      xterm.on("key", function(key, ev) {
-        if (self.running(self.project.id)) {
-          self.$store.dispatch("ProjectCommand/sendKey", {
-            id: self.project.id,
-            key
-          });
-          return;
+    async handleKey(key, ev) {
+      const printable =
+        !ev.altKey &&
+        !ev.altGraphKey &&
+        !ev.ctrlKey &&
+        !ev.metaKey &&
+        !/arrow|tab/i.test(ev.key);
+
+      if (this.running(this.project.id)) {
+        this.$store.dispatch("ProjectCommand/sendKey", {
+          id: this.project.id,
+          key
+        });
+
+        return;
+      }
+
+      // Enter
+      if (ev.keyCode === 13) {
+        xterm.clear();
+        xterm.writeln("");
+        await this.run(this.project.id);
+        this.attachToProcess();
+
+        return;
+      }
+
+      // Backspace
+      if (ev.keyCode === 8) {
+        if (xterm.buffer.x > this.promptString.length) {
+          xterm.write("\b \b");
+          this.command = this.command.slice(0, this.command.length - 1);
         }
 
-        if (ev.keyCode === 13) {
-          xterm.clear();
-          xterm.writeln("");
-          self.run(self.project.id).then(p => {
-            p.on("data", function(data) {
-              xterm.write(data);
-            });
+        return;
+      }
 
-            p.on("exit", function() {
-              xterm.prompt();
-            });
-          });
-        } else {
-          xterm.write(key);
-          self.command += key;
-        }
-      });
+      if (printable) {
+        xterm.write(key);
+        this.command += key;
+      }
+    },
+
+    prompt() {
+      xterm.write(`\r\n${this.promptString}`);
     },
 
     ...mapActions("ProjectCommand", [
       "run",
       "cancel",
       "loadPreviousCommand",
-      "loadNextCommand"
+      "loadNextCommand",
+      "getProcess"
     ])
   },
   computed: {
     services() {
       return this.project.services;
-    },
-
-    logOutput() {
-      return this.logs(this.project.id);
     },
 
     service: {
@@ -135,7 +154,11 @@ export default {
       return this.projectActiveTab(this.project.id);
     },
 
-    ...mapGetters("ProjectCommand", ["logs", "running"]),
+    promptString() {
+      return `${this.service} $ `;
+    },
+
+    ...mapGetters("ProjectCommand", ["running"]),
     ...mapGetters(["projectActiveTab"])
   },
   created() {
@@ -151,12 +174,6 @@ export default {
         if (!xterm) this.createTerminalInstance();
         xterm.focus();
       }
-    },
-    logOutput() {
-      // if (xterm) {
-      //   xterm.clear();
-      //   xterm.write(this.logOutput);
-      // }
     }
   }
 };
