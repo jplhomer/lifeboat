@@ -12,12 +12,13 @@ import _ from "lodash";
 
 Terminal.loadAddon("fit");
 let xterm;
+let process;
 
 export default {
   props: ["project"],
   methods: {
     async attachToProcess() {
-      let process = this.process(this.project.id);
+      process = this.process(this.project.id);
       process.on("data", d => xterm.write(d));
       process.on("exit", this.prompt);
     },
@@ -25,7 +26,7 @@ export default {
     createTerminalInstance() {
       xterm = new Terminal({
         fontFamily: "monospace",
-        fontSize: 13,
+        fontSize: 14,
         lineHeight: 1.3,
         cursorBlink: true,
         theme: {
@@ -35,8 +36,7 @@ export default {
       xterm.open(this.$refs.terminal);
       xterm.fit();
 
-      xterm.writeln("Type any command to run inside the selected service");
-      this.prompt();
+      this.welcome();
       this.handleTerminalInput();
 
       window.addEventListener(
@@ -102,6 +102,13 @@ export default {
       xterm.write(`\r\n\u001b[1m${this.promptString}\u001b[22m`);
     },
 
+    welcome() {
+      if (this.running(this.project.id)) return;
+
+      xterm.writeln("Type any command to run inside the selected service");
+      this.prompt();
+    },
+
     ...mapActions("ProjectCommand", [
       "run",
       "cancel",
@@ -158,6 +165,10 @@ export default {
   watch: {
     $route() {
       if (!this.service) this.service = this.services[0];
+      if (xterm) {
+        xterm.reset();
+        this.welcome();
+      }
     },
     activeTab(val) {
       if (val === "commands") {
