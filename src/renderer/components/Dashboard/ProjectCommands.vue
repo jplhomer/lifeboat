@@ -108,7 +108,7 @@ export default {
     },
 
     prompt() {
-      xterm.write(`\r\n${this.promptString}`);
+      xterm.write(`\r\n\u001b[1m${this.promptString}\u001b[22m`);
     },
 
     ...mapActions("ProjectCommand", [
@@ -164,7 +164,6 @@ export default {
   created() {
     if (!this.service) this.service = this.services[0];
   },
-  mounted() {},
   watch: {
     $route() {
       if (!this.service) this.service = this.services[0];
@@ -173,6 +172,11 @@ export default {
       if (val === "commands") {
         if (!xterm) this.createTerminalInstance();
         xterm.focus();
+      }
+    },
+    service() {
+      if (!this.running(this.project.id) && xterm) {
+        xterm.write(`\r\u001b[1m${this.promptString}\u001b[22m${this.command}`);
       }
     }
   }

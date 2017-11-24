@@ -72,10 +72,6 @@ const actions = {
     commands[id] = Docker.run(project.dir, service, command.split(" "));
     commit(types.UPDATE_PROJECT_COMMAND_COMMAND, { id, command: "" });
 
-    commands[id].on("data", data => {
-      dispatch("addLogs", { id, logs: data.toString() });
-    });
-
     commands[id].on("exit", data => {
       commit(types.UPDATE_PROJECT_COMMAND_RUNNING, { id, running: false });
     });
