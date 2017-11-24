@@ -38,6 +38,13 @@ export default {
       xterm.writeln("Type any command to run inside the selected service");
       this.prompt();
       this.handleTerminalInput();
+
+      window.addEventListener(
+        "resize",
+        _.debounce(() => {
+          xterm.fit();
+        }, 200)
+      );
     },
 
     handleTerminalInput() {
