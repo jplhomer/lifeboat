@@ -37,7 +37,7 @@ export default {
   props: ["project"],
   methods: {
     async attachToProcess() {
-      let process = await this.getProcess(this.project.id);
+      let process = this.process(this.project.id);
       process.on("data", d => xterm.write(d));
       process.on("exit", this.prompt);
     },
@@ -158,7 +158,7 @@ export default {
       return `${this.service} $ `;
     },
 
-    ...mapGetters("ProjectCommand", ["running"]),
+    ...mapGetters("ProjectCommand", ["running", "process"]),
     ...mapGetters(["projectActiveTab"])
   },
   created() {
