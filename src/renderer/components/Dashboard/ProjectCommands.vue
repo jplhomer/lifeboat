@@ -49,6 +49,7 @@ export default {
 
     handleTerminalInput() {
       xterm.on("key", this.handleKey);
+      xterm.on("paste", d => xterm.write(d));
     },
 
     async handleKey(key, ev) {
