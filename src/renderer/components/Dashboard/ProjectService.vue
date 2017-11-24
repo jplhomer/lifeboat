@@ -41,6 +41,10 @@ export default {
     },
 
     selectCommandService() {
+      if (this.projectActiveTab(this.project.id) !== "commands") {
+        return;
+      }
+
       this.$store.dispatch("ProjectCommand/setService", {
         id: this.project.id,
         service: this.service
@@ -79,7 +83,7 @@ export default {
       return this.projectLogFilters(this.project.id);
     },
 
-    ...mapGetters(["projectLogFilters"])
+    ...mapGetters(["projectLogFilters", "projectActiveTab"])
   }
 };
 </script>
