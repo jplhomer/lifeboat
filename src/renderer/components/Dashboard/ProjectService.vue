@@ -140,6 +140,10 @@ export default {
 
     &:not(.active) {
       background-color: #ccc;
+
+      &:hover {
+        background-color: #ddd;
+      }
     }
 
     .service__actions {
