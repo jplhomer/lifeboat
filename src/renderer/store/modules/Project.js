@@ -282,6 +282,7 @@ const actions = {
       // So we don't need to call startLogs() again.
       dispatch("setProjectStatus", { id, status: status.RUNNING });
       dispatch("fetchContainers");
+      dispatch("startProjectLogs", id);
     } catch (e) {
       console.error(`Could not restart project`, e);
     }
@@ -301,6 +302,8 @@ const actions = {
    * rejects if not.
    */
   startProjectProcess({ dispatch, commit, state }, { id, method }) {
+    dispatch("stopLoggingProcess", id);
+
     processes[id] = method.call();
 
     dispatch("logProcess", id);
@@ -323,6 +326,13 @@ const actions = {
     processes[id].on("data", d =>
       dispatch("appendProjectLogs", { id, logs: d.toString() })
     );
+  },
+
+  /**
+   * Stop logging the process for a given project by killing it
+   */
+  stopLoggingProcess({ dispatch }, id) {
+    if (processes[id]) processes[id].kill();
   },
 
   /**
