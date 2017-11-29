@@ -57,7 +57,7 @@ export default {
       "resize",
       _.debounce(() => {
         xterm.fit();
-        xterm.clear();
+        xterm.reset();
         xterm.write(this.logOutput);
       }, 200)
     );
