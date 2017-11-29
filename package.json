@@ -75,7 +75,7 @@
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
     "vuex": "^2.3.1",
-    "xterm": "Tyriar/xterm.js#vscode-release/1.18"
+    "xterm": "Tyriar/xterm.js#vscode-release/1.19"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
