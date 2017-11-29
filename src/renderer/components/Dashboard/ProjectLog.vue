@@ -7,6 +7,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { Terminal } from "xterm";
+import * as types from "@/store/mutation-types";
 import "xterm/lib/xterm.css";
 import _ from "lodash";
 
@@ -23,6 +24,13 @@ const xterm = new Terminal({
 
 export default {
   props: ["project"],
+
+  data() {
+    return {
+      skipNextLogUpdate: false
+    };
+  },
+
   computed: {
     logs() {
       return this.$store.getters.projectLogs(this.project.id);
@@ -48,10 +56,17 @@ export default {
     },
     ...mapGetters(["projectActiveTab", "projectLogFilters"])
   },
+
+  methods: {
+    createTerminalInstance() {
+      xterm.open(this.$refs.log);
+      xterm.fit();
+      xterm.write(this.logOutput);
+    }
+  },
+
   mounted() {
-    xterm.open(this.$refs.log);
-    xterm.fit();
-    xterm.write(this.logs);
+    this.createTerminalInstance();
 
     window.addEventListener(
       "resize",
@@ -62,11 +77,19 @@ export default {
       }, 200)
     );
   },
+
   watch: {
     $route() {
       xterm.reset();
+      xterm.write(this.logOutput);
+      this.skipNextLogUpdate = true;
     },
     logOutput(val) {
+      if (this.skipNextLogUpdate) {
+        this.skipNextLogUpdate = false;
+        return;
+      }
+
       xterm.write(val);
     },
     activeFilterString(val) {
