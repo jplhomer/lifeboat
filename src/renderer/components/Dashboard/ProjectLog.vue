@@ -86,15 +86,6 @@ export default {
     xterm.fit();
     xterm.write(this.logOutput);
 
-    // this.$store.subscribe((mutation, state) => {
-    //   if (
-    //     mutation.type === types.CLEAR_PROJECT_LOGS &&
-    //     mutation.payload == this.project.id
-    //   ) {
-    //     xterm.reset();
-    //   }
-    // });
-
     window.addEventListener(
       "resize",
       _.debounce(() => {

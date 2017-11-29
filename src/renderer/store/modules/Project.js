@@ -369,6 +369,8 @@ const actions = {
    * Begin a Docker Compose logging process for a project
    */
   startProjectLogs({ dispatch, state }, id) {
+    dispatch("stopLoggingProcess", id);
+
     const p = state.projects[id];
     processes[id] = Docker.logs(p.dir);
     dispatch("updateProjectState", [id, "isLogging", true]);
