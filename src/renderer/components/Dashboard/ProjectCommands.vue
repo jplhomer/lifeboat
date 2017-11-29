@@ -179,6 +179,7 @@ export default {
     service() {
       if (!this.running(this.project.id) && xterm) {
         xterm.write(`\r\u001b[1m${this.promptString}\u001b[22m${this.command}`);
+        xterm.eraseRight();
         xterm.focus();
       }
     }
