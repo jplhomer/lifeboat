@@ -35,38 +35,65 @@ export default {
     logs() {
       return this.$store.getters.projectLogs(this.project.id);
     },
-    logOutput() {
-      let logs = this.logs.trim().split("\n");
 
-      if (this.activeFilters.length) {
-        const regex = new RegExp(`(${this.activeFilters.join("|")})_`);
-        logs = logs.filter(l => regex.test(l.trim()));
-      }
+    logOutput() {
+      if (!this.activeFilters.length) return this.logs;
+
+      let logs = this.logs.split("\n");
+
+      const regex = new RegExp(`(${this.activeFilters.join("|")})_`);
+      logs = logs.filter(l => regex.test(l.trim()));
 
       return logs.join("\n");
     },
+
     activeTab() {
       return this.projectActiveTab(this.project.id);
     },
+
     activeFilters() {
       return this.projectLogFilters(this.project.id);
     },
+
     activeFilterString() {
       return this.activeFilters.join();
     },
-    ...mapGetters(["projectActiveTab", "projectLogFilters"])
+
+    isLogging() {
+      return this.projectLogging(this.project.id);
+    },
+
+    ...mapGetters([
+      "projectActiveTab",
+      "projectLogFilters",
+      "projectLogging",
+      "projectLogProcess"
+    ])
   },
 
   methods: {
-    createTerminalInstance() {
-      xterm.open(this.$refs.log);
-      xterm.fit();
-      xterm.write(this.logOutput);
+    attachToLogs() {
+      const p = this.projectLogProcess(this.project.id);
+
+      if (!p) return;
+
+      p.on("data", d => xterm.write(d));
     }
   },
 
   mounted() {
-    this.createTerminalInstance();
+    xterm.open(this.$refs.log);
+    xterm.fit();
+    xterm.write(this.logOutput);
+
+    this.$store.subscribe((mutation, state) => {
+      if (
+        mutation.type === types.CLEAR_PROJECT_LOGS &&
+        mutation.payload == this.project.id
+      ) {
+        xterm.reset();
+      }
+    });
 
     window.addEventListener(
       "resize",
@@ -84,6 +111,7 @@ export default {
       xterm.write(this.logOutput);
       this.skipNextLogUpdate = true;
     },
+
     logOutput(val) {
       if (this.skipNextLogUpdate) {
         this.skipNextLogUpdate = false;
@@ -92,6 +120,7 @@ export default {
 
       xterm.write(val);
     },
+
     activeFilterString(val) {
       xterm.clear();
       xterm.fit();

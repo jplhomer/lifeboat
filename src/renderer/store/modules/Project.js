@@ -37,6 +37,12 @@ const mutations = {
     state.projects.splice(id, 1, p);
   },
 
+  [types.CLEAR_PROJECT_LOGS](state, id) {
+    let p = state.projects[id];
+    p.logs = "";
+    state.projects.splice(id, 1, p);
+  },
+
   [types.TOGGLE_PROJECT_LOG_FILTER](state, { id, service }) {
     let p = state.projects[id];
     let filters = p.logFilters;
@@ -201,7 +207,7 @@ const actions = {
     const p = state.projects[id];
 
     dispatch("setProjectStatus", { id, status: status.STARTING });
-    commit(types.UPDATE_PROJECT_LOGS, { id, logs: "" });
+    commit(types.CLEAR_PROJECT_LOGS, id);
 
     try {
       await dispatch("startProjectProcess", {
@@ -247,7 +253,7 @@ const actions = {
   async buildAndStartProject({ dispatch, commit }, id) {
     const p = state.projects[id];
 
-    commit(types.UPDATE_PROJECT_LOGS, { id, logs: "" });
+    commit(types.CLEAR_PROJECT_LOGS, id);
     dispatch("setProjectStatus", { id, status: status.STARTING });
 
     try {
@@ -270,7 +276,7 @@ const actions = {
   async restartProject({ dispatch, commit }, id) {
     const p = state.projects[id];
 
-    commit(types.UPDATE_PROJECT_LOGS, { id, logs: "" });
+    commit(types.CLEAR_PROJECT_LOGS, id);
     dispatch("setProjectStatus", { id, status: status.RESTARTING });
 
     try {
@@ -349,10 +355,7 @@ const actions = {
    * Clear project logs
    */
   clearProjectLogs({ commit }, id) {
-    commit(types.UPDATE_PROJECT_LOGS, {
-      id,
-      logs: ""
-    });
+    commit(types.CLEAR_PROJECT_LOGS, id);
   },
 
   /**
