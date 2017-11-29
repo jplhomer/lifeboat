@@ -63,11 +63,11 @@ export default {
     );
   },
   watch: {
+    $route() {
+      xterm.reset();
+    },
     logOutput(val) {
       xterm.write(val);
-    },
-    $route() {
-      xterm.clear();
     },
     activeFilterString(val) {
       xterm.clear();
