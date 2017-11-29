@@ -12,7 +12,9 @@ let processes = {};
 
 const state = {
   projectsSchemaVersion: settings.get("projectsSchemaVersion"),
-  projects: []
+  projects: [],
+  terminalRows: 24,
+  terminalCols: 80
 };
 
 const mutations = {
@@ -58,6 +60,11 @@ const mutations = {
     let p = state.projects[id];
     p.logFilters = [];
     state.projects.splice(id, 1, p);
+  },
+
+  [types.RESIZE_TERMINAL](state, { cols, rows }) {
+    state.terminalRows = rows;
+    state.terminalCols = cols;
   }
 };
 
@@ -330,7 +337,7 @@ const actions = {
    */
   logProcess({ dispatch }, id) {
     processes[id].on("data", d =>
-      dispatch("appendProjectLogs", { id, logs: d.toString() })
+      dispatch("appendProjectLogs", { id, logs: d })
     );
   },
 
@@ -395,6 +402,13 @@ const actions = {
 
   updateProjectState({ commit }, payload) {
     commit(types.UPDATE_PROJECT, payload);
+  },
+
+  projectResizeTerminal({ commit }, payload) {
+    commit(types.RESIZE_TERMINAL, payload);
+    Object.keys(processes).forEach(key => {
+      if (processes[key]) processes[key].resize(payload.cols, payload.rows);
+    });
   }
 };
 

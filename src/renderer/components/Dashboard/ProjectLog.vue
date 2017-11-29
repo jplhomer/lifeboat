@@ -86,14 +86,14 @@ export default {
     xterm.fit();
     xterm.write(this.logOutput);
 
-    this.$store.subscribe((mutation, state) => {
-      if (
-        mutation.type === types.CLEAR_PROJECT_LOGS &&
-        mutation.payload == this.project.id
-      ) {
-        xterm.reset();
-      }
-    });
+    // this.$store.subscribe((mutation, state) => {
+    //   if (
+    //     mutation.type === types.CLEAR_PROJECT_LOGS &&
+    //     mutation.payload == this.project.id
+    //   ) {
+    //     xterm.reset();
+    //   }
+    // });
 
     window.addEventListener(
       "resize",
@@ -103,6 +103,8 @@ export default {
         xterm.write(this.logOutput);
       }, 200)
     );
+
+    xterm.on("resize", e => this.$store.dispatch("projectResizeTerminal", e));
   },
 
   watch: {
@@ -112,13 +114,28 @@ export default {
       this.skipNextLogUpdate = true;
     },
 
-    logOutput(val) {
+    logOutput(newLog, oldLog) {
       if (this.skipNextLogUpdate) {
         this.skipNextLogUpdate = false;
         return;
       }
 
-      xterm.write(val);
+      if (newLog === "") {
+        xterm.reset();
+        return;
+      }
+
+      if (newLog.indexOf(oldLog) === -1) {
+        xterm.reset();
+        xterm.write(newLog);
+        return;
+      }
+
+      // Assume newLog has appended value from oldLog, so simply
+      // grab the length and substr it
+      const newValue = newLog.substr(oldLog.length);
+      // console.log(newValue);
+      xterm.write(newValue);
     },
 
     activeFilterString(val) {

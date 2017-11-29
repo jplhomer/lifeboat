@@ -1,4 +1,5 @@
 import * as pty from "node-pty";
+import store from "@/store";
 
 export default class DockerCompose {
   /**
@@ -9,7 +10,9 @@ export default class DockerCompose {
   static sync(dir, args = []) {
     return pty.spawn("docker-compose", args, {
       name: "xterm-color",
-      cwd: dir
+      cwd: dir,
+      cols: store.state.Project.projectCols,
+      rows: store.state.Project.projectrows
     });
   }
 }

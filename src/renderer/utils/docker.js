@@ -53,7 +53,7 @@ class Docker {
   }
 
   logs(dir) {
-    return DockerCompose.sync(dir, ["logs", "-f", "--tail=100"]);
+    return DockerCompose.sync(dir, ["logs", "-f"]);
   }
 
   run(dir, service, commands) {
