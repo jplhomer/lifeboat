@@ -89,6 +89,7 @@ export default {
     window.addEventListener(
       "resize",
       _.debounce(() => {
+        if (this.activeTab !== "commands") return;
         xterm.fit();
         xterm.reset();
         xterm.write(this.logOutput);

@@ -159,6 +159,16 @@ export default {
     ...mapGetters("ProjectCommand", ["running", "process"]),
     ...mapGetters(["projectActiveTab"])
   },
+  mounted() {
+    // In case this tab is loaded after the Settings route
+    if (!xterm && this.activeTab === "commands") {
+      this.createTerminalInstance();
+    }
+
+    console.log("mounted");
+
+    if (xterm) xterm.focus();
+  },
   created() {
     if (!this.service) this.service = this.services[0];
   },
