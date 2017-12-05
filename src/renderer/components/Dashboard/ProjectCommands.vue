@@ -165,8 +165,6 @@ export default {
       this.createTerminalInstance();
     }
 
-    console.log("mounted");
-
     if (xterm) xterm.focus();
   },
   created() {

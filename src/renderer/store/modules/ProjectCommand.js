@@ -8,6 +8,7 @@ const commands = {};
 
 const state = {
   commands: {},
+  logs: {},
   running: {},
   services: {}
 };
@@ -25,8 +26,13 @@ const mutations = {
     Vue.set(state.running, id, running);
   },
 
+  [types.UPDATE_PROJECT_COMMAND_LOGS](state, { id, logs }) {
+    Vue.set(state.logs, id, logs);
+  },
+
   [types.RESET_PROJECT_COMMAND_STATE](state) {
     state.commands = {};
+    state.logs = {};
     state.running = {};
     state.services = {};
   }
@@ -36,6 +42,8 @@ const getters = {
   command: state => id => {
     return state.commands[id] || "";
   },
+
+  logs: state => id => state.logs[id] || "",
 
   process: () => id => {
     return commands[id];
@@ -51,6 +59,13 @@ const getters = {
 };
 
 const actions = {
+  addLogs({ state, commit }, { id, logs }) {
+    commit(types.UPDATE_PROJECT_COMMAND_LOGS, {
+      id,
+      logs: (state.logs[id] || "") + logs
+    });
+  },
+
   setCommand({ commit }, { id, command }) {
     commit(types.UPDATE_PROJECT_COMMAND_COMMAND, { id, command });
   },
@@ -72,9 +87,11 @@ const actions = {
     commands[id] = Docker.run(project.dir, service, command.split(" "));
     commit(types.UPDATE_PROJECT_COMMAND_COMMAND, { id, command: "" });
 
-    commands[id].on("exit", data => {
-      commit(types.UPDATE_PROJECT_COMMAND_RUNNING, { id, running: false });
-    });
+    commands[id].on("data", logs => dispatch("addLogs", { id, logs }));
+
+    commands[id].on("exit", () =>
+      commit(types.UPDATE_PROJECT_COMMAND_RUNNING, { id, running: false })
+    );
 
     return commands[id];
   },
