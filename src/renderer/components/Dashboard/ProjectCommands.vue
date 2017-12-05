@@ -103,10 +103,12 @@ export default {
     },
 
     welcome() {
-      if (this.running(this.project.id)) return;
-
-      xterm.writeln("Type any command to run inside the selected service");
-      this.prompt();
+      if (this.running(this.project.id)) {
+        xterm.write(this.logs(this.project.id));
+      } else {
+        xterm.writeln("Type any command to run inside the selected service");
+        this.prompt();
+      }
     },
 
     ...mapActions("ProjectCommand", [
@@ -156,7 +158,7 @@ export default {
       return `${this.service} $ `;
     },
 
-    ...mapGetters("ProjectCommand", ["running", "process"]),
+    ...mapGetters("ProjectCommand", ["running", "process", "logs"]),
     ...mapGetters(["projectActiveTab"])
   },
   mounted() {
@@ -176,6 +178,10 @@ export default {
       if (xterm) {
         xterm.reset();
         this.welcome();
+
+        if (this.activeTab === "commands") {
+          xterm.focus();
+        }
       }
     },
     activeTab(val) {
