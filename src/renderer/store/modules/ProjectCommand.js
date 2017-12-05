@@ -4,7 +4,7 @@ import * as types from "../mutation-types";
 import Docker from "@/utils/docker";
 
 // Place to store command child processes run by projects
-const commands = {};
+const processes = {};
 
 const state = {
   commands: {},
@@ -46,7 +46,7 @@ const getters = {
   logs: state => id => state.logs[id] || "",
 
   process: () => id => {
-    return commands[id];
+    return processes[id];
   },
 
   running: state => id => {
@@ -71,7 +71,7 @@ const actions = {
   },
 
   sendKey(context, { id, key }) {
-    commands[id].write(key);
+    processes[id].write(key);
   },
 
   setService({ commit }, { id, service }) {
@@ -84,25 +84,25 @@ const actions = {
     const command = getters.command(id);
 
     commit(types.UPDATE_PROJECT_COMMAND_RUNNING, { id, running: true });
-    commands[id] = Docker.run(project.dir, service, command.split(" "));
+    processes[id] = Docker.run(project.dir, service, command.split(" "));
     commit(types.UPDATE_PROJECT_COMMAND_COMMAND, { id, command: "" });
 
-    commands[id].on("data", logs => dispatch("addLogs", { id, logs }));
+    processes[id].on("data", logs => dispatch("addLogs", { id, logs }));
 
-    commands[id].on("exit", () =>
+    processes[id].on("exit", () =>
       commit(types.UPDATE_PROJECT_COMMAND_RUNNING, { id, running: false })
     );
 
-    return commands[id];
+    return processes[id];
   },
 
   clearState({ commit }) {
     commit(types.RESET_PROJECT_COMMAND_STATE);
 
     // Kill any running commands
-    Object.keys(commands).forEach(c => {
-      if (commands[c]) commands[c].kill();
-      delete commands[c];
+    Object.keys(processes).forEach(c => {
+      if (processes[c]) processes[c].kill();
+      delete processes[c];
     });
   }
 };
