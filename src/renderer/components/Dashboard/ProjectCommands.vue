@@ -36,9 +36,18 @@ export default {
       window.addEventListener(
         "resize",
         _.debounce(() => {
+          if (this.activeTab !== "commands") return;
           xterm.fit();
         }, 200)
       );
+
+      xterm.on("resize", e => {
+        // Let the Project store know, so new Processes use the correct size
+        this.$store.dispatch("projectResizeTerminal", e);
+
+        // Let the ProjectCommand store know, so it can resize the current process
+        this.resize(e);
+      });
     },
 
     handleTerminalInput() {
@@ -102,14 +111,14 @@ export default {
     },
 
     prompt() {
-      xterm.write(`\r\n\u001b[1m${this.promptString}\u001b[22m`);
+      xterm.write(`\r\n\u001b[1m${this.promptString}\u001b[22m${this.command}`);
     },
 
     welcome() {
       if (this.running(this.project.id)) {
         xterm.write(this.logs(this.project.id));
       } else {
-        xterm.writeln("Type any command to run inside the selected service");
+        xterm.write("Type any command to run inside the selected service\r\n");
         this.prompt();
       }
     },
@@ -119,7 +128,8 @@ export default {
       "cancel",
       "loadPreviousCommand",
       "loadNextCommand",
-      "getProcess"
+      "getProcess",
+      "resize"
     ])
   },
   computed: {
@@ -212,6 +222,7 @@ export default {
     },
 
     logOutput(newLog, oldLog) {
+      if (!xterm) return;
       if (newLog.indexOf(oldLog) === -1 || newLog.length < oldLog.length) {
         xterm.reset();
         xterm.write(newLog);

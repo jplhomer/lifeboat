@@ -43,7 +43,8 @@ const getters = {
     return state.commands[id] || "";
   },
 
-  logs: state => id => state.logs[id] || "",
+  logs: state => id =>
+    state.logs[id] || "Type any command to run inside the selected service",
 
   process: () => id => {
     return processes[id];
@@ -94,6 +95,12 @@ const actions = {
     );
 
     return processes[id];
+  },
+
+  resize({}, payload) {
+    Object.keys(processes).forEach(key => {
+      if (processes[key]) processes[key].resize(payload.cols, payload.rows);
+    });
   },
 
   clearState({ commit }) {
