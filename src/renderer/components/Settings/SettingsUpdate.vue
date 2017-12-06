@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { app, ipcRenderer } from "electron";
+import { ipcRenderer } from "electron";
 import { mapState } from "vuex";
 import { autoUpdater } from "electron-updater";
 
