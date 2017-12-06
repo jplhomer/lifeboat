@@ -17,12 +17,6 @@ let process;
 export default {
   props: ["project"],
   methods: {
-    async attachToProcess() {
-      process = this.process(this.project.id);
-      process.on("data", d => xterm.write(d));
-      process.on("exit", this.prompt);
-    },
-
     createTerminalInstance() {
       xterm = new Terminal({
         fontFamily: "monospace",
@@ -50,8 +44,18 @@ export default {
     handleTerminalInput() {
       xterm.on("key", this.handleKey);
       xterm.on("paste", d => {
-        this.command += d;
         xterm.write(d);
+
+        // Send straight to process if running,
+        // Otherwise add to the command
+        if (this.isRunning) {
+          this.$store.dispatch("ProjectCommand/sendKey", {
+            id: this.project.id,
+            key: d
+          });
+        } else {
+          this.command += d;
+        }
       });
     },
 
@@ -63,7 +67,7 @@ export default {
         !ev.metaKey &&
         !/arrow|tab/i.test(ev.key);
 
-      if (this.running(this.project.id)) {
+      if (this.isRunning) {
         this.$store.dispatch("ProjectCommand/sendKey", {
           id: this.project.id,
           key
@@ -76,8 +80,7 @@ export default {
       if (ev.keyCode === 13) {
         xterm.clear();
         xterm.writeln("");
-        await this.run(this.project.id);
-        this.attachToProcess();
+        this.run(this.project.id);
 
         return;
       }
@@ -158,6 +161,14 @@ export default {
       return `${this.service} $ `;
     },
 
+    logOutput() {
+      return this.logs(this.project.id);
+    },
+
+    isRunning() {
+      return this.running(this.project.id);
+    },
+
     ...mapGetters("ProjectCommand", ["running", "process", "logs"]),
     ...mapGetters(["projectActiveTab"])
   },
@@ -184,18 +195,37 @@ export default {
         }
       }
     },
+
     activeTab(val) {
       if (val === "commands") {
         if (!xterm) this.createTerminalInstance();
         xterm.focus();
       }
     },
+
     service() {
       if (!this.running(this.project.id) && xterm) {
         xterm.write(`\r\u001b[1m${this.promptString}\u001b[22m${this.command}`);
         xterm.eraseRight();
         xterm.focus();
       }
+    },
+
+    logOutput(newLog, oldLog) {
+      if (newLog.indexOf(oldLog) === -1 || newLog.length < oldLog.length) {
+        xterm.reset();
+        xterm.write(newLog);
+        return;
+      }
+
+      // Assume newLog has appended value from oldLog, so simply
+      // grab the length and substr it
+      const newValue = newLog.substr(oldLog.length);
+
+      xterm.write(newValue);
+    },
+    isRunning(value) {
+      if (!value) this.prompt();
     }
   }
 };
