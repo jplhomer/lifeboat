@@ -8,11 +8,15 @@ export default class DockerCompose {
    * @param {array} args
    */
   static sync(dir, args = []) {
-    return pty.spawn("docker-compose", args, {
-      name: "xterm-color",
-      cwd: dir,
-      cols: store.state.Project.projectCols,
-      rows: store.state.Project.projectrows
-    });
+    return pty.spawn(
+      "docker-compose" + (process.platform === "win32" ? ".exe" : ""),
+      args,
+      {
+        name: "xterm-color",
+        cwd: dir,
+        cols: store.state.Project.projectCols,
+        rows: store.state.Project.projectrows
+      }
+    );
   }
 }

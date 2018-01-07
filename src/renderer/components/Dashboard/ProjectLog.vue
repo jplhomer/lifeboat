@@ -8,11 +8,13 @@
 import { mapGetters } from "vuex";
 import { Terminal } from "xterm";
 import * as fit from "xterm/lib/addons/fit/fit";
+import * as winptyCompat from "xterm/lib/addons/winptyCompat/winptyCompat";
 import * as types from "@/store/mutation-types";
 import "xterm/lib/xterm.css";
 import _ from "lodash";
 
 Terminal.applyAddon(fit);
+Terminal.applyAddon(winptyCompat);
 
 const xterm = new Terminal({
   disableStdin: true,
