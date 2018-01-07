@@ -1,53 +1,143 @@
 <template>
-  <div class="commands" ref="scrollToBottom">
-    <div class="commands__bar">
-      <div class="field has-addons">
-        <div class="control">
-          <div class="select">
-            <select v-model="service" class="select">
-              <option v-for="option in services" :value="option" :key="option">{{ option }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="control is-expanded">
-          <input v-model="command" class="command-text input" type="text" @keyup.enter="run(project.id)" @keydown.up="loadPreviousCommand(project.id)" @keydown.down="loadNextCommand(project.id)" :placeholder="`Type a command to run in ${service}...`">
-        </div>
-        <div class="control">
-          <button @click.prevent="run(project.id)" class="button">Run</button>
-        </div>
-        <div class="control">
-          <button @click.prevent="cancel(project.id)" class="button is-danger" v-show="running(project.id)">Cancel</button>
-        </div>
-      </div>
-    </div>
-    <pre class="commands__log" v-html="logOutput"></pre>
+  <div class="commands">
+    <div class="commands__terminal" ref="terminal"></div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import AU from "ansi_up";
-import scrollToBottom from "@/mixins/scroll-to-bottom";
-const ansi_up = new AU();
+import { Terminal } from "xterm";
+import * as fit from "xterm/lib/addons/fit/fit";
+import * as winptyCompat from "xterm/lib/addons/winptyCompat/winptyCompat";
+import "xterm/lib/xterm.css";
+import _ from "lodash";
+
+Terminal.applyAddon(fit);
+Terminal.applyAddon(winptyCompat);
+let xterm;
+let process;
 
 export default {
   props: ["project"],
-  mixins: [scrollToBottom],
   methods: {
+    createTerminalInstance() {
+      xterm = new Terminal({
+        fontFamily: "monospace",
+        fontSize: 14,
+        lineHeight: 1.3,
+        cursorBlink: true,
+        theme: {
+          background: "#0a0a0a"
+        }
+      });
+      xterm.open(this.$refs.terminal);
+      xterm.fit();
+
+      this.welcome();
+      this.handleTerminalInput();
+
+      window.addEventListener(
+        "resize",
+        _.debounce(() => {
+          if (this.activeTab !== "commands") return;
+          xterm.fit();
+        }, 200)
+      );
+
+      xterm.on("resize", e => {
+        // Let the Project store know, so new Processes use the correct size
+        this.$store.dispatch("projectResizeTerminal", e);
+
+        // Let the ProjectCommand store know, so it can resize the current process
+        this.resize(e);
+      });
+    },
+
+    handleTerminalInput() {
+      xterm.on("key", this.handleKey);
+      xterm.on("paste", d => {
+        xterm.write(d);
+
+        // Send straight to process if running,
+        // Otherwise add to the command
+        if (this.isRunning) {
+          this.$store.dispatch("ProjectCommand/sendKey", {
+            id: this.project.id,
+            key: d
+          });
+        } else {
+          this.command += d;
+        }
+      });
+    },
+
+    async handleKey(key, ev) {
+      const printable =
+        !ev.altKey &&
+        !ev.altGraphKey &&
+        !ev.ctrlKey &&
+        !ev.metaKey &&
+        !/arrow|tab/i.test(ev.key);
+
+      if (this.isRunning) {
+        this.$store.dispatch("ProjectCommand/sendKey", {
+          id: this.project.id,
+          key
+        });
+
+        return;
+      }
+
+      // Enter
+      if (ev.keyCode === 13) {
+        xterm.clear();
+        xterm.writeln("");
+        this.run(this.project.id);
+
+        return;
+      }
+
+      // Backspace
+      if (ev.keyCode === 8) {
+        if (xterm.buffer.x > this.promptString.length) {
+          xterm.write("\b \b");
+          this.command = this.command.slice(0, this.command.length - 1);
+        }
+
+        return;
+      }
+
+      if (printable) {
+        xterm.write(key);
+        this.command += key;
+      }
+    },
+
+    prompt() {
+      xterm.write(`\r\n\u001b[1m${this.promptString}\u001b[22m${this.command}`);
+    },
+
+    welcome() {
+      if (this.running(this.project.id)) {
+        xterm.write(this.logs(this.project.id));
+      } else {
+        xterm.write("Type any command to run inside the selected service\r\n");
+        this.prompt();
+      }
+    },
+
     ...mapActions("ProjectCommand", [
       "run",
       "cancel",
       "loadPreviousCommand",
-      "loadNextCommand"
+      "loadNextCommand",
+      "getProcess",
+      "resize"
     ])
   },
   computed: {
     services() {
       return this.project.services;
-    },
-
-    logOutput() {
-      return ansi_up.ansi_to_html(this.logs(this.project.id));
     },
 
     service: {
@@ -76,59 +166,95 @@ export default {
       }
     },
 
-    ...mapGetters("ProjectCommand", ["logs", "running"])
+    activeTab() {
+      return this.projectActiveTab(this.project.id);
+    },
+
+    promptString() {
+      return `${this.service} $ `;
+    },
+
+    logOutput() {
+      return this.logs(this.project.id);
+    },
+
+    isRunning() {
+      return this.running(this.project.id);
+    },
+
+    ...mapGetters("ProjectCommand", ["running", "process", "logs"]),
+    ...mapGetters(["projectActiveTab"])
+  },
+  mounted() {
+    // In case this tab is loaded after the Settings route
+    if (!xterm && this.activeTab === "commands") {
+      this.createTerminalInstance();
+    }
+
+    if (xterm) xterm.focus();
   },
   created() {
     if (!this.service) this.service = this.services[0];
-
-    // Manually watch this ProjectCommand's logs since the
-    // normal getter requires a param
-    this.$store.watch(
-      state => state.ProjectCommand.logs[this.project.id],
-      () => this.scrollToBottom()
-    );
   },
   watch: {
     $route() {
       if (!this.service) this.service = this.services[0];
+      if (xterm) {
+        xterm.reset();
+        this.welcome();
+
+        if (this.activeTab === "commands") {
+          xterm.focus();
+        }
+      }
+    },
+
+    activeTab(val) {
+      if (val === "commands") {
+        if (!xterm) this.createTerminalInstance();
+        xterm.focus();
+      }
+    },
+
+    service() {
+      if (!this.running(this.project.id) && xterm) {
+        xterm.write(`\r\u001b[1m${this.promptString}\u001b[22m${this.command}`);
+        xterm.eraseRight();
+        xterm.focus();
+      }
+    },
+
+    logOutput(newLog, oldLog) {
+      if (!xterm) return;
+      if (newLog.indexOf(oldLog) === -1 || newLog.length < oldLog.length) {
+        xterm.reset();
+        xterm.write(newLog);
+        return;
+      }
+
+      // Assume newLog has appended value from oldLog, so simply
+      // grab the length and substr it
+      const newValue = newLog.substr(oldLog.length);
+
+      xterm.write(newValue);
+    },
+    isRunning(value) {
+      if (!value) this.prompt();
     }
   }
 };
 </script>
 
-
 <style lang="scss" scoped>
-.input,
-.button,
-.field,
-select {
-  border-radius: 0 !important;
-}
-
 .commands {
-  background: var(--black-gradient);
-  color: #fff;
+  background: #0a0a0a;
   height: 100%;
-  overflow: scroll;
-  padding-bottom: 2rem;
+  padding: 1rem;
+  width: 100%;
 
-  &__bar {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  &__terminal {
+    height: 100%;
+    width: 100%;
   }
-
-  &__log {
-    background-color: inherit;
-    color: inherit;
-    font-family: monospace;
-    padding: 1rem;
-    white-space: pre-wrap;
-  }
-}
-
-.command-text {
-  font-family: monospace;
 }
 </style>

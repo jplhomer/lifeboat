@@ -1,5 +1,5 @@
 <template>
-  <div class="service">
+  <div class="service" @click="selectCommandService">
     <div class="service__name">
       <span class="icon has-text-primary" v-show="running">
         <i class="fa fa-check-square"></i>
@@ -40,6 +40,17 @@ export default {
       this.$electron.shell.openExternal(`http://localhost:${port}`);
     },
 
+    selectCommandService() {
+      if (this.projectActiveTab(this.project.id) !== "commands") {
+        return;
+      }
+
+      this.$store.dispatch("ProjectCommand/setService", {
+        id: this.project.id,
+        service: this.service
+      });
+    },
+
     toggleLogFilter() {
       this.$store.dispatch("toggleProjectLogFilter", {
         id: this.project.id,
@@ -51,12 +62,15 @@ export default {
     running() {
       return this.container && this.container.state === "running";
     },
+
     starting() {
       return this.container && this.container.state === "created";
     },
+
     stopped() {
       return !this.container || (!this.running && !this.starting);
     },
+
     ports() {
       if (this.container) {
         return this.container.ports;
@@ -69,7 +83,7 @@ export default {
       return this.projectLogFilters(this.project.id);
     },
 
-    ...mapGetters(["projectLogFilters"])
+    ...mapGetters(["projectLogFilters", "projectActiveTab"])
   }
 };
 </script>
@@ -118,6 +132,22 @@ export default {
 
     button {
       text-decoration: none;
+    }
+  }
+
+  .tab-commands & {
+    cursor: pointer;
+
+    &:not(.active) {
+      background-color: #ccc;
+
+      &:hover {
+        background-color: #ddd;
+      }
+    }
+
+    .service__actions {
+      display: none;
     }
   }
 }

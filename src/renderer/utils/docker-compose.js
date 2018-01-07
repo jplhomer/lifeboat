@@ -1,5 +1,5 @@
-import { execFile, spawn } from "child_process";
-import which from "which";
+import * as pty from "node-pty";
+import store from "@/store";
 
 export default class DockerCompose {
   /**
@@ -8,29 +8,15 @@ export default class DockerCompose {
    * @param {array} args
    */
   static sync(dir, args = []) {
-    return spawn("docker-compose", args, { cwd: dir });
-  }
-
-  /**
-   * Execute a Docker Compose command, and return a Promise
-   * @param {string} dir
-   * @param {array} args
-   */
-  static async(dir, args = []) {
-    return new Promise((resolve, reject) => {
-      execFile(
-        which.sync("docker-compose", { path: "/usr/local/bin" }),
-        ["-f", `${dir}/docker-compose.yml`].concat(args),
-        (error, stdout, stderr) => {
-          if (error) {
-            reject(error);
-          }
-
-          // Docker Compose ships its status logs to stderr.
-          // Weird, right? https://github.com/docker/compose/issues/5296
-          resolve(stdout || stderr);
-        }
-      );
-    });
+    return pty.spawn(
+      "docker-compose" + (process.platform === "win32" ? ".exe" : ""),
+      args,
+      {
+        name: "xterm-color",
+        cwd: dir,
+        cols: store.state.Project.projectCols,
+        rows: store.state.Project.projectrows
+      }
+    );
   }
 }

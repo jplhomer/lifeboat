@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="`tab-${activeTab}`">
     <header>
       <div class="level is-mobile status-bar">
         <div class="level-left">
@@ -64,7 +64,7 @@
     <div class="services" v-show="!missingComposeFile">
       <div class="columns is-mobile is-multiline">
         <div v-for="service in project.services" :key="service" class="column is-one-third">
-          <project-service :project="project" :service="service" :container="containerForService(service)"></project-service>
+          <project-service :project="project" :service="service" :container="containerForService(service)" :class="{ active: commandService === service }"></project-service>
         </div>
       </div>
     </div>
@@ -205,6 +205,9 @@ export default {
     },
     activeLogFilters() {
       return this.projectLogFilters(this.project.id);
+    },
+    commandService() {
+      return this.$store.getters["ProjectCommand/service"](this.project.id);
     },
     ...mapGetters(["activeProject", "projectLogFilters"])
   },

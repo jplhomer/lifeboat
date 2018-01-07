@@ -12,7 +12,9 @@ let processes = {};
 
 const state = {
   projectsSchemaVersion: settings.get("projectsSchemaVersion"),
-  projects: []
+  projects: [],
+  terminalRows: 24,
+  terminalCols: 80
 };
 
 const mutations = {
@@ -37,6 +39,12 @@ const mutations = {
     state.projects.splice(id, 1, p);
   },
 
+  [types.CLEAR_PROJECT_LOGS](state, id) {
+    let p = state.projects[id];
+    p.logs = "";
+    state.projects.splice(id, 1, p);
+  },
+
   [types.TOGGLE_PROJECT_LOG_FILTER](state, { id, service }) {
     let p = state.projects[id];
     let filters = p.logFilters;
@@ -52,6 +60,11 @@ const mutations = {
     let p = state.projects[id];
     p.logFilters = [];
     state.projects.splice(id, 1, p);
+  },
+
+  [types.RESIZE_TERMINAL](state, { cols, rows }) {
+    state.terminalRows = rows;
+    state.terminalCols = cols;
   }
 };
 
@@ -201,7 +214,7 @@ const actions = {
     const p = state.projects[id];
 
     dispatch("setProjectStatus", { id, status: status.STARTING });
-    commit(types.UPDATE_PROJECT_LOGS, { id, logs: "" });
+    commit(types.CLEAR_PROJECT_LOGS, id);
 
     try {
       await dispatch("startProjectProcess", {
@@ -247,7 +260,7 @@ const actions = {
   async buildAndStartProject({ dispatch, commit }, id) {
     const p = state.projects[id];
 
-    commit(types.UPDATE_PROJECT_LOGS, { id, logs: "" });
+    commit(types.CLEAR_PROJECT_LOGS, id);
     dispatch("setProjectStatus", { id, status: status.STARTING });
 
     try {
@@ -270,7 +283,7 @@ const actions = {
   async restartProject({ dispatch, commit }, id) {
     const p = state.projects[id];
 
-    commit(types.UPDATE_PROJECT_LOGS, { id, logs: "" });
+    commit(types.CLEAR_PROJECT_LOGS, id);
     dispatch("setProjectStatus", { id, status: status.RESTARTING });
 
     try {
@@ -282,6 +295,7 @@ const actions = {
       // So we don't need to call startLogs() again.
       dispatch("setProjectStatus", { id, status: status.RUNNING });
       dispatch("fetchContainers");
+      dispatch("startProjectLogs", id);
     } catch (e) {
       console.error(`Could not restart project`, e);
     }
@@ -301,6 +315,8 @@ const actions = {
    * rejects if not.
    */
   startProjectProcess({ dispatch, commit, state }, { id, method }) {
+    dispatch("stopLoggingProcess", id);
+
     processes[id] = method.call();
 
     dispatch("logProcess", id);
@@ -320,12 +336,16 @@ const actions = {
    * Log the process for a given project
    */
   logProcess({ dispatch }, id) {
-    processes[id].stdout.on("data", d =>
-      dispatch("appendProjectLogs", { id, logs: d.toString() })
+    processes[id].on("data", d =>
+      dispatch("appendProjectLogs", { id, logs: d })
     );
-    processes[id].stderr.on("data", d =>
-      dispatch("appendProjectLogs", { id, logs: d.toString() })
-    );
+  },
+
+  /**
+   * Stop logging the process for a given project by killing it
+   */
+  stopLoggingProcess({ dispatch }, id) {
+    if (processes[id]) processes[id].kill();
   },
 
   /**
@@ -342,16 +362,15 @@ const actions = {
    * Clear project logs
    */
   clearProjectLogs({ commit }, id) {
-    commit(types.UPDATE_PROJECT_LOGS, {
-      id,
-      logs: ""
-    });
+    commit(types.CLEAR_PROJECT_LOGS, id);
   },
 
   /**
    * Begin a Docker Compose logging process for a project
    */
   startProjectLogs({ dispatch, state }, id) {
+    dispatch("stopLoggingProcess", id);
+
     const p = state.projects[id];
     processes[id] = Docker.logs(p.dir);
     dispatch("updateProjectState", [id, "isLogging", true]);
@@ -385,6 +404,13 @@ const actions = {
 
   updateProjectState({ commit }, payload) {
     commit(types.UPDATE_PROJECT, payload);
+  },
+
+  projectResizeTerminal({ commit }, payload) {
+    commit(types.RESIZE_TERMINAL, payload);
+    Object.keys(processes).forEach(key => {
+      if (processes[key]) processes[key].resize(payload.cols, payload.rows);
+    });
   }
 };
 
