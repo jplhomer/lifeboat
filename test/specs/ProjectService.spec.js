@@ -13,7 +13,8 @@ describe("ProjectService.vue", () => {
     store = new Vuex.Store({
       state: {},
       getters: {
-        projectLogFilters: () => () => []
+        projectLogFilters: () => () => [],
+        projectActiveTab: () => () => "logs"
       }
     });
 
