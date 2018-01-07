@@ -7,10 +7,11 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import { Terminal } from "xterm";
+import * as fit from "xterm/lib/addons/fit/fit";
 import "xterm/lib/xterm.css";
 import _ from "lodash";
 
-Terminal.loadAddon("fit");
+Terminal.applyAddon(fit);
 let xterm;
 let process;
 

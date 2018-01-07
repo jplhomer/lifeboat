@@ -7,11 +7,13 @@
 <script>
 import { mapGetters } from "vuex";
 import { Terminal } from "xterm";
+import * as fit from "xterm/lib/addons/fit/fit";
 import * as types from "@/store/mutation-types";
 import "xterm/lib/xterm.css";
 import _ from "lodash";
 
-Terminal.loadAddon("fit");
+Terminal.applyAddon(fit);
+
 const xterm = new Terminal({
   disableStdin: true,
   fontFamily: "monospace",
