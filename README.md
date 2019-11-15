@@ -1,5 +1,7 @@
 # lifeboat
 
+## Update 11/14/2019: This project is archived and will no longer receive updates.
+
 A Docker UI for projects. **[Download for Mac, Windows and Linux](https://github.com/jplhomer/lifeboat/releases) from the Releases tab.**
 
 ![Screenshot of Lifeboat UI](https://user-images.githubusercontent.com/848147/32585014-ea2a74b2-c4c0-11e7-8563-9bd4800590ff.png)
